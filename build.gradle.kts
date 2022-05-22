@@ -122,15 +122,6 @@ subprojects {
     }
 
     tasks {
-        withType<Jar> {
-            doLast {
-                copy {
-                    from("./build/libs")
-                    into("../release/")
-                }
-            }
-        }
-
         withType<JavaCompile> {
             options.encoding = "UTF-8"
         }
