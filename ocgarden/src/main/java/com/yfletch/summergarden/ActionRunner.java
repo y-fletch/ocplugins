@@ -2,7 +2,6 @@ package com.yfletch.summergarden;
 
 import com.yfletch.summergarden.actions.Idle;
 import com.yfletch.summergarden.actions.Unknown;
-import com.toofifty.summergarden.actions.garden.*;
 import com.yfletch.summergarden.actions.garden.Running;
 import com.yfletch.summergarden.actions.garden.stamina.DrinkStamina1;
 import com.yfletch.summergarden.actions.garden.stamina.DrinkStamina2;
