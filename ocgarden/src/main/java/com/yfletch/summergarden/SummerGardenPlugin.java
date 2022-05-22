@@ -34,7 +34,9 @@ import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 
 import javax.inject.Inject;
 import java.awt.*;
+import org.pf4j.Extension;
 
+@Extension
 @Slf4j
 @PluginDescriptor(
 	name = "OC Summer Garden",
