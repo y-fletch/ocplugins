@@ -24,6 +24,9 @@ public class DebugOverlay extends OverlayPanel
 		debugs.put("Elemental", context.getElementalGuardian() != null ? context.getElementalGuardian().getName() : "null");
 		debugs.put("Catalytic", context.getCatalyticGuardian() != null ? context.getCatalyticGuardian().getName() : "null");
 		debugs.put("Special", "" + context.getSpecialEnergy());
+		debugs.put("Pouch capacity", "" + context.getPouchCapacity());
+		context.getPouchEssence().forEach((pouch, qty) -> debugs.put(pouch.getItemName(), "" + qty));
+		context.getFlags().forEach((flag, value) -> debugs.put(flag, "" + value));
 
 		debugs.forEach((name, value) ->
 			panelComponent.getChildren().add(LineComponent.builder().left(name).right(value).build())

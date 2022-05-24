@@ -31,7 +31,15 @@ public class WrappedEvent
 			event.setParam0(entry.getParam0());
 			event.setParam1(entry.getParam1());
 
-//			System.out.println("Applied entry: \n\tOption: " + entry.getOption() + "\n\tTarget: " + entry.getTarget() + "\n\tIdentifier: " + entry.getIdentifier() + "\n\tOpcode: " + entry.getOpcode() + "\n\tParam0: " + entry.getParam0() + "\n\tParam1: " + entry.getParam1());
+			System.out.println(
+				"Applied entry: " +
+					"\n\tOption: " + entry.getOption() +
+					"\n\tTarget: " + entry.getTarget() +
+					"\n\tIdentifier: " + entry.getIdentifier() +
+					"\n\tOpcode: " + entry.getOpcode() +
+					"\n\tParam0: " + entry.getParam0() +
+					"\n\tParam1: " + entry.getParam1()
+			);
 		}
 		catch (Exception e)
 		{

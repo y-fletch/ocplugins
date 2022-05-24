@@ -2,15 +2,19 @@ package com.yfletch.rift;
 
 import com.yfletch.rift.lib.ActionContext;
 import com.yfletch.rift.lib.ObjectManager;
-import com.yfletch.rift.util.ObjectSize;
+import com.yfletch.rift.util.ObjectHelper;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.Getter;
 import lombok.Setter;
 import net.runelite.api.Client;
 import net.runelite.api.InventoryID;
+import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
+import net.runelite.api.ItemID;
 import net.runelite.api.Point;
 import net.runelite.api.TileObject;
 import net.runelite.api.VarPlayer;
@@ -30,9 +34,23 @@ public class RiftContext extends ActionContext
 	@Inject
 	private ObjectManager objectManager;
 
+	@Inject
+	private ObjectHelper objectHelper;
+
+	@Inject
+	private RiftConfig config;
+
 	@Getter
 	@Setter
 	private double gameTime = -60;
+
+	@Getter
+	private final Map<Pouch, Integer> pouchEssence = new HashMap<>();
+
+	public int getExitMineTime()
+	{
+		return 120 - config.exitMineSeconds();
+	}
 
 	public WorldPoint getCurrentLocation()
 	{
@@ -90,7 +108,7 @@ public class RiftContext extends ActionContext
 		WorldPoint location = getCurrentLocation();
 		return object != null
 			&& location != null
-			&& ObjectSize.isBeside(location, object);
+			&& objectHelper.isBeside(location, object);
 	}
 
 	public boolean isPathingTo(int objectId)
@@ -99,8 +117,7 @@ public class RiftContext extends ActionContext
 		WorldPoint dest = getDestinationLocation();
 		return object != null
 			&& dest != null
-			&& ObjectSize.isBeside(dest, object)
-			|| isNextTo(objectId);
+			&& objectHelper.isBeside(dest, object);
 	}
 
 	public boolean isInLargeMine()
@@ -125,5 +142,91 @@ public class RiftContext extends ActionContext
 	public boolean isCraftingEssence()
 	{
 		return client.getLocalPlayer().getAnimation() == 9365;
+	}
+
+	public boolean isFull(Pouch pouch)
+	{
+		int capacity = hasItem(pouch.getItemId()) ? pouch.getCapacity() : pouch.getDegradedCapacity();
+		return pouchEssence.getOrDefault(pouch, 0) == capacity;
+	}
+
+	public void fillPouch(Pouch pouch)
+	{
+		int capacity = hasItem(pouch.getItemId()) ? pouch.getCapacity() : pouch.getDegradedCapacity();
+		pouchEssence.put(pouch, Math.min(getItemCount(ItemID.GUARDIAN_ESSENCE) + getItemCount(ItemID.PURE_ESSENCE), capacity));
+	}
+
+	public void emptyPouch(Pouch pouch)
+	{
+		int freeSlots = getFreeInventorySlots();
+		int previousEssence = pouchEssence.getOrDefault(pouch, 0);
+		pouchEssence.put(pouch, previousEssence - Math.min(freeSlots, previousEssence));
+	}
+
+	public int getPouchCapacity()
+	{
+		int total = 0;
+
+		for (Pouch pouch : Pouch.values())
+		{
+			if (getItemCount(pouch.getItemId()) > 0)
+			{
+				total += pouch.getCapacity();
+			}
+			else if (getItemCount(pouch.getDegradedItemId()) > 0)
+			{
+				total += pouch.getDegradedCapacity();
+			}
+		}
+
+		return total;
+	}
+
+	public boolean hasItem(int itemId)
+	{
+		return getItemCount(itemId) > 0;
+	}
+
+	/**
+	 * Check if there is a higher tier pouch than the
+	 * pouch provided in the inventory. Used to stop
+	 * the filling-pouches actions.
+	 */
+	public boolean hasHigherTierPouch(Pouch pouch)
+	{
+		for (Pouch test : Pouch.values())
+		{
+			// skip lower-tier pouches
+			if (test.getCapacity() <= pouch.getCapacity())
+			{
+				continue;
+			}
+
+			if (hasItem(test.getItemId()) || hasItem(test.getDegradedItemId()))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public int getFreeInventorySlots()
+	{
+		ItemContainer container = client.getItemContainer(InventoryID.INVENTORY);
+		if (container == null)
+		{
+			return 0;
+		}
+
+		int freeSlots = 28;
+		for (Item item : container.getItems())
+		{
+			if (item.getQuantity() > 0)
+			{
+				freeSlots--;
+			}
+		}
+		return freeSlots;
 	}
 }

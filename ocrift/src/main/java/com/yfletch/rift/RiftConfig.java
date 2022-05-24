@@ -18,5 +18,13 @@ public interface RiftConfig extends Config
 		return true;
 	}
 
-	;
+	@ConfigItem(
+		keyName = "exitMineSeconds",
+		name = "Exit mine at",
+		description = "Exits the large mine when the game gets to the specified time"
+	)
+	default int exitMineSeconds()
+	{
+		return 35;
+	}
 }

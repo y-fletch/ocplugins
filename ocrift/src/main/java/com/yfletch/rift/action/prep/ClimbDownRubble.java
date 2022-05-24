@@ -2,6 +2,8 @@ package com.yfletch.rift.action.prep;
 
 import com.yfletch.rift.RiftContext;
 import com.yfletch.rift.lib.ObjectAction;
+import com.yfletch.rift.lib.WrappedEvent;
+import net.runelite.api.MenuAction;
 import net.runelite.api.ObjectID;
 
 public class ClimbDownRubble extends ObjectAction<RiftContext>
@@ -27,5 +29,15 @@ public class ClimbDownRubble extends ObjectAction<RiftContext>
 	public boolean isDone(RiftContext ctx)
 	{
 		return ctx.isInLargeMine();
+	}
+
+	@Override
+	public void run(RiftContext ctx, WrappedEvent event)
+	{
+		event.overrideObjectAction(
+			"Climb",
+			MenuAction.GAME_OBJECT_FIRST_OPTION,
+			ObjectID.RUBBLE_43724
+		);
 	}
 }

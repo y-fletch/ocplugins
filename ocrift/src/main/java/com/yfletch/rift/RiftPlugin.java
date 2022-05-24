@@ -1,6 +1,8 @@
 package com.yfletch.rift;
 
 import com.google.inject.Provides;
+import com.yfletch.rift.action.EmptyPouch;
+import com.yfletch.rift.action.FillPouch;
 import com.yfletch.rift.action.Unknown;
 import com.yfletch.rift.action.firstcycle.ClimbUpRubble;
 import com.yfletch.rift.action.firstcycle.CraftEssence;
@@ -18,15 +20,13 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.ObjectID;
-import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ChatMessage;
-import net.runelite.api.events.DecorativeObjectDespawned;
 import net.runelite.api.events.DecorativeObjectSpawned;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.MenuOptionClicked;
-import net.runelite.api.events.WallObjectDespawned;
 import net.runelite.api.events.WallObjectSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -79,6 +79,11 @@ public class RiftPlugin extends Plugin
 	protected void startUp()
 	{
 		runner = new ActionRunner<>(context, menuEntryProvider);
+		for (Pouch pouch : Pouch.values())
+		{
+			runner.add(new FillPouch(pouch));
+		}
+
 		runner.add(new TakeWeakCell());
 		runner.add(new TakeUnchargedCells());
 		runner.add(new ClimbDownRubble());
@@ -86,7 +91,13 @@ public class RiftPlugin extends Plugin
 		runner.add(new UseSpecialAttack());
 		runner.add(new MineLargeRemains());
 		runner.add(new ClimbUpRubble());
+
 		runner.add(new CraftEssence());
+
+		for (Pouch pouch : Pouch.values())
+		{
+			runner.add(new EmptyPouch(pouch));
+		}
 		runner.add(new Unknown());
 
 		actionOverlay = new RiftActionOverlay(runner);
@@ -99,8 +110,21 @@ public class RiftPlugin extends Plugin
 			new TrackedObject(ObjectID.WEAK_CELLS),
 			new TrackedObject(ObjectID.RUBBLE_43724),
 			new TrackedObject(ObjectID.RUBBLE_43726),
-			new TrackedObject(ObjectID.LARGE_GUARDIAN_REMAINS, new WorldPoint(3639, 9497, 0)),
-			new TrackedObject(ObjectID.HUGE_GUARDIAN_REMAINS, new WorldPoint(3589, 9497, 0)),
+			new TrackedObject(ObjectID.WORKBENCH_43754),
+			new TrackedObject(ObjectID.PORTAL_43729),
+			new TrackedObject(ObjectID.PORTAL_43730),
+			new TrackedObject(ObjectID.DEPOSIT_POOL),
+			new TrackedObject(ObjectID.LARGE_GUARDIAN_REMAINS),
+			new TrackedObject(ObjectID.HUGE_GUARDIAN_REMAINS),
+			new TrackedObject(ObjectID.GUARDIAN_REMAINS),
+			new TrackedObject(ObjectID.GUARDIAN_PARTS),
+			new TrackedObject(ObjectID.GUARDIAN_PARTS_43716),
+
+			new TrackedObject(Cell.UNCHARGED.getObjectId()),
+			new TrackedObject(Cell.WEAK.getObjectId()),
+			new TrackedObject(Cell.MEDIUM.getObjectId()),
+			new TrackedObject(Cell.STRONG.getObjectId()),
+			new TrackedObject(Cell.OVERCHARGED.getObjectId()),
 
 			new TrackedObject(Guardian.AIR.getObjectId()),
 			new TrackedObject(Guardian.WATER.getObjectId()),
@@ -154,6 +178,32 @@ public class RiftPlugin extends Plugin
 		{
 			runner.run(event);
 		}
+
+		runner.tick();
+
+		// handle pouch state
+		String target = event.getMenuTarget();
+		if (!target.contains(" pouch"))
+		{
+			return;
+		}
+
+		for (Pouch pouch : Pouch.values())
+		{
+			if (!target.contains(pouch.getItemName()))
+			{
+				continue;
+			}
+
+			if (event.getId() == 2)
+			{
+				context.fillPouch(pouch);
+			}
+			else if (event.getId() == 3)
+			{
+				context.emptyPouch(pouch);
+			}
+		}
 	}
 
 	@Subscribe
@@ -196,6 +246,12 @@ public class RiftPlugin extends Plugin
 	}
 
 	@Subscribe
+	public void onGroundObjectSpawned(GroundObjectSpawned event)
+	{
+		objectManager.add(event.getGroundObject());
+	}
+
+	@Subscribe
 	public void onWallObjectSpawned(WallObjectSpawned event)
 	{
 		objectManager.add(event.getWallObject());
@@ -210,19 +266,7 @@ public class RiftPlugin extends Plugin
 	@Subscribe
 	public void onGameObjectDespawned(GameObjectDespawned event)
 	{
-		objectManager.hide(event.getGameObject());
-	}
-
-	@Subscribe
-	public void onWallObjectDespawned(WallObjectDespawned event)
-	{
-		objectManager.hide(event.getWallObject());
-	}
-
-	@Subscribe
-	public void onDecorativeObjectDespawned(DecorativeObjectDespawned event)
-	{
-		objectManager.hide(event.getDecorativeObject());
+		objectManager.remove(event.getGameObject());
 	}
 
 	// end object manager

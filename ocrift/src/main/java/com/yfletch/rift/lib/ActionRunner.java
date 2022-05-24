@@ -45,11 +45,6 @@ public class ActionRunner<T extends ActionContext>
 				current.done(ctx);
 				current = null;
 			}
-			else if (current.isReady(ctx) || current.isWorking(ctx))
-			{
-				// do not change action if still in progress
-				return;
-			}
 		}
 
 		for (Action<T> action : actions)
