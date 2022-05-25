@@ -1,13 +1,14 @@
 package com.yfletch.rift.util;
 
 import com.yfletch.rift.lib.IMenuEntryProvider;
-import com.yfletch.rift.lib.ObjectManager;
+import com.yfletch.rift.lib.ObjectHelper;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
+import net.runelite.api.GameObject;
 import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.NPC;
@@ -22,9 +23,6 @@ import net.runelite.api.widgets.WidgetInfo;
 @Singleton
 public class MenuEntryProvider implements IMenuEntryProvider
 {
-	@Inject
-	private ObjectManager objectManager;
-
 	@Inject
 	private ObjectHelper objectHelper;
 
@@ -125,35 +123,28 @@ public class MenuEntryProvider implements IMenuEntryProvider
 	@Override
 	public MenuEntry createObjectEntry(String action, MenuAction menuAction, int objectId)
 	{
-		TileObject object = objectManager.get(objectId);
+		TileObject object = objectHelper.getNearest(objectId);
 		if (object == null)
 		{
 			return null;
 		}
 
-		Point offset = objectHelper.getCenterOffset(objectId);
-		LocalPoint localPoint = LocalPoint.fromWorld(client, object.getWorldLocation());
-		if (localPoint == null)
-		{
-			return null;
-		}
-
-		return createObjectEntry(
-			action,
-			menuAction,
-			objectId,
-			localPoint.getSceneX() - offset.getX(),
-			localPoint.getSceneY() - offset.getY()
-		);
+		return createObjectEntry(action, menuAction, object);
 	}
 
 	@Override
-	public MenuEntry createObjectEntry(String action, MenuAction menuAction, int objectId, int overrideX, int overrideY)
+	public MenuEntry createObjectEntry(String action, MenuAction menuAction, TileObject object)
 	{
-		TileObject object = objectManager.get(objectId);
-		if (object == null)
+		LocalPoint localPoint = object.getLocalLocation();
+
+		int sceneX = localPoint.getSceneX();
+		int sceneY = localPoint.getSceneY();
+
+		if (object instanceof GameObject)
 		{
-			return null;
+			Point sceneLocation = ((GameObject) object).getSceneMinLocation();
+			sceneX = sceneLocation.getX();
+			sceneY = sceneLocation.getY();
 		}
 
 		ObjectComposition comp = client.getObjectDefinition(object.getId());
@@ -162,8 +153,8 @@ public class MenuEntryProvider implements IMenuEntryProvider
 			"<col=ffff>" + comp.getName(),
 			object.getId(),
 			menuAction.getId(),
-			overrideX,
-			overrideY,
+			sceneX,
+			sceneY,
 			true
 		);
 	}

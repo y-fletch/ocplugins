@@ -18,4 +18,9 @@ public enum Cell
 	private final String name;
 	private final int itemId;
 	private final int objectId;
+
+	public boolean isBetterThan(Cell other)
+	{
+		return itemId > other.itemId;
+	}
 }

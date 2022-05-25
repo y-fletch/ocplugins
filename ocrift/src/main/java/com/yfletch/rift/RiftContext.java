@@ -1,11 +1,13 @@
 package com.yfletch.rift;
 
 import com.yfletch.rift.lib.ActionContext;
-import com.yfletch.rift.lib.ObjectManager;
-import com.yfletch.rift.util.ObjectHelper;
+import com.yfletch.rift.lib.NPCHelper;
+import com.yfletch.rift.lib.ObjectHelper;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.Getter;
@@ -15,7 +17,9 @@ import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
 import net.runelite.api.ItemID;
+import net.runelite.api.ObjectID;
 import net.runelite.api.Point;
+import net.runelite.api.Skill;
 import net.runelite.api.TileObject;
 import net.runelite.api.VarPlayer;
 import net.runelite.api.coords.LocalPoint;
@@ -32,20 +36,35 @@ public class RiftContext extends ActionContext
 	private Client client;
 
 	@Inject
-	private ObjectManager objectManager;
-
-	@Inject
+	@Getter
 	private ObjectHelper objectHelper;
 
 	@Inject
+	@Getter
+	private NPCHelper npcHelper;
+
+	@Inject
+	@Getter
 	private RiftConfig config;
 
 	@Getter
 	@Setter
-	private double gameTime = -60;
+	private double gameTime = 120;
 
 	@Getter
 	private final Map<Pouch, Integer> pouchEssence = new HashMap<>();
+
+	public void clearPouches()
+	{
+		pouchEssence.clear();
+	}
+
+	public void reset()
+	{
+		clearFlags();
+		gameTime = -60;
+		clearPouches();
+	}
 
 	public int getExitMineTime()
 	{
@@ -60,10 +79,10 @@ public class RiftContext extends ActionContext
 	public WorldPoint getDestinationLocation()
 	{
 		LocalPoint location = client.getLocalDestinationLocation();
-		return location != null ? WorldPoint.fromLocal(client, client.getLocalDestinationLocation()) : null;
+		return location != null ? WorldPoint.fromLocal(client, location) : null;
 	}
 
-	private Guardian getGuardian(int widgetId)
+	private Rune getGuardian(int widgetId)
 	{
 		Widget widget = client.getWidget(widgetId);
 		if (widget == null)
@@ -73,18 +92,18 @@ public class RiftContext extends ActionContext
 
 		int spriteId = widget.getSpriteId();
 
-		return Arrays.stream(Guardian.values())
+		return Arrays.stream(Rune.values())
 			.filter(g -> g.getSpriteId() == spriteId)
 			.findFirst()
 			.orElse(null);
 	}
 
-	public Guardian getElementalGuardian()
+	public Rune getElementalRune()
 	{
 		return getGuardian(ELEMENTAL_RUNE_WIDGET_ID);
 	}
 
-	public Guardian getCatalyticGuardian()
+	public Rune getCatalyticRune()
 	{
 		return getGuardian(CATALYTIC_RUNE_WIDGET_ID);
 	}
@@ -104,7 +123,11 @@ public class RiftContext extends ActionContext
 
 	public boolean isNextTo(int objectId)
 	{
-		TileObject object = objectManager.get(objectId);
+		return isNextTo(objectHelper.getNearest(objectId));
+	}
+
+	public boolean isNextTo(TileObject object)
+	{
 		WorldPoint location = getCurrentLocation();
 		return object != null
 			&& location != null
@@ -113,11 +136,29 @@ public class RiftContext extends ActionContext
 
 	public boolean isPathingTo(int objectId)
 	{
-		TileObject object = objectManager.get(objectId);
+		return isPathingTo(objectHelper.getNearest(objectId));
+	}
+
+	public boolean isPathingTo(TileObject object)
+	{
 		WorldPoint dest = getDestinationLocation();
 		return object != null
 			&& dest != null
 			&& objectHelper.isBeside(dest, object);
+	}
+
+	public boolean isPathingToGreatGuardian()
+	{
+		if (getDestinationLocation() == null)
+		{
+			return false;
+		}
+
+		return WorldPoint.isInZone(
+			new WorldPoint(3612, 9500, 0),
+			new WorldPoint(3618, 9506, 0),
+			getDestinationLocation()
+		);
 	}
 
 	public boolean isInLargeMine()
@@ -125,6 +166,28 @@ public class RiftContext extends ActionContext
 		return WorldPoint.isInZone(
 			new WorldPoint(3637, 9500, 0),
 			new WorldPoint(3642, 9507, 0),
+			getCurrentLocation()
+		);
+	}
+
+	public boolean isInHugeMine()
+	{
+		return WorldPoint.isInZone(
+			new WorldPoint(3588, 9500, 0),
+			new WorldPoint(3593, 9507, 0),
+			getCurrentLocation()
+		);
+	}
+
+	/**
+	 * Rift is the entire minigame area - including guardian
+	 * mines and excluding runecrafting altars
+	 */
+	public boolean isOutsideRift()
+	{
+		return !WorldPoint.isInZone(
+			new WorldPoint(3588, 9483, 0),
+			new WorldPoint(3642, 9520, 0),
 			getCurrentLocation()
 		);
 	}
@@ -139,15 +202,15 @@ public class RiftContext extends ActionContext
 		return client.getLocalPlayer().getAnimation() == 7139;
 	}
 
-	public boolean isCraftingEssence()
-	{
-		return client.getLocalPlayer().getAnimation() == 9365;
-	}
-
 	public boolean isFull(Pouch pouch)
 	{
 		int capacity = hasItem(pouch.getItemId()) ? pouch.getCapacity() : pouch.getDegradedCapacity();
 		return pouchEssence.getOrDefault(pouch, 0) == capacity;
+	}
+
+	public boolean isEmpty(Pouch pouch)
+	{
+		return pouchEssence.getOrDefault(pouch, 0) == 0;
 	}
 
 	public void fillPouch(Pouch pouch)
@@ -180,6 +243,27 @@ public class RiftContext extends ActionContext
 		}
 
 		return total;
+	}
+
+	public int getEssenceInPouches()
+	{
+		int total = 0;
+		for (int value : pouchEssence.values())
+		{
+			total += value;
+		}
+
+		return total;
+	}
+
+	public boolean areAllPouchesEmpty()
+	{
+		return getEssenceInPouches() == 0;
+	}
+
+	public boolean areAllPouchesFull()
+	{
+		return getEssenceInPouches() == getPouchCapacity();
 	}
 
 	public boolean hasItem(int itemId)
@@ -228,5 +312,61 @@ public class RiftContext extends ActionContext
 			}
 		}
 		return freeSlots;
+	}
+
+	public TileObject getHugeEssencePortal()
+	{
+		return objectHelper.getNearest(ObjectID.PORTAL_43729);
+	}
+
+	public boolean hasGuardianStones()
+	{
+		return hasItem(ItemID.ELEMENTAL_GUARDIAN_STONE)
+			|| hasItem(ItemID.CATALYTIC_GUARDIAN_STONE)
+			|| hasItem(ItemID.POLYELEMENTAL_GUARDIAN_STONE);
+	}
+
+	public boolean hasRunes()
+	{
+		for (Rune rune : Rune.values())
+		{
+			if (hasItem(rune.getItemId()))
+			{
+				return true;
+			}
+		}
+
+		return hasItem(ItemID.STEAM_RUNE)
+			|| hasItem(ItemID.MIST_RUNE)
+			|| hasItem(ItemID.DUST_RUNE)
+			|| hasItem(ItemID.SMOKE_RUNE)
+			|| hasItem(ItemID.MUD_RUNE)
+			|| hasItem(ItemID.LAVA_RUNE);
+	}
+
+	public boolean hasCells()
+	{
+		return hasItem(Cell.WEAK.getItemId())
+			|| hasItem(Cell.MEDIUM.getItemId())
+			|| hasItem(Cell.STRONG.getItemId())
+			|| hasItem(Cell.OVERCHARGED.getItemId());
+	}
+
+	public int getRunecraftLevel()
+	{
+		return client.getRealSkillLevel(Skill.RUNECRAFT);
+	}
+
+	public int getGuardianPower()
+	{
+		Widget widget = client.getWidget(48889874);
+		if (widget == null || widget.getText() == null)
+		{
+			return 0;
+		}
+
+		Pattern pattern = Pattern.compile("\\d{2}");
+		Matcher matcher = pattern.matcher(widget.getText());
+		return matcher.matches() ? Integer.parseInt(matcher.group(0)) : 0;
 	}
 }

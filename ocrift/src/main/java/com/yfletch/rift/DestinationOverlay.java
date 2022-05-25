@@ -1,7 +1,6 @@
 package com.yfletch.rift;
 
-import com.yfletch.rift.lib.ObjectManager;
-import com.yfletch.rift.util.ObjectHelper;
+import com.yfletch.rift.lib.ObjectHelper;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -14,6 +13,7 @@ import net.runelite.api.Client;
 import net.runelite.api.Perspective;
 import net.runelite.api.TileObject;
 import net.runelite.api.coords.LocalPoint;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.TextComponent;
@@ -27,9 +27,6 @@ public class DestinationOverlay extends OverlayPanel
 	private RiftContext context;
 
 	@Inject
-	private ObjectManager objectManager;
-
-	@Inject
 	private ObjectHelper objectHelper;
 
 	DestinationOverlay()
@@ -37,7 +34,7 @@ public class DestinationOverlay extends OverlayPanel
 		setPosition(OverlayPosition.DYNAMIC);
 	}
 
-	private void drawTile(Graphics2D graphics, LocalPoint localPoint, Color color, boolean coords, int objId)
+	private void drawTile(Graphics2D graphics, LocalPoint localPoint, Color color, boolean coords)
 	{
 		Polygon polygon = Perspective.getCanvasTilePoly(client, localPoint);
 		if (polygon == null)
@@ -62,17 +59,6 @@ public class DestinationOverlay extends OverlayPanel
 			Color.CYAN,
 			2
 		);
-
-		net.runelite.api.Point offset = objectHelper.getCenterOffset(objId);
-
-		drawText(
-			graphics,
-			polygon,
-			(localPoint.getSceneX() - offset.getX()) + "," + (localPoint.getSceneY() - offset.getY()),
-			Color.RED,
-			1
-		);
-
 	}
 
 	private void drawText(Graphics2D g, Polygon polygon, String text, Color color, int height)
@@ -95,15 +81,29 @@ public class DestinationOverlay extends OverlayPanel
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		for (TileObject obj : objectManager.getAll())
-		{
-			LocalPoint localPoint = LocalPoint.fromWorld(client, obj.getWorldLocation());
-			if (localPoint == null)
-			{
-				continue;
-			}
+//		for (TileObject obj : objectHelper.getAll())
+//		{
+//			LocalPoint localPoint = LocalPoint.fromWorld(client, obj.getWorldLocation());
+//			if (localPoint == null)
+//			{
+//				continue;
+//			}
+//
+//			drawTile(graphics, localPoint, Color.CYAN, true, obj.getId());
+//		}
 
-			drawTile(graphics, localPoint, Color.CYAN, true, obj.getId());
+		TileObject target = objectHelper.getNearest("Large guardian remains");
+
+		for (int i = 3588; i < 3642; i++)
+		{
+			for (int j = 9483; j < 9520; j++)
+			{
+				WorldPoint wp = new WorldPoint(i, j, 0);
+				if (objectHelper.isBeside(wp, target))
+				{
+					drawTile(graphics, LocalPoint.fromWorld(client, wp), Color.GREEN, false);
+				}
+			}
 		}
 
 

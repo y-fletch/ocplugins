@@ -3,6 +3,7 @@ package com.yfletch.rift.lib;
 import java.util.Collection;
 import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
+import net.runelite.api.TileObject;
 import net.runelite.api.widgets.WidgetInfo;
 
 public interface IMenuEntryProvider
@@ -15,7 +16,7 @@ public interface IMenuEntryProvider
 
 	MenuEntry createObjectEntry(String action, MenuAction menuAction, int objectId);
 
-	MenuEntry createObjectEntry(String action, MenuAction menuAction, int objectId, int overrideX, int overrideY);
+	MenuEntry createObjectEntry(String action, MenuAction menuAction, TileObject object);
 
 	MenuEntry createNPCEntry(String action, MenuAction menuAction, int npcId);
 

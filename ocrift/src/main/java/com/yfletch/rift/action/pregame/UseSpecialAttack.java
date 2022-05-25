@@ -1,4 +1,4 @@
-package com.yfletch.rift.action.prep;
+package com.yfletch.rift.action.pregame;
 
 import com.yfletch.rift.RiftContext;
 import com.yfletch.rift.lib.InterfaceAction;
@@ -31,6 +31,6 @@ public class UseSpecialAttack extends InterfaceAction<RiftContext>
 	@Override
 	public void run(RiftContext ctx, WrappedEvent event)
 	{
-		event.overrideInterfaceAction("Use", MenuAction.CC_OP, WidgetInfo.MINIMAP_SPEC_ORB);
+		event.overrideInterfaceAction("Use", MenuAction.CC_OP, WidgetInfo.MINIMAP_SPEC_CLICKBOX);
 	}
 }

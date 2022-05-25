@@ -3,6 +3,7 @@ package com.yfletch.rift.lib;
 import java.util.Set;
 import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
+import net.runelite.api.TileObject;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.widgets.WidgetInfo;
 
@@ -31,15 +32,15 @@ public class WrappedEvent
 			event.setParam0(entry.getParam0());
 			event.setParam1(entry.getParam1());
 
-			System.out.println(
-				"Applied entry: " +
-					"\n\tOption: " + entry.getOption() +
-					"\n\tTarget: " + entry.getTarget() +
-					"\n\tIdentifier: " + entry.getIdentifier() +
-					"\n\tOpcode: " + entry.getOpcode() +
-					"\n\tParam0: " + entry.getParam0() +
-					"\n\tParam1: " + entry.getParam1()
-			);
+//			System.out.println(
+//				"Applied entry: " +
+//					"\n\tOption: " + entry.getOption() +
+//					"\n\tTarget: " + entry.getTarget() +
+//					"\n\tIdentifier: " + entry.getIdentifier() +
+//					"\n\tOpcode: " + entry.getOpcode() +
+//					"\n\tParam0: " + entry.getParam0() +
+//					"\n\tParam1: " + entry.getParam1()
+//			);
 		}
 		catch (Exception e)
 		{
@@ -69,9 +70,9 @@ public class WrappedEvent
 		apply(menuEntryProvider.createObjectEntry(action, menuAction, objectId));
 	}
 
-	public void overrideObjectAction(String action, MenuAction menuAction, int objectId, int overrideX, int overrideY)
+	public void overrideObjectAction(String action, MenuAction menuAction, TileObject object)
 	{
-		apply(menuEntryProvider.createObjectEntry(action, menuAction, objectId, overrideX, overrideY));
+		apply(menuEntryProvider.createObjectEntry(action, menuAction, object));
 	}
 
 	public void overrideNPCAction(String action, MenuAction menuAction, int npcId)
@@ -82,5 +83,10 @@ public class WrappedEvent
 	public void overrideInterfaceAction(String action, MenuAction menuAction, WidgetInfo widgetInfo)
 	{
 		apply(menuEntryProvider.createInterfaceEntry(action, menuAction, widgetInfo));
+	}
+
+	public void consume()
+	{
+		event.consume();
 	}
 }

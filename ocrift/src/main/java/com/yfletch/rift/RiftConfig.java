@@ -21,10 +21,22 @@ public interface RiftConfig extends Config
 	@ConfigItem(
 		keyName = "exitMineSeconds",
 		name = "Exit mine at",
-		description = "Exits the large mine when the game gets to the specified time"
+		description = "Exits the large mine when the game gets to the specified time",
+		position = 2
 	)
 	default int exitMineSeconds()
 	{
 		return 35;
+	}
+
+	@ConfigItem(
+		keyName = "preferCatalytic",
+		name = "Prefer catalytic",
+		description = "Prefer catalytic altars when both elemental & catalytic are the same tier. Toggle off to prefer elemental altars.",
+		position = 2
+	)
+	default boolean preferCatalytic()
+	{
+		return true;
 	}
 }

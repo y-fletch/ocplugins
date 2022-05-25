@@ -22,20 +22,24 @@ public class FillPouch extends ItemAction<RiftContext>
 	{
 		if (pouch == Pouch.COLOSSAL)
 		{
-			return !ctx.isFull(pouch)
+			return !ctx.isOutsideRift()
+				&& !ctx.isFull(pouch)
 				&& (ctx.hasItem(pouch.getItemId()) || ctx.hasItem(pouch.getDegradedItemId()))
 				&& ctx.getFreeInventorySlots() == 0;
 		}
 
-		return !ctx.isFull(pouch)
+		return !ctx.isOutsideRift()
+			&& !ctx.isFull(pouch)
 			&& (ctx.hasItem(pouch.getItemId()) || ctx.hasItem(pouch.getDegradedItemId()))
-			&& (ctx.getItemCount(ItemID.GUARDIAN_ESSENCE) == ctx.getPouchCapacity() || ctx.flag("filling-pouches"));
+			&& (ctx.getItemCount(ItemID.GUARDIAN_ESSENCE) >= ctx.getPouchCapacity() || ctx.flag("filling-pouches"));
 	}
 
 	@Override
 	public boolean isDone(RiftContext ctx)
 	{
-		return ctx.flag("p-clicked-" + pouch.getItemId()) || ctx.isFull(pouch) || !ctx.hasItem(ItemID.GUARDIAN_ESSENCE);
+		return ctx.flag("p-fill-" + pouch.getItemId())
+			|| ctx.isFull(pouch)
+			|| !ctx.hasItem(ItemID.GUARDIAN_ESSENCE);
 	}
 
 	@Override
@@ -50,22 +54,24 @@ public class FillPouch extends ItemAction<RiftContext>
 		// after one click, letting the control move to the next
 		// pouch.
 		// i.e. multiple clicks in one tick.
-		ctx.flag("p-clicked-" + pouch.getItemId(), true);
+		ctx.flag("p-fill-" + pouch.getItemId(), true);
 	}
 
 	@Override
 	public void done(RiftContext ctx)
 	{
 		ctx.flag("filling-pouches", ctx.hasHigherTierPouch(pouch));
+		ctx.flag("crafting", false);
+		ctx.flag("mining", false);
 
 		if (!ctx.flag("filling-pouches"))
 		{
 			// reset all clicked statuses
-			ctx.flag("p-clicked-" + Pouch.SMALL.getItemId(), false);
-			ctx.flag("p-clicked-" + Pouch.MEDIUM.getItemId(), false);
-			ctx.flag("p-clicked-" + Pouch.LARGE.getItemId(), false);
-			ctx.flag("p-clicked-" + Pouch.GIANT.getItemId(), false);
-			ctx.flag("p-clicked-" + Pouch.COLOSSAL.getItemId(), false);
+			ctx.flag("p-fill-" + Pouch.SMALL.getItemId(), false);
+			ctx.flag("p-fill-" + Pouch.MEDIUM.getItemId(), false);
+			ctx.flag("p-fill-" + Pouch.LARGE.getItemId(), false);
+			ctx.flag("p-fill-" + Pouch.GIANT.getItemId(), false);
+			ctx.flag("p-fill-" + Pouch.COLOSSAL.getItemId(), false);
 		}
 	}
 }

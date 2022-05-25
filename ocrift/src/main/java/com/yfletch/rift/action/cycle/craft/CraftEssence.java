@@ -1,4 +1,4 @@
-package com.yfletch.rift.action.firstcycle;
+package com.yfletch.rift.action.cycle.craft;
 
 import com.yfletch.rift.RiftContext;
 import com.yfletch.rift.lib.ObjectAction;
@@ -17,22 +17,30 @@ public class CraftEssence extends ObjectAction<RiftContext>
 	@Override
 	public boolean isReady(RiftContext ctx)
 	{
-		return ctx.getGameTime() > ctx.getExitMineTime()
-			&& ctx.getFreeInventorySlots() > 0;
+		return !ctx.flag("mine-cycle")
+			&& !ctx.hasRunes()
+			&& ctx.getGameTime() > ctx.getExitMineTime()
+			&& !ctx.isOutsideRift()
+			&& ctx.getFreeInventorySlots() > 3;
 	}
 
 	@Override
 	public boolean isWorking(RiftContext ctx)
 	{
-		return ctx.isPathingTo(ObjectID.WORKBENCH_43754)
-			|| ctx.isCraftingEssence();
+		if (ctx.isPathingTo(ObjectID.WORKBENCH_43754))
+		{
+			ctx.flag("crafting", true);
+			return true;
+		}
+
+		return ctx.flag("crafting")
+			&& ctx.isNextTo(ObjectID.WORKBENCH_43754);
 	}
 
 	@Override
 	public boolean isDone(RiftContext ctx)
 	{
-		return ctx.getItemCount(ItemID.GUARDIAN_ESSENCE) == ctx.getPouchCapacity()
-			|| ctx.getFreeInventorySlots() == 0;
+		return ctx.getFreeInventorySlots() == 0;
 	}
 
 	@Override
@@ -43,5 +51,7 @@ public class CraftEssence extends ObjectAction<RiftContext>
 			MenuAction.GAME_OBJECT_FIRST_OPTION,
 			ObjectID.WORKBENCH_43754
 		);
+
+		ctx.flag("crafting", true);
 	}
 }

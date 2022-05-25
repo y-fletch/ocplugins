@@ -30,4 +30,9 @@ public class ActionContext
 	{
 		return flags.getOrDefault(key, false);
 	}
+
+	public void clearFlags()
+	{
+		flags.clear();
+	}
 }

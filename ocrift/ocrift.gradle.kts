@@ -23,9 +23,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.1"
+version = "0.0.1-alpha"
 
-project.extra["PluginName"] = "OC GOTR"
+project.extra["PluginName"] = "OC GOTR [alpha]"
 project.extra["PluginDescription"] = "One-click Guardians of the Rift"
 
 tasks {

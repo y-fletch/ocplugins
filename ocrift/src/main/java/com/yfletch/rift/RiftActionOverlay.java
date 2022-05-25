@@ -4,17 +4,41 @@ import com.yfletch.rift.lib.ActionRunner;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.inject.Singleton;
+import net.runelite.api.MenuAction;
+import net.runelite.client.ui.overlay.OverlayMenuEntry;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.components.LineComponent;
 
 @Singleton
 public class RiftActionOverlay extends OverlayPanel
 {
+	public static final String DEBUG_SET_N60 = "Set time to -1:00";
+	public static final String DEBUG_SET_0 = "Set time to 0:00";
+	public static final String DEBUG_SET_120 = "Set time to 2:00";
+	public static final String DEBUG_CLEAR_POUCHES = "Clear pouch state";
+	public static final String DEBUG_CLEAR_FLAGS = "Clear flags";
+
 	private final ActionRunner<?> runner;
 
 	public RiftActionOverlay(ActionRunner<?> runner)
 	{
 		this.runner = runner;
+
+		getMenuEntries().add(
+			new OverlayMenuEntry(MenuAction.RUNELITE_OVERLAY, DEBUG_SET_N60, "OC Rift")
+		);
+		getMenuEntries().add(
+			new OverlayMenuEntry(MenuAction.RUNELITE_OVERLAY, DEBUG_SET_0, "OC Rift")
+		);
+		getMenuEntries().add(
+			new OverlayMenuEntry(MenuAction.RUNELITE_OVERLAY, DEBUG_SET_120, "OC Rift")
+		);
+		getMenuEntries().add(
+			new OverlayMenuEntry(MenuAction.RUNELITE_OVERLAY, DEBUG_CLEAR_POUCHES, "OC Rift")
+		);
+		getMenuEntries().add(
+			new OverlayMenuEntry(MenuAction.RUNELITE_OVERLAY, DEBUG_CLEAR_FLAGS, "OC Rift")
+		);
 	}
 
 	@Override

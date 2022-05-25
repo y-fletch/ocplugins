@@ -3,33 +3,38 @@ package com.yfletch.rift;
 import com.google.inject.Provides;
 import com.yfletch.rift.action.EmptyPouch;
 import com.yfletch.rift.action.FillPouch;
-import com.yfletch.rift.action.Unknown;
-import com.yfletch.rift.action.firstcycle.ClimbUpRubble;
-import com.yfletch.rift.action.firstcycle.CraftEssence;
-import com.yfletch.rift.action.firstcycle.MineLargeRemains;
-import com.yfletch.rift.action.prep.UseSpecialAttack;
-import com.yfletch.rift.action.prep.ClimbDownRubble;
-import com.yfletch.rift.action.prep.TakeUnchargedCells;
-import com.yfletch.rift.action.prep.TakeWeakCell;
-import com.yfletch.rift.action.prep.WalkToLargeRemains;
+import com.yfletch.rift.action.Nothing;
+import com.yfletch.rift.action.cycle.common.CraftRunes;
+import com.yfletch.rift.action.cycle.common.DepositRunes;
+import com.yfletch.rift.action.cycle.common.EnterAltar;
+import com.yfletch.rift.action.cycle.common.ExitAltar;
+import com.yfletch.rift.action.cycle.common.PlaceCell;
+import com.yfletch.rift.action.cycle.common.PowerUpGuardian;
+import com.yfletch.rift.action.cycle.craft.MineGuardianParts;
+import com.yfletch.rift.action.cycle.mine.ExitPortal;
+import com.yfletch.rift.action.cycle.mine.MineHugeRemains;
+import com.yfletch.rift.action.cycle.mine.EnterPortal;
+import com.yfletch.rift.action.cycle.start.ClimbUpRubble;
+import com.yfletch.rift.action.cycle.craft.CraftEssence;
+import com.yfletch.rift.action.cycle.start.MineLargeRemains;
+import com.yfletch.rift.action.pregame.UseSpecialAttack;
+import com.yfletch.rift.action.pregame.ClimbDownRubble;
+import com.yfletch.rift.action.pregame.TakeUnchargedCells;
+import com.yfletch.rift.action.pregame.TakeWeakCell;
+import com.yfletch.rift.action.pregame.WalkToLargeRemains;
 import com.yfletch.rift.lib.ActionRunner;
-import com.yfletch.rift.lib.ObjectManager;
-import com.yfletch.rift.lib.TrackedObject;
 import com.yfletch.rift.util.MenuEntryProvider;
+import java.util.Arrays;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
-import net.runelite.api.ObjectID;
+import net.runelite.api.Client;
 import net.runelite.api.events.ChatMessage;
-import net.runelite.api.events.DecorativeObjectSpawned;
-import net.runelite.api.events.GameObjectDespawned;
-import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameTick;
-import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.MenuOptionClicked;
-import net.runelite.api.events.WallObjectSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.OverlayMenuClicked;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -38,7 +43,7 @@ import org.pf4j.Extension;
 @Extension
 @Slf4j
 @PluginDescriptor(
-	name = "OC Rift",
+	name = "OC Rift [alpha]",
 	enabledByDefault = false,
 	description = "One-click Guardians of the Rift"
 )
@@ -47,9 +52,9 @@ public class RiftPlugin extends Plugin
 	// overlays
 	@Inject
 	private DebugOverlay debugOverlay;
-
-	@Inject
-	private DestinationOverlay destinationOverlay;
+//
+//	@Inject
+//	private DestinationOverlay destinationOverlay;
 
 	@Inject
 	private OverlayManager overlayManager;
@@ -69,21 +74,16 @@ public class RiftPlugin extends Plugin
 
 	// misc
 	@Inject
-	private RiftConfig config;
+	private Client client;
 
 	@Inject
-	private ObjectManager objectManager;
+	private RiftConfig config;
 	// end misc
 
 	@Override
 	protected void startUp()
 	{
 		runner = new ActionRunner<>(context, menuEntryProvider);
-		for (Pouch pouch : Pouch.values())
-		{
-			runner.add(new FillPouch(pouch));
-		}
-
 		runner.add(new TakeWeakCell());
 		runner.add(new TakeUnchargedCells());
 		runner.add(new ClimbDownRubble());
@@ -91,54 +91,27 @@ public class RiftPlugin extends Plugin
 		runner.add(new UseSpecialAttack());
 		runner.add(new MineLargeRemains());
 		runner.add(new ClimbUpRubble());
-
+		Arrays.stream(Pouch.values())
+			.forEach(p -> runner.add(new FillPouch(p)));
 		runner.add(new CraftEssence());
-
-		for (Pouch pouch : Pouch.values())
-		{
-			runner.add(new EmptyPouch(pouch));
-		}
-		runner.add(new Unknown());
+		runner.add(new PlaceCell());
+		runner.add(new EnterAltar());
+		Arrays.stream(Pouch.values())
+			.forEach(p -> runner.add(new EmptyPouch(p)));
+		runner.add(new CraftRunes());
+		runner.add(new ExitAltar());
+		runner.add(new DepositRunes());
+		runner.add(new PowerUpGuardian());
+		runner.add(new MineGuardianParts());
+		runner.add(new EnterPortal());
+		runner.add(new MineHugeRemains());
+		runner.add(new ExitPortal());
+		runner.add(new Nothing());
 
 		actionOverlay = new RiftActionOverlay(runner);
 		overlayManager.add(actionOverlay);
 		overlayManager.add(debugOverlay);
-		overlayManager.add(destinationOverlay);
-
-		objectManager.setTrackedObjects(new TrackedObject[]{
-			new TrackedObject(ObjectID.UNCHARGED_CELLS_43732),
-			new TrackedObject(ObjectID.WEAK_CELLS),
-			new TrackedObject(ObjectID.RUBBLE_43724),
-			new TrackedObject(ObjectID.RUBBLE_43726),
-			new TrackedObject(ObjectID.WORKBENCH_43754),
-			new TrackedObject(ObjectID.PORTAL_43729),
-			new TrackedObject(ObjectID.PORTAL_43730),
-			new TrackedObject(ObjectID.DEPOSIT_POOL),
-			new TrackedObject(ObjectID.LARGE_GUARDIAN_REMAINS),
-			new TrackedObject(ObjectID.HUGE_GUARDIAN_REMAINS),
-			new TrackedObject(ObjectID.GUARDIAN_REMAINS),
-			new TrackedObject(ObjectID.GUARDIAN_PARTS),
-			new TrackedObject(ObjectID.GUARDIAN_PARTS_43716),
-
-			new TrackedObject(Cell.UNCHARGED.getObjectId()),
-			new TrackedObject(Cell.WEAK.getObjectId()),
-			new TrackedObject(Cell.MEDIUM.getObjectId()),
-			new TrackedObject(Cell.STRONG.getObjectId()),
-			new TrackedObject(Cell.OVERCHARGED.getObjectId()),
-
-			new TrackedObject(Guardian.AIR.getObjectId()),
-			new TrackedObject(Guardian.WATER.getObjectId()),
-			new TrackedObject(Guardian.EARTH.getObjectId()),
-			new TrackedObject(Guardian.FIRE.getObjectId()),
-			new TrackedObject(Guardian.MIND.getObjectId()),
-			new TrackedObject(Guardian.BODY.getObjectId()),
-			new TrackedObject(Guardian.COSMIC.getObjectId()),
-			new TrackedObject(Guardian.CHAOS.getObjectId()),
-			new TrackedObject(Guardian.NATURE.getObjectId()),
-			new TrackedObject(Guardian.LAW.getObjectId()),
-			new TrackedObject(Guardian.DEATH.getObjectId()),
-			new TrackedObject(Guardian.BLOOD.getObjectId()),
-		});
+//		overlayManager.add(destinationOverlay);
 	}
 
 	@Override
@@ -146,7 +119,7 @@ public class RiftPlugin extends Plugin
 	{
 		overlayManager.remove(actionOverlay);
 		overlayManager.remove(debugOverlay);
-		overlayManager.remove(destinationOverlay);
+//		overlayManager.remove(destinationOverlay);
 		actionOverlay = null;
 		runner = null;
 	}
@@ -171,7 +144,6 @@ public class RiftPlugin extends Plugin
 		if (runner == null)
 		{
 			log.error("Got a menu option click with no runner created!");
-			return;
 		}
 
 		if (config.ocEnabled())
@@ -221,55 +193,52 @@ public class RiftPlugin extends Plugin
 		}
 		else if (message.contains("The rift will become active in 30 seconds."))
 		{
+			context.reset();
 			context.setGameTime(-30);
 		}
 		else if (message.contains("The rift will become active in 10 seconds."))
 		{
+			context.reset();
 			context.setGameTime(-10);
 		}
 		else if (message.contains("The rift will become active in 5 seconds."))
 		{
+			context.reset();
 			context.setGameTime(-5);
 		}
 		else if (message.contains("The Portal Guardians will keep their rifts open for another 30 seconds."))
 		{
+			context.reset();
 			context.setGameTime(-60);
 		}
 	}
 
-	// object manager tracking
-
 	@Subscribe
-	public void onGameObjectSpawned(GameObjectSpawned event)
+	public void onOverlayMenuClicked(OverlayMenuClicked event)
 	{
-		objectManager.add(event.getGameObject());
+		if (event.getOverlay() == actionOverlay)
+		{
+			String option = event.getEntry().getOption();
+			switch (option)
+			{
+				case RiftActionOverlay.DEBUG_SET_N60:
+					context.setGameTime(-60);
+					break;
+				case RiftActionOverlay.DEBUG_SET_0:
+					context.setGameTime(0);
+					break;
+				case RiftActionOverlay.DEBUG_SET_120:
+					context.setGameTime(120);
+					break;
+				case RiftActionOverlay.DEBUG_CLEAR_POUCHES:
+					context.clearPouches();
+					break;
+				case RiftActionOverlay.DEBUG_CLEAR_FLAGS:
+					context.clearFlags();
+					break;
+			}
+		}
 	}
-
-	@Subscribe
-	public void onGroundObjectSpawned(GroundObjectSpawned event)
-	{
-		objectManager.add(event.getGroundObject());
-	}
-
-	@Subscribe
-	public void onWallObjectSpawned(WallObjectSpawned event)
-	{
-		objectManager.add(event.getWallObject());
-	}
-
-	@Subscribe
-	public void onDecorativeObjectSpawned(DecorativeObjectSpawned event)
-	{
-		objectManager.add(event.getDecorativeObject());
-	}
-
-	@Subscribe
-	public void onGameObjectDespawned(GameObjectDespawned event)
-	{
-		objectManager.remove(event.getGameObject());
-	}
-
-	// end object manager
 
 	@Provides
 	RiftConfig provideConfig(ConfigManager configManager)

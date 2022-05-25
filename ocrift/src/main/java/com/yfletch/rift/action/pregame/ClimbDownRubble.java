@@ -1,4 +1,4 @@
-package com.yfletch.rift.action.firstcycle;
+package com.yfletch.rift.action.pregame;
 
 import com.yfletch.rift.RiftContext;
 import com.yfletch.rift.lib.ObjectAction;
@@ -6,40 +6,38 @@ import com.yfletch.rift.lib.WrappedEvent;
 import net.runelite.api.MenuAction;
 import net.runelite.api.ObjectID;
 
-public class MineLargeRemains extends ObjectAction<RiftContext>
+public class ClimbDownRubble extends ObjectAction<RiftContext>
 {
-	public MineLargeRemains()
+	public ClimbDownRubble()
 	{
-		super("Mine", "Large guardian remains");
+		super("Climb", "Rubble");
 	}
 
 	@Override
 	public boolean isReady(RiftContext ctx)
 	{
-		return ctx.getGameTime() >= 0
-			&& ctx.getGameTime() < ctx.getExitMineTime()
-			&& ctx.isInLargeMine();
+		return ctx.getGameTime() < 0;
 	}
 
 	@Override
 	public boolean isWorking(RiftContext ctx)
 	{
-		return ctx.isMining();
+		return ctx.isPathingTo(ObjectID.RUBBLE_43724);
 	}
 
 	@Override
 	public boolean isDone(RiftContext ctx)
 	{
-		return ctx.getGameTime() >= ctx.getExitMineTime();
+		return ctx.isInLargeMine();
 	}
 
 	@Override
 	public void run(RiftContext ctx, WrappedEvent event)
 	{
 		event.overrideObjectAction(
-			"Mine",
+			"Climb",
 			MenuAction.GAME_OBJECT_FIRST_OPTION,
-			ObjectID.LARGE_GUARDIAN_REMAINS
+			ObjectID.RUBBLE_43724
 		);
 	}
 }

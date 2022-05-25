@@ -43,7 +43,6 @@ public class ActionRunner<T extends ActionContext>
 			{
 				// allow next action to run
 				current.done(ctx);
-				current = null;
 			}
 		}
 

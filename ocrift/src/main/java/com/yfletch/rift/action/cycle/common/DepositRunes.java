@@ -1,4 +1,4 @@
-package com.yfletch.rift.action.prep;
+package com.yfletch.rift.action.cycle.common;
 
 import com.yfletch.rift.RiftContext;
 import com.yfletch.rift.lib.ObjectAction;
@@ -6,38 +6,36 @@ import com.yfletch.rift.lib.WrappedEvent;
 import net.runelite.api.MenuAction;
 import net.runelite.api.ObjectID;
 
-public class ClimbDownRubble extends ObjectAction<RiftContext>
+public class DepositRunes extends ObjectAction<RiftContext>
 {
-	public ClimbDownRubble()
+	public DepositRunes()
 	{
-		super("Climb", "Rubble");
+		super("Deposit-runes", "Deposit pool");
 	}
 
 	@Override
 	public boolean isReady(RiftContext ctx)
 	{
-		return ctx.getGameTime() < 0;
+		return !ctx.isOutsideRift()
+			&& ctx.hasGuardianStones()
+			&& ctx.hasRunes();
 	}
 
 	@Override
 	public boolean isWorking(RiftContext ctx)
 	{
-		return ctx.isPathingTo(ObjectID.RUBBLE_43724);
+		return ctx.isPathingTo(ObjectID.DEPOSIT_POOL);
 	}
 
 	@Override
 	public boolean isDone(RiftContext ctx)
 	{
-		return ctx.isInLargeMine();
+		return !ctx.hasRunes();
 	}
 
 	@Override
 	public void run(RiftContext ctx, WrappedEvent event)
 	{
-		event.overrideObjectAction(
-			"Climb",
-			MenuAction.GAME_OBJECT_FIRST_OPTION,
-			ObjectID.RUBBLE_43724
-		);
+		event.overrideObjectAction("Deposit-runes", MenuAction.GAME_OBJECT_FIRST_OPTION, ObjectID.DEPOSIT_POOL);
 	}
 }

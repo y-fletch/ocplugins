@@ -1,44 +1,44 @@
-package com.yfletch.rift.action.firstcycle;
+package com.yfletch.rift.action.cycle.common;
 
 import com.yfletch.rift.RiftContext;
 import com.yfletch.rift.lib.ObjectAction;
 import com.yfletch.rift.lib.WrappedEvent;
+import net.runelite.api.ItemID;
 import net.runelite.api.MenuAction;
-import net.runelite.api.ObjectID;
 
-public class ClimbUpRubble extends ObjectAction<RiftContext>
+public class CraftRunes extends ObjectAction<RiftContext>
 {
-	public ClimbUpRubble()
+	public CraftRunes()
 	{
-		super("Climb", "Rubble");
+		super("Craft-rune", "Altar");
 	}
 
 	@Override
 	public boolean isReady(RiftContext ctx)
 	{
-		return ctx.isInLargeMine()
-			&& ctx.getGameTime() > ctx.getExitMineTime();
+		return ctx.isOutsideRift()
+			&& ctx.hasItem(ItemID.GUARDIAN_ESSENCE);
 	}
 
 	@Override
 	public boolean isWorking(RiftContext ctx)
 	{
-		return ctx.isPathingTo(ObjectID.RUBBLE_43726);
+		return ctx.isPathingTo(ctx.getObjectHelper().getNearest("Altar"));
 	}
 
 	@Override
 	public boolean isDone(RiftContext ctx)
 	{
-		return !ctx.isInLargeMine();
+		return !ctx.hasItem(ItemID.GUARDIAN_ESSENCE);
 	}
 
 	@Override
 	public void run(RiftContext ctx, WrappedEvent event)
 	{
 		event.overrideObjectAction(
-			"Climb",
+			"Craft-rune",
 			MenuAction.GAME_OBJECT_FIRST_OPTION,
-			ObjectID.RUBBLE_43726
+			ctx.getObjectHelper().getNearest("Altar")
 		);
 	}
 }
