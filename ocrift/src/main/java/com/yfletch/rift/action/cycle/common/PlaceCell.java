@@ -1,12 +1,10 @@
 package com.yfletch.rift.action.cycle.common;
 
-import com.yfletch.rift.Cell;
+import com.yfletch.rift.enums.Cell;
 import com.yfletch.rift.RiftContext;
-import com.yfletch.rift.Rune;
 import com.yfletch.rift.helper.CellTileDecider;
 import com.yfletch.rift.lib.ObjectAction;
 import com.yfletch.rift.lib.WrappedEvent;
-import net.runelite.api.ItemID;
 import net.runelite.api.MenuAction;
 import net.runelite.api.TileObject;
 
@@ -22,7 +20,7 @@ public class PlaceCell extends ObjectAction<RiftContext>
 	{
 		return ctx.getGameTime() > 110
 			&& !ctx.hasGuardianStones()
-			&& ctx.hasCells();
+			&& ctx.hasCell();
 	}
 
 	@Override
@@ -37,7 +35,7 @@ public class PlaceCell extends ObjectAction<RiftContext>
 	public boolean isDone(RiftContext ctx)
 	{
 		return !ctx.hasItem(Cell.UNCHARGED.getItemId())
-			&& !ctx.hasCells();
+			&& !ctx.hasCell();
 	}
 
 	@Override

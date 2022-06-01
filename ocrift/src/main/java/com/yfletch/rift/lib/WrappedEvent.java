@@ -80,9 +80,19 @@ public class WrappedEvent
 		apply(menuEntryProvider.createNPCEntry(action, menuAction, npcId));
 	}
 
-	public void overrideInterfaceAction(String action, MenuAction menuAction, WidgetInfo widgetInfo)
+	public void overrideInterfaceAction(String action, MenuAction menuAction, int widgetInfo)
 	{
 		apply(menuEntryProvider.createInterfaceEntry(action, menuAction, widgetInfo));
+	}
+
+	public void overrideInterfaceAction(String action, MenuAction menuAction, int widgetInfo, int id)
+	{
+		apply(menuEntryProvider.createInterfaceEntry(action, menuAction, widgetInfo, id));
+	}
+
+	public void overrideDialogOptionAction(String optionName)
+	{
+		apply(menuEntryProvider.createDialogOptionEntry(optionName));
 	}
 
 	public void consume()

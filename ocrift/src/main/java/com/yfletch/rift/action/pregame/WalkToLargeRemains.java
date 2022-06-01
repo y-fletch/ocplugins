@@ -16,7 +16,7 @@ public class WalkToLargeRemains extends ObjectAction<RiftContext>
 	@Override
 	public boolean isReady(RiftContext ctx)
 	{
-		return ctx.getGameTime() < 0
+		return ctx.isPregame()
 			&& ctx.isInLargeMine();
 	}
 

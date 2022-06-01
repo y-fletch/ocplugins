@@ -1,10 +1,15 @@
 package com.yfletch.rift;
 
+import com.yfletch.rift.enums.Cell;
+import com.yfletch.rift.enums.Pouch;
+import com.yfletch.rift.enums.Rune;
 import com.yfletch.rift.lib.ActionContext;
 import com.yfletch.rift.lib.NPCHelper;
 import com.yfletch.rift.lib.ObjectHelper;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,12 +30,14 @@ import net.runelite.api.VarPlayer;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.widgets.Widget;
+import net.runelite.api.widgets.WidgetInfo;
 
 @Singleton
 public class RiftContext extends ActionContext
 {
-	private static final int ELEMENTAL_RUNE_WIDGET_ID = 48889879;
-	private static final int CATALYTIC_RUNE_WIDGET_ID = 48889876;
+	private static final int ELEMENTAL_RUNE_WIDGET_ID = 48889876;
+	private static final int CATALYTIC_RUNE_WIDGET_ID = 48889879;
+	private static final int POUCH_USES_PER_GAME = 5;
 
 	@Inject
 	private Client client;
@@ -54,6 +61,8 @@ public class RiftContext extends ActionContext
 	@Getter
 	private final Map<Pouch, Integer> pouchEssence = new HashMap<>();
 
+	private final Map<Pouch, Integer> pouchUses = new HashMap<>();
+
 	public void clearPouches()
 	{
 		pouchEssence.clear();
@@ -64,6 +73,15 @@ public class RiftContext extends ActionContext
 		clearFlags();
 		gameTime = -60;
 		clearPouches();
+	}
+
+	public boolean isPregame()
+	{
+		return !isOutsideRift()
+			&& (getGameTime() < 0
+			|| (getGuardianPower() == 100 || getGuardianPower() == 0)
+			&& !hasCell()
+			&& !hasGuardianStones());
 	}
 
 	public int getExitMineTime()
@@ -106,6 +124,23 @@ public class RiftContext extends ActionContext
 	public Rune getCatalyticRune()
 	{
 		return getGuardian(CATALYTIC_RUNE_WIDGET_ID);
+	}
+
+	public List<Rune> getPossibleGuardians()
+	{
+		List<Rune> guardians = new ArrayList<>();
+
+		for (Rune rune : Rune.values())
+		{
+			if (hasItem(rune.getTalismanId()))
+			{
+				guardians.add(rune);
+			}
+		}
+
+		guardians.add(getElementalRune());
+		guardians.add(getCatalyticRune());
+		return guardians;
 	}
 
 	public int getItemCount(int itemId)
@@ -192,6 +227,18 @@ public class RiftContext extends ActionContext
 		);
 	}
 
+	/**
+	 * Includes 1 tile into the rift, to force state to reset
+	 */
+	public boolean isInLobbyArea()
+	{
+		return WorldPoint.isInZone(
+			new WorldPoint(3600, 9471, 0),
+			new WorldPoint(3630, 9484, 0),
+			getCurrentLocation()
+		);
+	}
+
 	public int getSpecialEnergy()
 	{
 		return client.getVarpValue(VarPlayer.SPECIAL_ATTACK_PERCENT.getId()) / 10;
@@ -213,10 +260,22 @@ public class RiftContext extends ActionContext
 		return pouchEssence.getOrDefault(pouch, 0) == 0;
 	}
 
+	public int getTimesUsed(Pouch pouch)
+	{
+		return pouchUses.getOrDefault(pouch, -1);
+	}
+
 	public void fillPouch(Pouch pouch)
 	{
 		int capacity = hasItem(pouch.getItemId()) ? pouch.getCapacity() : pouch.getDegradedCapacity();
-		pouchEssence.put(pouch, Math.min(getItemCount(ItemID.GUARDIAN_ESSENCE) + getItemCount(ItemID.PURE_ESSENCE), capacity));
+		int prev = pouchEssence.getOrDefault(pouch, 0);
+		int curr = Math.min(getItemCount(ItemID.GUARDIAN_ESSENCE) + getItemCount(ItemID.PURE_ESSENCE), capacity);
+
+		if (prev != curr)
+		{
+			pouchEssence.put(pouch, curr);
+			pouchUses.put(pouch, pouchUses.getOrDefault(pouch, 0) + 1);
+		}
 	}
 
 	public void emptyPouch(Pouch pouch)
@@ -264,6 +323,48 @@ public class RiftContext extends ActionContext
 	public boolean areAllPouchesFull()
 	{
 		return getEssenceInPouches() == getPouchCapacity();
+	}
+
+	public boolean hasDegradedPouch()
+	{
+		for (Pouch pouch : Pouch.values())
+		{
+			if (hasItem(pouch.getDegradedItemId()))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public boolean hasNearlyDegradedPouch()
+	{
+		for (Pouch pouch : Pouch.values())
+		{
+			if (!hasItem(pouch.getItemId()) || pouch.getUses() < 0)
+			{
+				continue;
+			}
+
+			if (pouchUses.getOrDefault(pouch, pouch.getUses()) >= pouch.getUses() - POUCH_USES_PER_GAME)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public void repairPouches()
+	{
+		for (Pouch pouch : Pouch.values())
+		{
+			if (hasItem(pouch.getItemId()))
+			{
+				pouchUses.put(pouch, 0);
+			}
+		}
 	}
 
 	public boolean hasItem(int itemId)
@@ -344,12 +445,45 @@ public class RiftContext extends ActionContext
 			|| hasItem(ItemID.LAVA_RUNE);
 	}
 
-	public boolean hasCells()
+	public int getDroppableRune()
 	{
-		return hasItem(Cell.WEAK.getItemId())
-			|| hasItem(Cell.MEDIUM.getItemId())
-			|| hasItem(Cell.STRONG.getItemId())
-			|| hasItem(Cell.OVERCHARGED.getItemId());
+		for (Rune rune : config.dropRunes())
+		{
+			if (hasItem(rune.getItemId()))
+			{
+				return rune.getItemId();
+			}
+		}
+
+		return -1;
+	}
+
+	public boolean hasDroppableRunes()
+	{
+		return getDroppableRune() != -1;
+	}
+
+	public int getCell()
+	{
+		for (Cell cell : Cell.values())
+		{
+			if (cell == Cell.UNCHARGED)
+			{
+				continue;
+			}
+
+			if (hasItem(cell.getItemId()))
+			{
+				return cell.getItemId();
+			}
+		}
+
+		return -1;
+	}
+
+	public boolean hasCell()
+	{
+		return getCell() != -1;
 	}
 
 	public int getRunecraftLevel()
@@ -365,8 +499,60 @@ public class RiftContext extends ActionContext
 			return 0;
 		}
 
-		Pattern pattern = Pattern.compile("\\d{2}");
+		Pattern pattern = Pattern.compile("(\\d{2})");
 		Matcher matcher = pattern.matcher(widget.getText());
-		return matcher.matches() ? Integer.parseInt(matcher.group(0)) : 0;
+		return matcher.find() ? Integer.parseInt(matcher.group(1)) : 0;
+	}
+
+	public boolean isNpcContacting()
+	{
+		return client.getLocalPlayer().getAnimation() == 4413;
+	}
+
+	public boolean isDialogOpen()
+	{
+		return client.getWidget(WidgetInfo.DIALOG_PLAYER_TEXT) != null
+			|| client.getWidget(WidgetInfo.DIALOG_NPC_TEXT) != null
+			|| client.getWidget(WidgetInfo.DIALOG_OPTION_OPTIONS) != null;
+	}
+
+	public boolean dialogNpcTextContains(String test)
+	{
+		Widget npcText = client.getWidget(WidgetInfo.DIALOG_NPC_TEXT);
+		if (npcText == null)
+		{
+			return false;
+		}
+
+		return npcText.getText().contains(test);
+	}
+
+	public boolean dialogPlayerTextContains(String test)
+	{
+		Widget playerText = client.getWidget(WidgetInfo.DIALOG_PLAYER_TEXT);
+		if (playerText == null)
+		{
+			return false;
+		}
+
+		return playerText.getText().contains(test);
+	}
+
+	public int getDialogOptionIndex(String test)
+	{
+		Widget dialogOptions = client.getWidget(WidgetInfo.DIALOG_OPTION_OPTIONS);
+		if (dialogOptions == null || dialogOptions.getChildren() == null)
+		{
+			return -1;
+		}
+
+		for (Widget option : dialogOptions.getChildren())
+		{
+			if (option.getText().contains(test))
+			{
+				return option.getIndex();
+			}
+		}
+		return -1;
 	}
 }

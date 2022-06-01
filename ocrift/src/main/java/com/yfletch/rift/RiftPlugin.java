@@ -6,6 +6,7 @@ import com.yfletch.rift.action.FillPouch;
 import com.yfletch.rift.action.Nothing;
 import com.yfletch.rift.action.cycle.common.CraftRunes;
 import com.yfletch.rift.action.cycle.common.DepositRunes;
+import com.yfletch.rift.action.cycle.common.DropRunes;
 import com.yfletch.rift.action.cycle.common.EnterAltar;
 import com.yfletch.rift.action.cycle.common.ExitAltar;
 import com.yfletch.rift.action.cycle.common.PlaceCell;
@@ -17,13 +18,25 @@ import com.yfletch.rift.action.cycle.mine.EnterPortal;
 import com.yfletch.rift.action.cycle.start.ClimbUpRubble;
 import com.yfletch.rift.action.cycle.craft.CraftEssence;
 import com.yfletch.rift.action.cycle.start.MineLargeRemains;
+import com.yfletch.rift.action.postgame.DropCell;
 import com.yfletch.rift.action.pregame.UseSpecialAttack;
 import com.yfletch.rift.action.pregame.ClimbDownRubble;
 import com.yfletch.rift.action.pregame.TakeUnchargedCells;
 import com.yfletch.rift.action.pregame.TakeWeakCell;
 import com.yfletch.rift.action.pregame.WalkToLargeRemains;
+import com.yfletch.rift.action.repair.CastNpcContact;
+import com.yfletch.rift.action.repair.ClickToContinueNPC;
+import com.yfletch.rift.action.repair.ClickToContinuePlayer;
+import com.yfletch.rift.action.repair.RepairPouches;
+import com.yfletch.rift.enums.Pouch;
 import com.yfletch.rift.lib.ActionRunner;
+import com.yfletch.rift.overlay.DebugOverlay;
+import com.yfletch.rift.overlay.DestinationOverlay;
+import com.yfletch.rift.overlay.PouchUseOverlay;
+import com.yfletch.rift.overlay.RiftActionOverlay;
+import com.yfletch.rift.overlay.StatisticsOverlay;
 import com.yfletch.rift.util.MenuEntryProvider;
+import com.yfletch.rift.util.Statistics;
 import java.util.Arrays;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +44,7 @@ import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -52,9 +66,15 @@ public class RiftPlugin extends Plugin
 	// overlays
 	@Inject
 	private DebugOverlay debugOverlay;
-//
-//	@Inject
-//	private DestinationOverlay destinationOverlay;
+
+	@Inject
+	private DestinationOverlay destinationOverlay;
+
+	@Inject
+	private PouchUseOverlay pouchUseOverlay;
+
+	@Inject
+	private StatisticsOverlay statisticsOverlay;
 
 	@Inject
 	private OverlayManager overlayManager;
@@ -78,12 +98,21 @@ public class RiftPlugin extends Plugin
 
 	@Inject
 	private RiftConfig config;
+
+	@Inject
+	private Statistics statistics;
 	// end misc
 
 	@Override
 	protected void startUp()
 	{
 		runner = new ActionRunner<>(context, menuEntryProvider);
+		runner.add(new CastNpcContact());
+		runner.add(new ClickToContinueNPC());
+		runner.add(new RepairPouches());
+		runner.add(new ClickToContinuePlayer());
+
+		runner.add(new DropCell());
 		runner.add(new TakeWeakCell());
 		runner.add(new TakeUnchargedCells());
 		runner.add(new ClimbDownRubble());
@@ -100,6 +129,7 @@ public class RiftPlugin extends Plugin
 			.forEach(p -> runner.add(new EmptyPouch(p)));
 		runner.add(new CraftRunes());
 		runner.add(new ExitAltar());
+		runner.add(new DropRunes());
 		runner.add(new DepositRunes());
 		runner.add(new PowerUpGuardian());
 		runner.add(new MineGuardianParts());
@@ -111,6 +141,8 @@ public class RiftPlugin extends Plugin
 		actionOverlay = new RiftActionOverlay(runner);
 		overlayManager.add(actionOverlay);
 		overlayManager.add(debugOverlay);
+		overlayManager.add(pouchUseOverlay);
+		overlayManager.add(statisticsOverlay);
 //		overlayManager.add(destinationOverlay);
 	}
 
@@ -119,6 +151,8 @@ public class RiftPlugin extends Plugin
 	{
 		overlayManager.remove(actionOverlay);
 		overlayManager.remove(debugOverlay);
+		overlayManager.remove(pouchUseOverlay);
+		overlayManager.remove(statisticsOverlay);
 //		overlayManager.remove(destinationOverlay);
 		actionOverlay = null;
 		runner = null;
@@ -135,7 +169,14 @@ public class RiftPlugin extends Plugin
 
 		context.setGameTime(context.getGameTime() + 0.6);
 
+		// default to negative game time when entering
+		if (context.isInLobbyArea())
+		{
+			context.reset();
+		}
+
 		runner.tick();
+		statistics.tick();
 	}
 
 	@Subscribe
@@ -179,15 +220,15 @@ public class RiftPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onChatMessage(ChatMessage chatMessage)
+	public void onChatMessage(ChatMessage event)
 	{
-		if (chatMessage.getType() != ChatMessageType.SPAM
-			&& chatMessage.getType() != ChatMessageType.GAMEMESSAGE)
+		if (event.getType() != ChatMessageType.SPAM
+			&& event.getType() != ChatMessageType.GAMEMESSAGE)
 		{
 			return;
 		}
 
-		String message = chatMessage.getMessage();
+		String message = event.getMessage();
 		if (message.contains("The rift becomes active!"))
 		{
 		}
@@ -211,6 +252,13 @@ public class RiftPlugin extends Plugin
 			context.reset();
 			context.setGameTime(-60);
 		}
+		else if (message.contains("The Great Guardian successfully closed the rift!"))
+		{
+			context.reset();
+			context.setGameTime(-60);
+		}
+
+		statistics.onChatMessage(event);
 	}
 
 	@Subscribe
@@ -236,8 +284,20 @@ public class RiftPlugin extends Plugin
 				case RiftActionOverlay.DEBUG_CLEAR_FLAGS:
 					context.clearFlags();
 					break;
+				case RiftActionOverlay.DEBUG_SKIP_REPAIR:
+					context.repairPouches();
+					break;
+				case StatisticsOverlay.CLEAR_STATISTICS:
+					statistics.reset();
+					break;
 			}
 		}
+	}
+
+	@Subscribe
+	public void onItemContainerChanged(ItemContainerChanged event)
+	{
+		statistics.onItemContainerChanged(event);
 	}
 
 	@Provides

@@ -1,7 +1,7 @@
 package com.yfletch.rift.action.cycle.common;
 
 import com.yfletch.rift.RiftContext;
-import com.yfletch.rift.Rune;
+import com.yfletch.rift.enums.Rune;
 import com.yfletch.rift.helper.RuneDecider;
 import com.yfletch.rift.lib.ObjectAction;
 import com.yfletch.rift.lib.WrappedEvent;
@@ -22,7 +22,7 @@ public class EnterAltar extends ObjectAction<RiftContext>
 			&& ctx.getElementalRune() != null
 			&& ctx.hasItem(ItemID.GUARDIAN_ESSENCE)
 			&& ctx.areAllPouchesFull()
-			&& !ctx.hasCells();
+			&& !ctx.hasCell();
 	}
 
 	@Override

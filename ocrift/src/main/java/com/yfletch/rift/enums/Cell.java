@@ -1,4 +1,4 @@
-package com.yfletch.rift;
+package com.yfletch.rift.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

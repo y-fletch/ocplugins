@@ -16,10 +16,13 @@ public class UseSpecialAttack extends InterfaceAction<RiftContext>
 	@Override
 	public boolean isReady(RiftContext ctx)
 	{
-		return ctx.getGameTime() < 0
+		return (ctx.getGameTime() < 0
 			&& ctx.getGameTime() > -5
 			&& ctx.isInLargeMine()
-			&& ctx.getSpecialEnergy() == 100;
+			&& ctx.getSpecialEnergy() == 100)
+			|| (ctx.isInHugeMine()
+			&& ctx.getSpecialEnergy() == 100
+			&& ctx.getGuardianPower() < 50);
 	}
 
 	@Override
@@ -31,6 +34,6 @@ public class UseSpecialAttack extends InterfaceAction<RiftContext>
 	@Override
 	public void run(RiftContext ctx, WrappedEvent event)
 	{
-		event.overrideInterfaceAction("Use", MenuAction.CC_OP, WidgetInfo.MINIMAP_SPEC_CLICKBOX);
+		event.overrideInterfaceAction("Use", MenuAction.CC_OP, WidgetInfo.MINIMAP_SPEC_CLICKBOX.getId());
 	}
 }

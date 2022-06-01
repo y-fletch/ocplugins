@@ -20,5 +20,9 @@ public interface IMenuEntryProvider
 
 	MenuEntry createNPCEntry(String action, MenuAction menuAction, int npcId);
 
-	MenuEntry createInterfaceEntry(String action, MenuAction menuAction, WidgetInfo widgetInfo);
+	MenuEntry createInterfaceEntry(String action, MenuAction menuAction, int widgetInfo);
+
+	MenuEntry createInterfaceEntry(String action, MenuAction menuAction, int widgetInfo, int id);
+
+	MenuEntry createDialogOptionEntry(String option);
 }

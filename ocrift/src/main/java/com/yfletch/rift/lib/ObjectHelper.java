@@ -56,6 +56,25 @@ public class ObjectHelper
 			.list;
 	}
 
+	public boolean isBeside(WorldPoint player, GameObject object)
+	{
+		Point minScene = object.getSceneMinLocation();
+		Point maxScene = object.getSceneMaxLocation();
+
+		WorldPoint min = WorldPoint.fromScene(client, minScene.getX() - 1, minScene.getY() - 1, 0);
+		WorldPoint max = WorldPoint.fromScene(client, maxScene.getX() + 1, maxScene.getY() + 1, 0);
+
+		return WorldPoint.isInZone(
+			WorldPoint.fromScene(client, minScene.getX() - 1, minScene.getY() - 1, 0),
+			WorldPoint.fromScene(client, maxScene.getX() + 1, maxScene.getY() + 1, 0),
+			player
+		) && !WorldPoint.isInZone(
+			WorldPoint.fromScene(client, minScene.getX(), minScene.getY(), 0),
+			WorldPoint.fromScene(client, maxScene.getX(), maxScene.getY(), 0),
+			player
+		);
+	}
+
 	/**
 	 * Determine whether a point (the player) is beside an object, taking
 	 * the object's size into account. Used to check if the player is pathing
@@ -63,60 +82,18 @@ public class ObjectHelper
 	 */
 	public boolean isBeside(WorldPoint player, TileObject object)
 	{
-		WorldPoint pos = object.getWorldLocation();
-		int w = 1;
-		int h = 1;
-
 		if (object instanceof GameObject)
 		{
-			Point min = ((GameObject) object).getSceneMinLocation();
-			Point max = ((GameObject) object).getSceneMaxLocation();
-			pos = WorldPoint.fromScene(client, min.getX(), min.getY(), 0);
-
-			w = max.getX() - min.getX() + 1;
-			h = max.getY() - min.getY() + 1;
+			return isBeside(player, (GameObject) object);
 		}
 
-		int x = pos.getX();
-		int y = pos.getY();
+		WorldPoint pos = object.getWorldLocation();
 
-		// left side
-		for (int j = 0; j < h; j++)
-		{
-			if (player.getY() == y + j && player.getX() == x - 1)
-			{
-				return true;
-			}
-		}
-
-		// right side
-		for (int j = 0; j < h; j++)
-		{
-			if (player.getY() == y + j && player.getX() == x + w)
-			{
-				return true;
-			}
-		}
-
-		// bottom side
-		for (int i = 0; i < w; i++)
-		{
-			if (player.getY() == y - 1 && player.getX() == x + i)
-			{
-				return true;
-			}
-		}
-
-		// top side
-		for (int i = 0; i < w; i++)
-		{
-			if (player.getY() == y + h && player.getX() == x + i)
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return WorldPoint.isInZone(
+			new WorldPoint(pos.getX() - 1, pos.getY() - 1, 0),
+			new WorldPoint(pos.getX() + 1, pos.getY() + 1, 0),
+			player
+		);
 	}
 
 	private static class ObjectQuery extends TileObjectQuery<TileObject, ObjectQuery>

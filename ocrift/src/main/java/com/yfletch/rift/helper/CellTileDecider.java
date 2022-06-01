@@ -1,8 +1,8 @@
 package com.yfletch.rift.helper;
 
-import com.yfletch.rift.Cell;
+import com.yfletch.rift.enums.Cell;
 import com.yfletch.rift.RiftContext;
-import com.yfletch.rift.Rune;
+import com.yfletch.rift.enums.Rune;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;

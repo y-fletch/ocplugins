@@ -1,6 +1,6 @@
 package com.yfletch.rift.action;
 
-import com.yfletch.rift.Pouch;
+import com.yfletch.rift.enums.Pouch;
 import com.yfletch.rift.RiftContext;
 import com.yfletch.rift.lib.ItemAction;
 import com.yfletch.rift.lib.WrappedEvent;

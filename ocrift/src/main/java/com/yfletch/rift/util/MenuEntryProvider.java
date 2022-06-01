@@ -3,8 +3,10 @@ package com.yfletch.rift.util;
 import com.yfletch.rift.lib.IMenuEntryProvider;
 import com.yfletch.rift.lib.ObjectHelper;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
@@ -180,7 +182,7 @@ public class MenuEntryProvider implements IMenuEntryProvider
 	}
 
 	@Override
-	public MenuEntry createInterfaceEntry(String action, MenuAction menuAction, WidgetInfo widgetInfo)
+	public MenuEntry createInterfaceEntry(String action, MenuAction menuAction, int widgetInfo, int id)
 	{
 		Widget inter = client.getWidget(widgetInfo);
 		if (inter == null)
@@ -191,10 +193,44 @@ public class MenuEntryProvider implements IMenuEntryProvider
 		return client.createMenuEntry(
 			action,
 			"",
-			1,
-			MenuAction.CC_OP.getId(),
+			id,
+			menuAction.getId(),
 			-1,
 			inter.getId(),
+			false
+		);
+	}
+
+	@Override
+	public MenuEntry createInterfaceEntry(String action, MenuAction menuAction, int widgetInfo)
+	{
+		return createInterfaceEntry(action, menuAction, widgetInfo, 1);
+	}
+
+	public MenuEntry createDialogOptionEntry(String optionName)
+	{
+		Widget dialogOptions = client.getWidget(WidgetInfo.DIALOG_OPTION_OPTIONS);
+		if (dialogOptions == null || dialogOptions.getChildren() == null)
+		{
+			return null;
+		}
+
+		Optional<Widget> option = Arrays.stream(dialogOptions.getChildren())
+			.filter(widget -> widget.getText().contains(optionName))
+			.findFirst();
+
+		if (option.isEmpty())
+		{
+			return null;
+		}
+
+		return client.createMenuEntry(
+			"Continue",
+			"",
+			0,
+			MenuAction.WIDGET_CONTINUE.getId(),
+			option.get().getIndex(),
+			option.get().getId(),
 			false
 		);
 	}

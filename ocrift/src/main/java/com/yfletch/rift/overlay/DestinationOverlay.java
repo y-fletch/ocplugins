@@ -1,5 +1,6 @@
-package com.yfletch.rift;
+package com.yfletch.rift.overlay;
 
+import com.yfletch.rift.RiftContext;
 import com.yfletch.rift.lib.ObjectHelper;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -92,7 +93,7 @@ public class DestinationOverlay extends OverlayPanel
 //			drawTile(graphics, localPoint, Color.CYAN, true, obj.getId());
 //		}
 
-		TileObject target = objectHelper.getNearest("Large guardian remains");
+		TileObject target = objectHelper.getNearest("Workbench");
 
 		for (int i = 3588; i < 3642; i++)
 		{

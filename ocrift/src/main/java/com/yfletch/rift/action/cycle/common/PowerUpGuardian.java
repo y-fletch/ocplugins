@@ -21,8 +21,8 @@ public class PowerUpGuardian extends NpcAction<RiftContext>
 			return false;
 		}
 
-		// always attempt to cash in before end of game
-		if (ctx.getGuardianPower() >= 95)
+		// always attempt to cash in at end of game
+		if (ctx.getGuardianPower() >= 99)
 		{
 			return true;
 		}

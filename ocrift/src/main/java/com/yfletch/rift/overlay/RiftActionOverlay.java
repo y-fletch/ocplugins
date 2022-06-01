@@ -1,4 +1,4 @@
-package com.yfletch.rift;
+package com.yfletch.rift.overlay;
 
 import com.yfletch.rift.lib.ActionRunner;
 import java.awt.Dimension;
@@ -17,6 +17,9 @@ public class RiftActionOverlay extends OverlayPanel
 	public static final String DEBUG_SET_120 = "Set time to 2:00";
 	public static final String DEBUG_CLEAR_POUCHES = "Clear pouch state";
 	public static final String DEBUG_CLEAR_FLAGS = "Clear flags";
+	public static final String DEBUG_SKIP_REPAIR = "Skip repair";
+
+	private static final String PANEL_NAME = "Rift debug";
 
 	private final ActionRunner<?> runner;
 
@@ -25,19 +28,19 @@ public class RiftActionOverlay extends OverlayPanel
 		this.runner = runner;
 
 		getMenuEntries().add(
-			new OverlayMenuEntry(MenuAction.RUNELITE_OVERLAY, DEBUG_SET_N60, "OC Rift")
+			new OverlayMenuEntry(MenuAction.RUNELITE_OVERLAY, DEBUG_SET_N60, PANEL_NAME)
 		);
 		getMenuEntries().add(
-			new OverlayMenuEntry(MenuAction.RUNELITE_OVERLAY, DEBUG_SET_0, "OC Rift")
+			new OverlayMenuEntry(MenuAction.RUNELITE_OVERLAY, DEBUG_SET_0, PANEL_NAME)
 		);
 		getMenuEntries().add(
-			new OverlayMenuEntry(MenuAction.RUNELITE_OVERLAY, DEBUG_SET_120, "OC Rift")
+			new OverlayMenuEntry(MenuAction.RUNELITE_OVERLAY, DEBUG_SET_120, PANEL_NAME)
 		);
 		getMenuEntries().add(
-			new OverlayMenuEntry(MenuAction.RUNELITE_OVERLAY, DEBUG_CLEAR_POUCHES, "OC Rift")
+			new OverlayMenuEntry(MenuAction.RUNELITE_OVERLAY, DEBUG_CLEAR_POUCHES, PANEL_NAME)
 		);
 		getMenuEntries().add(
-			new OverlayMenuEntry(MenuAction.RUNELITE_OVERLAY, DEBUG_CLEAR_FLAGS, "OC Rift")
+			new OverlayMenuEntry(MenuAction.RUNELITE_OVERLAY, DEBUG_SKIP_REPAIR, PANEL_NAME)
 		);
 	}
 
