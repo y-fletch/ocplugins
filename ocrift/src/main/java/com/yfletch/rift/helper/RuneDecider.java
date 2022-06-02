@@ -23,11 +23,11 @@ public class RuneDecider
 		if (context.getConfig().preferLowest())
 		{
 			int comparison = context.compareEnergies();
-			if (comparison > 1)
+			if (comparison > 0)
 			{
 				preferCatalytic = false;
 			}
-			if (comparison < 1)
+			if (comparison < 0)
 			{
 				preferCatalytic = true;
 			}
