@@ -7,9 +7,9 @@ import net.runelite.api.ItemID;
 import net.runelite.api.MenuAction;
 import net.runelite.api.ObjectID;
 
-public class CraftEssence extends ObjectAction<RiftContext>
+public class WorkAtWorkbench extends ObjectAction<RiftContext>
 {
-	public CraftEssence()
+	public WorkAtWorkbench()
 	{
 		super("Work-at", "Workbench");
 	}
@@ -21,7 +21,8 @@ public class CraftEssence extends ObjectAction<RiftContext>
 			&& !ctx.hasRunes()
 			&& ctx.getGameTime() > ctx.getExitMineTime()
 			&& !ctx.isOutsideRift()
-			&& ctx.getFreeInventorySlots() > 3;
+			&& ctx.getFreeInventorySlots() > 3
+			|| ctx.flag("crafting");
 	}
 
 	@Override
@@ -40,7 +41,8 @@ public class CraftEssence extends ObjectAction<RiftContext>
 	@Override
 	public boolean isDone(RiftContext ctx)
 	{
-		return ctx.getFreeInventorySlots() == 0;
+		return ctx.getFreeInventorySlots() == 0
+			|| !ctx.hasItem(ItemID.GUARDIAN_FRAGMENTS);
 	}
 
 	@Override

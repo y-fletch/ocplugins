@@ -16,8 +16,7 @@ public class ExitAltar extends ObjectAction<RiftContext>
 	@Override
 	public boolean isReady(RiftContext ctx)
 	{
-		return ctx.getGameTime() > 0
-			&& ctx.isOutsideRift()
+		return ctx.isOutsideRift()
 			&& !ctx.hasItem(ItemID.GUARDIAN_ESSENCE)
 			&& ctx.areAllPouchesEmpty();
 	}

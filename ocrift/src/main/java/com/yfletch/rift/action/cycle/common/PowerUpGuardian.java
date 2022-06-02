@@ -3,6 +3,7 @@ package com.yfletch.rift.action.cycle.common;
 import com.yfletch.rift.RiftContext;
 import com.yfletch.rift.lib.NpcAction;
 import com.yfletch.rift.lib.WrappedEvent;
+import net.runelite.api.ItemID;
 import net.runelite.api.MenuAction;
 import net.runelite.api.NpcID;
 
@@ -29,7 +30,8 @@ public class PowerUpGuardian extends NpcAction<RiftContext>
 
 		return ctx.flag("mine-cycle")
 			? !ctx.hasRunes()
-			: ctx.getFreeInventorySlots() == 0;
+			: (ctx.getFreeInventorySlots() == 0
+			|| !ctx.hasItem(ItemID.GUARDIAN_FRAGMENTS));
 	}
 
 	@Override
@@ -48,5 +50,6 @@ public class PowerUpGuardian extends NpcAction<RiftContext>
 	public void run(RiftContext ctx, WrappedEvent event)
 	{
 		event.overrideNPCAction("Power-up", MenuAction.NPC_FIRST_OPTION, NpcID.THE_GREAT_GUARDIAN);
+		ctx.flag("crafting", false);
 	}
 }

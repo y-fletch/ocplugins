@@ -2,6 +2,7 @@ package com.yfletch.rift.action;
 
 import com.yfletch.rift.enums.Pouch;
 import com.yfletch.rift.RiftContext;
+import com.yfletch.rift.helper.PouchSolver;
 import com.yfletch.rift.lib.ItemAction;
 import com.yfletch.rift.lib.WrappedEvent;
 import net.runelite.api.ItemID;
@@ -20,10 +21,18 @@ public class EmptyPouch extends ItemAction<RiftContext>
 	@Override
 	public boolean isReady(RiftContext ctx)
 	{
+		Pouch nextPouch = new PouchSolver(ctx).getNextFilledPouch();
+		if (nextPouch == null || pouch != nextPouch)
+		{
+			return false;
+		}
+
 		return ctx.isOutsideRift()
 			&& !ctx.isEmpty(pouch)
 			&& (ctx.hasItem(pouch.getItemId()) || ctx.hasItem(pouch.getDegradedItemId()))
-			&& (!ctx.hasItem(ItemID.GUARDIAN_ESSENCE) || ctx.flag("emptying-pouches"));
+			&& (!ctx.hasItem(ItemID.GUARDIAN_ESSENCE)
+			|| ctx.getOptimisticFreeSlots() > pouch.getCapacity()
+			|| ctx.flag("emptying-pouches"));
 	}
 
 	@Override
@@ -47,7 +56,7 @@ public class EmptyPouch extends ItemAction<RiftContext>
 	@Override
 	public void done(RiftContext ctx)
 	{
-		ctx.flag("emptying-pouches", ctx.hasHigherTierPouch(pouch));
+		ctx.flag("emptying-pouches", new PouchSolver(ctx).getNextFilledPouch() != null);
 
 		if (!ctx.flag("emptying-pouches"))
 		{

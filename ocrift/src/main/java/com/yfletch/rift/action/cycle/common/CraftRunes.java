@@ -17,7 +17,7 @@ public class CraftRunes extends ObjectAction<RiftContext>
 	public boolean isReady(RiftContext ctx)
 	{
 		return ctx.isOutsideRift()
-			&& ctx.hasItem(ItemID.GUARDIAN_ESSENCE);
+			&& ctx.getOptimisticEssenceCount() > 0;
 	}
 
 	@Override

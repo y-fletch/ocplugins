@@ -18,7 +18,8 @@ public class PlaceCell extends ObjectAction<RiftContext>
 	@Override
 	public boolean isReady(RiftContext ctx)
 	{
-		return ctx.getGameTime() > 110
+		return !ctx.isPregame()
+			&& ctx.getGameTime() > 110
 			&& !ctx.hasGuardianStones()
 			&& ctx.hasCell();
 	}

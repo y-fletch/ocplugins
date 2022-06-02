@@ -45,10 +45,21 @@ public interface RiftConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "preferLowest",
+		name = "Prefer lowest",
+		description = "Prefer whichever energy is the lowest if enabled, falling back to prefer catalytic setting above.",
+		position = 3
+	)
+	default boolean preferLowest()
+	{
+		return true;
+	}
+
+	@ConfigItem(
 		keyName = "repairPouches",
 		name = "Repair pouches",
 		description = "Repair pouches before they degrade",
-		position = 3
+		position = 4
 	)
 	default boolean repairPouches()
 	{
@@ -59,7 +70,7 @@ public interface RiftConfig extends Config
 		keyName = "useSpecialTwice",
 		name = "Use second special",
 		description = "Use special attack if again available before 50% power",
-		position = 4
+		position = 5
 	)
 	default boolean useSpecialTwice()
 	{
@@ -70,7 +81,7 @@ public interface RiftConfig extends Config
 		keyName = "dropRunes",
 		name = "Drop runes",
 		description = "Select which runes to drop. Ctrl+click to select multiple",
-		position = 5
+		position = 6
 	)
 	default Set<Rune> dropRunes()
 	{
@@ -88,7 +99,7 @@ public interface RiftConfig extends Config
 	@ConfigSection(
 		name = "Overlays",
 		description = "Configure overlays",
-		position = 6
+		position = 7
 	)
 	String overlays = "overlays";
 

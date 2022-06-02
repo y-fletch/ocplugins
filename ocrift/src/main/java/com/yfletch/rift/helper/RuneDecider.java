@@ -16,6 +16,26 @@ public class RuneDecider
 		this.context = context;
 	}
 
+	private boolean getCatalyticPreference()
+	{
+		boolean preferCatalytic = context.getConfig().preferCatalytic();
+
+		if (context.getConfig().preferLowest())
+		{
+			int comparison = context.compareEnergies();
+			if (comparison > 1)
+			{
+				preferCatalytic = false;
+			}
+			if (comparison < 1)
+			{
+				preferCatalytic = true;
+			}
+		}
+
+		return preferCatalytic;
+	}
+
 	public Rune pick()
 	{
 		List<Rune> possible = context.getPossibleGuardians().stream()
@@ -52,8 +72,9 @@ public class RuneDecider
 			return bests.get(0);
 		}
 
+		boolean preferCatalytic = getCatalyticPreference();
 		return bests.stream()
-			.filter(rune -> rune.isCatalytic() == context.getConfig().preferCatalytic())
+			.filter(rune -> rune.isCatalytic() == preferCatalytic)
 			.max(Comparator.comparingInt(Rune::getRequiredLevel))
 			.orElse(null);
 	}

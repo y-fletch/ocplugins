@@ -6,6 +6,7 @@ import com.yfletch.rift.enums.Rune;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ItemID;
 import net.runelite.api.NPC;
 import net.runelite.api.TileObject;
 import net.runelite.api.coords.WorldPoint;
@@ -40,13 +41,16 @@ public class CellTileDecider
 		);
 
 		WorldPoint target = CENTER;
-		Rune targetRune = runeDecider.pick();
-		if (targetRune != null)
+		if (context.hasItem(ItemID.GUARDIAN_ESSENCE))
 		{
-			TileObject guardian = context.getObjectHelper().getNearest(targetRune.getGuardianId());
-			if (guardian != null)
+			Rune targetRune = runeDecider.pick();
+			if (targetRune != null)
 			{
-				target = guardian.getWorldLocation();
+				TileObject guardian = context.getObjectHelper().getNearest(targetRune.getGuardianId());
+				if (guardian != null)
+				{
+					target = guardian.getWorldLocation();
+				}
 			}
 		}
 

@@ -2,6 +2,7 @@ package com.yfletch.rift.action;
 
 import com.yfletch.rift.enums.Pouch;
 import com.yfletch.rift.RiftContext;
+import com.yfletch.rift.helper.PouchSolver;
 import com.yfletch.rift.lib.ItemAction;
 import com.yfletch.rift.lib.WrappedEvent;
 import net.runelite.api.ItemID;
@@ -20,6 +21,12 @@ public class FillPouch extends ItemAction<RiftContext>
 	@Override
 	public boolean isReady(RiftContext ctx)
 	{
+		Pouch nextPouch = new PouchSolver(ctx).getNextUnfilledPouch();
+		if (nextPouch == null || pouch != nextPouch)
+		{
+			return false;
+		}
+
 		if (pouch == Pouch.COLOSSAL)
 		{
 			return !ctx.isOutsideRift()
@@ -31,7 +38,9 @@ public class FillPouch extends ItemAction<RiftContext>
 		return !ctx.isOutsideRift()
 			&& !ctx.isFull(pouch)
 			&& (ctx.hasItem(pouch.getItemId()) || ctx.hasItem(pouch.getDegradedItemId()))
-			&& (ctx.getItemCount(ItemID.GUARDIAN_ESSENCE) >= ctx.getPouchCapacity() || ctx.flag("filling-pouches"));
+			&& (ctx.getItemCount(ItemID.GUARDIAN_ESSENCE) >= ctx.getPouchCapacity()
+			|| ctx.getFreeInventorySlots() == 0
+			|| ctx.flag("filling-pouches"));
 	}
 
 	@Override
@@ -39,7 +48,7 @@ public class FillPouch extends ItemAction<RiftContext>
 	{
 		return ctx.flag("p-fill-" + pouch.getItemId())
 			|| ctx.isFull(pouch)
-			|| !ctx.hasItem(ItemID.GUARDIAN_ESSENCE);
+			|| ctx.getOptimisticEssenceCount() == 0;
 	}
 
 	@Override
@@ -60,7 +69,7 @@ public class FillPouch extends ItemAction<RiftContext>
 	@Override
 	public void done(RiftContext ctx)
 	{
-		ctx.flag("filling-pouches", ctx.hasHigherTierPouch(pouch));
+		ctx.flag("filling-pouches", new PouchSolver(ctx).getNextUnfilledPouch() != null);
 		ctx.flag("crafting", false);
 		ctx.flag("mining", false);
 

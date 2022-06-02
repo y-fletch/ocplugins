@@ -6,6 +6,7 @@ import com.yfletch.rift.enums.Rune;
 import com.yfletch.rift.lib.ActionContext;
 import com.yfletch.rift.lib.NPCHelper;
 import com.yfletch.rift.lib.ObjectHelper;
+import com.yfletch.rift.util.Statistics;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -54,6 +55,9 @@ public class RiftContext extends ActionContext
 	@Getter
 	private RiftConfig config;
 
+	@Inject
+	private Statistics statistics;
+
 	@Getter
 	@Setter
 	private double gameTime = 120;
@@ -62,6 +66,12 @@ public class RiftContext extends ActionContext
 	private final Map<Pouch, Integer> pouchEssence = new HashMap<>();
 
 	private final Map<Pouch, Integer> pouchUses = new HashMap<>();
+
+	@Getter
+	private int optimisticEssenceCount = 0;
+
+	@Getter
+	private int optimisticFreeSlots = 0;
 
 	public void clearPouches()
 	{
@@ -73,6 +83,12 @@ public class RiftContext extends ActionContext
 		clearFlags();
 		gameTime = -60;
 		clearPouches();
+	}
+
+	public void onInventoryChanged()
+	{
+		optimisticEssenceCount = getItemCount(ItemID.GUARDIAN_ESSENCE) + getItemCount(ItemID.PURE_ESSENCE);
+		optimisticFreeSlots = getFreeInventorySlots();
 	}
 
 	public boolean isPregame()
@@ -269,20 +285,28 @@ public class RiftContext extends ActionContext
 	{
 		int capacity = hasItem(pouch.getItemId()) ? pouch.getCapacity() : pouch.getDegradedCapacity();
 		int prev = pouchEssence.getOrDefault(pouch, 0);
-		int curr = Math.min(getItemCount(ItemID.GUARDIAN_ESSENCE) + getItemCount(ItemID.PURE_ESSENCE), capacity);
+		int curr = Math.min(getOptimisticEssenceCount(), capacity);
+		int diff = curr - prev;
 
-		if (prev != curr)
+		if (diff > 0)
 		{
 			pouchEssence.put(pouch, curr);
 			pouchUses.put(pouch, pouchUses.getOrDefault(pouch, 0) + 1);
+
+			optimisticFreeSlots += diff;
+			optimisticEssenceCount -= diff;
 		}
 	}
 
 	public void emptyPouch(Pouch pouch)
 	{
-		int freeSlots = getFreeInventorySlots();
+		int freeSlots = getOptimisticFreeSlots();
 		int previousEssence = pouchEssence.getOrDefault(pouch, 0);
-		pouchEssence.put(pouch, previousEssence - Math.min(freeSlots, previousEssence));
+		int diff = Math.min(freeSlots, previousEssence);
+		pouchEssence.put(pouch, previousEssence - diff);
+
+		optimisticFreeSlots -= diff;
+		optimisticEssenceCount += diff;
 	}
 
 	public int getPouchCapacity()
@@ -370,30 +394,6 @@ public class RiftContext extends ActionContext
 	public boolean hasItem(int itemId)
 	{
 		return getItemCount(itemId) > 0;
-	}
-
-	/**
-	 * Check if there is a higher tier pouch than the
-	 * pouch provided in the inventory. Used to stop
-	 * the filling-pouches actions.
-	 */
-	public boolean hasHigherTierPouch(Pouch pouch)
-	{
-		for (Pouch test : Pouch.values())
-		{
-			// skip lower-tier pouches
-			if (test.getCapacity() <= pouch.getCapacity())
-			{
-				continue;
-			}
-
-			if (hasItem(test.getItemId()) || hasItem(test.getDegradedItemId()))
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	public int getFreeInventorySlots()
@@ -499,7 +499,7 @@ public class RiftContext extends ActionContext
 			return 0;
 		}
 
-		Pattern pattern = Pattern.compile("(\\d{2})");
+		Pattern pattern = Pattern.compile("(\\d+)");
 		Matcher matcher = pattern.matcher(widget.getText());
 		return matcher.find() ? Integer.parseInt(matcher.group(1)) : 0;
 	}
@@ -554,5 +554,29 @@ public class RiftContext extends ActionContext
 			}
 		}
 		return -1;
+	}
+
+	/**
+	 * Check if player has less catalytic energy than elemental.
+	 * Uses total energy instead if available.
+	 * -1 = less catalytic
+	 * 0 = equal
+	 * 1 = more catalytic
+	 */
+	public int compareEnergies()
+	{
+		if (statistics.getTotalCatalyticEnergy() != statistics.getTotalElementalEnergy())
+		{
+			return statistics.getTotalCatalyticEnergy() < statistics.getTotalElementalEnergy()
+				? -1 : 1;
+		}
+
+		if (statistics.getCatalyticEnergy() == statistics.getElementalEnergy())
+		{
+			return 0;
+		}
+
+		return statistics.getCatalyticEnergy() < statistics.getElementalEnergy()
+			? -1 : 1;
 	}
 }

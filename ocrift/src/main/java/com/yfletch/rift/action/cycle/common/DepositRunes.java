@@ -17,7 +17,6 @@ public class DepositRunes extends ObjectAction<RiftContext>
 	public boolean isReady(RiftContext ctx)
 	{
 		return !ctx.isOutsideRift()
-			&& ctx.hasGuardianStones()
 			&& ctx.hasRunes();
 	}
 

@@ -16,7 +16,7 @@ import com.yfletch.rift.action.cycle.mine.ExitPortal;
 import com.yfletch.rift.action.cycle.mine.MineHugeRemains;
 import com.yfletch.rift.action.cycle.mine.EnterPortal;
 import com.yfletch.rift.action.cycle.start.ClimbUpRubble;
-import com.yfletch.rift.action.cycle.craft.CraftEssence;
+import com.yfletch.rift.action.cycle.craft.WorkAtWorkbench;
 import com.yfletch.rift.action.cycle.start.MineLargeRemains;
 import com.yfletch.rift.action.postgame.DropCell;
 import com.yfletch.rift.action.pregame.UseSpecialAttack;
@@ -29,6 +29,7 @@ import com.yfletch.rift.action.repair.ClickToContinueNPC;
 import com.yfletch.rift.action.repair.ClickToContinuePlayer;
 import com.yfletch.rift.action.repair.RepairPouches;
 import com.yfletch.rift.enums.Pouch;
+import com.yfletch.rift.helper.PouchSolver;
 import com.yfletch.rift.lib.ActionRunner;
 import com.yfletch.rift.overlay.DebugOverlay;
 import com.yfletch.rift.overlay.DestinationOverlay;
@@ -42,6 +43,7 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.InventoryID;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
@@ -122,7 +124,7 @@ public class RiftPlugin extends Plugin
 		runner.add(new ClimbUpRubble());
 		Arrays.stream(Pouch.values())
 			.forEach(p -> runner.add(new FillPouch(p)));
-		runner.add(new CraftEssence());
+		runner.add(new WorkAtWorkbench());
 		runner.add(new PlaceCell());
 		runner.add(new EnterAltar());
 		Arrays.stream(Pouch.values())
@@ -144,6 +146,9 @@ public class RiftPlugin extends Plugin
 		overlayManager.add(pouchUseOverlay);
 		overlayManager.add(statisticsOverlay);
 //		overlayManager.add(destinationOverlay);
+
+		PouchSolver solver = new PouchSolver(context);
+		solver.getNextUnfilledPouch();
 	}
 
 	@Override
@@ -176,7 +181,11 @@ public class RiftPlugin extends Plugin
 		}
 
 		runner.tick();
-		statistics.tick();
+
+		if (!context.isInLobbyArea())
+		{
+			statistics.tick();
+		}
 	}
 
 	@Subscribe
@@ -187,36 +196,34 @@ public class RiftPlugin extends Plugin
 			log.error("Got a menu option click with no runner created!");
 		}
 
-		if (config.ocEnabled())
+		if (config.ocEnabled() && !context.isInLobbyArea())
 		{
 			runner.run(event);
 		}
 
-		runner.tick();
-
 		// handle pouch state
 		String target = event.getMenuTarget();
-		if (!target.contains(" pouch"))
+		if (target.contains(" pouch"))
 		{
-			return;
+			for (Pouch pouch : Pouch.values())
+			{
+				if (!target.contains(pouch.getItemName()))
+				{
+					continue;
+				}
+
+				if (event.getId() == 2)
+				{
+					context.fillPouch(pouch);
+				}
+				else if (event.getId() == 3)
+				{
+					context.emptyPouch(pouch);
+				}
+			}
 		}
 
-		for (Pouch pouch : Pouch.values())
-		{
-			if (!target.contains(pouch.getItemName()))
-			{
-				continue;
-			}
-
-			if (event.getId() == 2)
-			{
-				context.fillPouch(pouch);
-			}
-			else if (event.getId() == 3)
-			{
-				context.emptyPouch(pouch);
-			}
-		}
+		runner.tick();
 	}
 
 	@Subscribe
@@ -298,6 +305,11 @@ public class RiftPlugin extends Plugin
 	public void onItemContainerChanged(ItemContainerChanged event)
 	{
 		statistics.onItemContainerChanged(event);
+
+		if (event.getContainerId() == InventoryID.INVENTORY.getId())
+		{
+			context.onInventoryChanged();
+		}
 	}
 
 	@Provides
