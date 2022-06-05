@@ -396,6 +396,12 @@ public class RiftContext extends ActionContext
 		return getItemCount(itemId) > 0;
 	}
 
+	public boolean hasEqupped(int itemId)
+	{
+		ItemContainer container = client.getItemContainer(InventoryID.EQUIPMENT);
+		return container != null ? container.count(itemId) > 0 : false;
+	}
+
 	public int getFreeInventorySlots()
 	{
 		ItemContainer container = client.getItemContainer(InventoryID.INVENTORY);

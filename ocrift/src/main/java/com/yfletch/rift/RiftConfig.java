@@ -78,10 +78,21 @@ public interface RiftConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "switchBody",
+		name = "Switch body",
+		description = "Switch between Varrock armour / Robe top of the eye when appropriate",
+		position = 6
+	)
+	default boolean switchBody()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		keyName = "dropRunes",
 		name = "Drop runes",
-		description = "Select which runes to drop. Ctrl+click to select multiple",
-		position = 6
+		description = "Select which runes to drop",
+		position = 7
 	)
 	default Set<Rune> dropRunes()
 	{
@@ -99,7 +110,7 @@ public interface RiftConfig extends Config
 	@ConfigSection(
 		name = "Overlays",
 		description = "Configure overlays",
-		position = 7
+		position = 8
 	)
 	String overlays = "overlays";
 

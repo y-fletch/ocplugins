@@ -2,6 +2,8 @@ package com.yfletch.rift;
 
 import com.google.inject.Provides;
 import com.yfletch.rift.action.EmptyPouch;
+import com.yfletch.rift.action.EquipRobeTop;
+import com.yfletch.rift.action.EquipVarrockArmour;
 import com.yfletch.rift.action.FillPouch;
 import com.yfletch.rift.action.Nothing;
 import com.yfletch.rift.action.cycle.common.CraftRunes;
@@ -120,6 +122,7 @@ public class RiftPlugin extends Plugin
 		runner.add(new ClimbDownRubble());
 		runner.add(new WalkToLargeRemains());
 		runner.add(new UseSpecialAttack());
+		runner.add(new EquipVarrockArmour());
 		runner.add(new MineLargeRemains());
 		runner.add(new ClimbUpRubble());
 		Arrays.stream(Pouch.values())
@@ -129,6 +132,7 @@ public class RiftPlugin extends Plugin
 		runner.add(new EnterAltar());
 		Arrays.stream(Pouch.values())
 			.forEach(p -> runner.add(new EmptyPouch(p)));
+		runner.add(new EquipRobeTop());
 		runner.add(new CraftRunes());
 		runner.add(new ExitAltar());
 		runner.add(new DropRunes());
