@@ -1,6 +1,7 @@
-package com.yfletch.ocbloods.lib;
+package com.yfletch.occore.action;
 
-import com.yfletch.ocbloods.lib.event.WrappedEvent;
+import com.yfletch.occore.ActionContext;
+import com.yfletch.occore.event.WrappedEvent;
 import net.runelite.client.ui.overlay.components.LineComponent;
 
 public class Action<T extends ActionContext>
@@ -25,7 +26,7 @@ public class Action<T extends ActionContext>
 	/**
 	 * Determines if this action _is in the process of_ being completed.
 	 * Used to prevent misclicks and starting the next action too early -
-	 * if this is true while isReady is true, the event will be consumed.
+	 * while the action is active and this is true, the event will be consumed.
 	 * e.g. This action may click on an object, then be "done" as soon as
 	 * the player character is moving.
 	 */
@@ -44,14 +45,15 @@ public class Action<T extends ActionContext>
 	}
 
 	/**
-	 * Any code to run on each tick of this action.
+	 * Code to run when a MenuOption is clicked while this action is active.
+	 * Use this to override the event.
 	 */
 	public void run(T ctx, WrappedEvent event)
 	{
 	}
 
 	/**
-	 * Logic to complete when this action has successfully been completed.
+	 * Extra code to run when this action has successfully been completed.
 	 */
 	public void done(T ctx)
 	{

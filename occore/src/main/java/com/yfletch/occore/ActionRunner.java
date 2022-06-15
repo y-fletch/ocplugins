@@ -1,7 +1,8 @@
-package com.yfletch.ocbloods.lib;
+package com.yfletch.occore;
 
-import com.yfletch.ocbloods.lib.event.EventBuilder;
-import com.yfletch.ocbloods.lib.event.WrappedEvent;
+import com.yfletch.occore.action.Action;
+import com.yfletch.occore.event.EventBuilder;
+import com.yfletch.occore.event.WrappedEvent;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -18,6 +19,10 @@ public class ActionRunner<T extends ActionContext>
 	@Getter
 	private Action<T> current = null;
 
+	/**
+	 * Create a new ActionRunner. Requires an injected
+	 * EventBuilder instance
+	 */
 	public ActionRunner(T ctx, EventBuilder eventBuilder)
 	{
 		this.ctx = ctx;
@@ -99,6 +104,9 @@ public class ActionRunner<T extends ActionContext>
 		return current != null && current.isWorking(ctx);
 	}
 
+	/**
+	 * Get overlay display line for the current action.
+	 */
 	public LineComponent getDisplayLine()
 	{
 		if (current == null)

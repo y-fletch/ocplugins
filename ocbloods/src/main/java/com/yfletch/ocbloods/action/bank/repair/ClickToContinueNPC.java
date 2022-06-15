@@ -1,10 +1,10 @@
 package com.yfletch.ocbloods.action.bank.repair;
 
 import com.yfletch.ocbloods.OCBloodsContext;
-import com.yfletch.ocbloods.lib.InterfaceAction;
-import com.yfletch.ocbloods.lib.event.WrappedEvent;
+import com.yfletch.occore.action.WidgetAction;
+import com.yfletch.occore.event.WrappedEvent;
 
-public class ClickToContinueNPC extends InterfaceAction<OCBloodsContext>
+public class ClickToContinueNPC extends WidgetAction<OCBloodsContext>
 {
 	private static final int CLICK_TO_CONTINUE = 15138821;
 

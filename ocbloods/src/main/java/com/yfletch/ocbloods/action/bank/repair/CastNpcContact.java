@@ -1,12 +1,12 @@
 package com.yfletch.ocbloods.action.bank.repair;
 
 import com.yfletch.ocbloods.OCBloodsContext;
-import com.yfletch.ocbloods.lib.InterfaceAction;
-import com.yfletch.ocbloods.lib.event.WrappedEvent;
+import com.yfletch.occore.action.WidgetAction;
+import com.yfletch.occore.event.WrappedEvent;
 import net.runelite.api.ItemID;
 import net.runelite.api.widgets.WidgetInfo;
 
-public class CastNpcContact extends InterfaceAction<OCBloodsContext>
+public class CastNpcContact extends WidgetAction<OCBloodsContext>
 {
 	public CastNpcContact()
 	{

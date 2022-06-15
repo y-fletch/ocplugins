@@ -1,4 +1,4 @@
-package com.yfletch.ocbloods.lib.event;
+package com.yfletch.occore.event;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,6 +59,10 @@ public class ItemEvent extends EventOverride
 		return matchedItems;
 	}
 
+	/**
+	 * Target the first item in the inventory matching one of the
+	 * given IDs.
+	 */
 	public ItemEvent setItems(Collection<Integer> itemIds)
 	{
 		Widget itemWidget = getItem(itemIds);
@@ -73,11 +77,17 @@ public class ItemEvent extends EventOverride
 		return this;
 	}
 
+	/**
+	 * Target the first item in the inventory matching the given ID.
+	 */
 	public ItemEvent setItem(int itemId)
 	{
 		return setItems(List.of(itemId));
 	}
 
+	/**
+	 * Set option name and index (one-based)
+	 */
 	public ItemEvent setOption(String option, int optionId)
 	{
 		setOption(option);
@@ -93,12 +103,27 @@ public class ItemEvent extends EventOverride
 		return this;
 	}
 
+	/**
+	 * Shortcut for `setType(MenuAction.CC_OP_LOW_PRIORITY)`.
+	 * MenuOptions seem to be low priority if their index is greater
+	 * than 5 (and only for certain inventories). This is set automatically
+	 * for relevant inventories.
+	 */
 	public ItemEvent setLowPriority()
 	{
 		setType(MenuAction.CC_OP_LOW_PRIORITY);
 		return this;
 	}
 
+	/**
+	 * Set the target inventory to the given widget. Must be called before
+	 * `setItem` in order for the index to be set correctly. Defaults to the
+	 * player's regular inventory.
+	 * <p>
+	 * `withdraw()` and `deposit()` are common shortcuts for those
+	 * respective inventories. Use this directly for equipment slots like
+	 * `WidgetInfo.EQUIPMENT_AMMO` etc
+	 */
 	public ItemEvent setInventory(WidgetInfo widgetInfo)
 	{
 		if (getTarget() != null)
@@ -111,16 +136,21 @@ public class ItemEvent extends EventOverride
 		return this;
 	}
 
-	public ItemEvent equipment()
-	{
-		return setInventory(WidgetInfo.EQUIPMENT);
-	}
-
+	/**
+	 * Shortcut for `setInventory(WidgetInfo.BANK_ITEM_CONTAINER)`.
+	 * Set the target inventory to the given widget. Must be called before
+	 * `setItem` in order for the index to be set correctly.
+	 */
 	public ItemEvent withdraw()
 	{
 		return setInventory(WidgetInfo.BANK_ITEM_CONTAINER);
 	}
-
+	
+	/**
+	 * Shortcut for `setInventory(WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER)`.
+	 * Set the target inventory to the given widget. Must be called before
+	 * `setItem` in order for the index to be set correctly.
+	 */
 	public ItemEvent deposit()
 	{
 		return setInventory(WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER);

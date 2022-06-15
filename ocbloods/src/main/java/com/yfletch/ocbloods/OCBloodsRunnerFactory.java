@@ -29,8 +29,8 @@ import com.yfletch.ocbloods.action.travel.house.BreakHouseTab;
 import com.yfletch.ocbloods.action.travel.house.CloseBank;
 import com.yfletch.ocbloods.action.travel.house.DrinkRejuvenation;
 import com.yfletch.ocbloods.action.travel.house.TeleportFairyRing;
-import com.yfletch.ocbloods.lib.ActionRunner;
-import com.yfletch.ocbloods.lib.event.EventBuilder;
+import com.yfletch.occore.ActionRunner;
+import com.yfletch.occore.event.EventBuilder;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

@@ -1,4 +1,4 @@
-package com.yfletch.ocbloods.lib;
+package com.yfletch.occore.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,14 +26,20 @@ public class ObjectHelper
 	@Inject
 	private Client client;
 
-	public TileObject getNearest(String objectName)
+	/**
+	 * Get nearest object containing the search term to the current player (case ignored)
+	 */
+	public TileObject getNearest(String search)
 	{
 		return new ObjectQuery()
-			.filter(object -> object.getName().toLowerCase().contains(objectName.toLowerCase()))
+			.filter(object -> object.getName().toLowerCase().contains(search.toLowerCase()))
 			.result(client)
 			.nearestTo(client.getLocalPlayer());
 	}
 
+	/**
+	 * Get nearest object with the matching ID to the locatable
+	 */
 	public TileObject getNearest(int objectId, Locatable locatable)
 	{
 		return new ObjectQuery()
@@ -42,6 +48,9 @@ public class ObjectHelper
 			.nearestTo(locatable);
 	}
 
+	/**
+	 * Get nearest object with the matching ID to the current player
+	 */
 	public TileObject getNearest(int objectId)
 	{
 		return getNearest(objectId, client.getLocalPlayer());
@@ -55,13 +64,15 @@ public class ObjectHelper
 			.list;
 	}
 
+	/**
+	 * Determine whether a point (the player) is beside an object, taking
+	 * the object's size into account. Used to check if the player is pathing
+	 * to/already beside a game object.
+	 */
 	public boolean isBeside(WorldPoint player, GameObject object)
 	{
 		Point minScene = object.getSceneMinLocation();
 		Point maxScene = object.getSceneMaxLocation();
-
-		WorldPoint min = WorldPoint.fromScene(client, minScene.getX() - 1, minScene.getY() - 1, 0);
-		WorldPoint max = WorldPoint.fromScene(client, maxScene.getX() + 1, maxScene.getY() + 1, 0);
 
 		return WorldPoint.isInZone(
 			WorldPoint.fromScene(client, minScene.getX() - 1, minScene.getY() - 1, 0),

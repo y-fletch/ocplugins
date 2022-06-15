@@ -1,8 +1,8 @@
 package com.yfletch.ocbloods.action.craft;
 
 import com.yfletch.ocbloods.OCBloodsContext;
-import com.yfletch.ocbloods.lib.ObjectAction;
-import com.yfletch.ocbloods.lib.event.WrappedEvent;
+import com.yfletch.occore.action.ObjectAction;
+import com.yfletch.occore.event.WrappedEvent;
 
 public class EnterMysteriousRuins extends ObjectAction<OCBloodsContext>
 {

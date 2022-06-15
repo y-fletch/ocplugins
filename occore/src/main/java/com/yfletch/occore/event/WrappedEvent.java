@@ -1,4 +1,4 @@
-package com.yfletch.ocbloods.lib.event;
+package com.yfletch.occore.event;
 
 import net.runelite.api.events.MenuOptionClicked;
 
@@ -16,12 +16,18 @@ public class WrappedEvent
 		this.eventBuilder = eventBuilder;
 	}
 
+	/**
+	 * Get the builder instance to begin overriding the event
+	 */
 	public EventBuilder builder()
 	{
 		eventBuilder.setTargetEvent(event);
 		return eventBuilder;
 	}
 
+	/**
+	 * Consume the event, preventing anything from happening
+	 */
 	public void consume()
 	{
 		event.consume();

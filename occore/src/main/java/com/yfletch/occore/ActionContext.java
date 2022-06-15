@@ -1,7 +1,8 @@
-package com.yfletch.ocbloods.lib;
+package com.yfletch.occore;
 
 import java.util.HashMap;
 import java.util.Map;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,13 +12,13 @@ import lombok.Setter;
  * <p>
  * Extend this class and add your own getters.
  */
-@Getter
 public class ActionContext
 {
 	private final Map<String, Boolean> flags = new HashMap<>();
 	private final Map<String, Integer> ephemeral = new HashMap<>();
 
-	@Setter
+	@Setter(AccessLevel.PACKAGE)
+	@Getter
 	private String usingItemName;
 
 	/**
@@ -76,12 +77,20 @@ public class ActionContext
 		ephemeral.remove(key);
 	}
 
+	/**
+	 * Clear all flags. Should only be necessary
+	 * for plugin state resetting.
+	 */
 	public void clearFlags()
 	{
 		ephemeral.clear();
 		flags.clear();
 	}
 
+	/**
+	 * Get flags with their ephemeral tick time, for use
+	 * in debug overlays
+	 */
 	public Map<String, String> getDebugFlags()
 	{
 		Map<String, String> debugFlags = new HashMap<>();

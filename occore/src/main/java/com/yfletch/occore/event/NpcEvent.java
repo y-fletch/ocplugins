@@ -1,26 +1,28 @@
-package com.yfletch.ocbloods.lib.event;
+package com.yfletch.occore.event;
 
-import net.runelite.api.Client;
+import com.yfletch.occore.util.NpcHelper;
 import net.runelite.api.MenuAction;
 import net.runelite.api.NPC;
-import net.runelite.api.queries.NPCQuery;
 
 public class NpcEvent extends EventOverride
 {
-	private final Client client;
+	private final NpcHelper npcHelper;
 
-	NpcEvent(Client client)
+	NpcEvent(NpcHelper npcHelper)
 	{
-		this.client = client;
+		this.npcHelper = npcHelper;
 		setParam0(0);
 		setParam1(0);
 	}
 
-	public NpcEvent setOption(String option, int optionId)
+	/**
+	 * Set option name and index (one-based)
+	 */
+	public NpcEvent setOption(String option, int index)
 	{
 		setOption(option);
 
-		switch (optionId)
+		switch (index)
 		{
 			case 1:
 				setType(MenuAction.NPC_FIRST_OPTION);
@@ -42,6 +44,9 @@ public class NpcEvent extends EventOverride
 		return this;
 	}
 
+	/**
+	 * Target the specific NPC
+	 */
 	public NpcEvent setNpc(NPC npc)
 	{
 		setTarget(npc.getName());
@@ -50,9 +55,12 @@ public class NpcEvent extends EventOverride
 		return this;
 	}
 
+	/**
+	 * Target the nearest NPC to the player matching the given ID
+	 */
 	public NpcEvent setNpc(int npcId)
 	{
-		NPC npc = new NPCQuery().idEquals(npcId).result(client).nearestTo(client.getLocalPlayer());
+		NPC npc = npcHelper.getNearest(npcId);
 		return npc != null ? setNpc(npc) : this;
 	}
 }

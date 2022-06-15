@@ -45,6 +45,13 @@ public class PouchSolver
 
 	public Pouch getNextUnfilledPouch()
 	{
+		if (ctx.hasItem(ItemID.COLOSSAL_POUCH)
+			|| ctx.hasItem(ItemID.COLOSSAL_POUCH_26786)
+			|| ctx.hasItem(ItemID.COLOSSAL_POUCH_26906))
+		{
+			return Pouch.COLOSSAL;
+		}
+
 		Pouch pouch = getPouchOrder().stream()
 			.filter(p -> !ctx.isFull(p))
 			.findFirst()
@@ -64,6 +71,13 @@ public class PouchSolver
 
 	public Pouch getNextFilledPouch()
 	{
+		if (ctx.hasItem(ItemID.COLOSSAL_POUCH)
+			|| ctx.hasItem(ItemID.COLOSSAL_POUCH_26786)
+			|| ctx.hasItem(ItemID.COLOSSAL_POUCH_26906))
+		{
+			return Pouch.COLOSSAL;
+		}
+
 		Pouch pouch = getPouchOrder().stream()
 			.filter(p -> !ctx.isEmpty(p))
 			.findFirst()

@@ -2,7 +2,7 @@ package com.yfletch.ocbloods.overlay;
 
 import com.yfletch.ocbloods.OCBloodsConfig;
 import com.yfletch.ocbloods.OCBloodsContext;
-import com.yfletch.ocbloods.lib.ActionRunner;
+import com.yfletch.occore.ActionRunner;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.util.HashMap;

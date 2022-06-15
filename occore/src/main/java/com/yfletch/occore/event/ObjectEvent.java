@@ -1,6 +1,6 @@
-package com.yfletch.ocbloods.lib.event;
+package com.yfletch.occore.event;
 
-import com.yfletch.ocbloods.lib.ObjectHelper;
+import com.yfletch.occore.util.ObjectHelper;
 import net.runelite.api.Client;
 import net.runelite.api.GameObject;
 import net.runelite.api.MenuAction;
@@ -32,6 +32,9 @@ public class ObjectEvent extends EventOverride
 		super.validate();
 	}
 
+	/**
+	 * Target the specific tile object
+	 */
 	public ObjectEvent setObject(TileObject object)
 	{
 		LocalPoint localPoint = object.getLocalLocation();
@@ -55,16 +58,22 @@ public class ObjectEvent extends EventOverride
 		return this;
 	}
 
+	/**
+	 * Target the nearest object to the player matching the given ID
+	 */
 	public ObjectEvent setObject(int objectId)
 	{
 		TileObject object = objectHelper.getNearest(objectId);
 		return object != null ? setObject(object) : this;
 	}
-
-	public ObjectEvent setOption(String option, int optionId)
+	
+	/**
+	 * Set option name and index (one-based)
+	 */
+	public ObjectEvent setOption(String option, int index)
 	{
 		setOption(option);
-		switch (optionId)
+		switch (index)
 		{
 			case 1:
 				setType(MenuAction.GAME_OBJECT_FIRST_OPTION);

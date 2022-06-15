@@ -1,10 +1,10 @@
 package com.yfletch.ocbloods.action.bank.repair;
 
 import com.yfletch.ocbloods.OCBloodsContext;
-import com.yfletch.ocbloods.lib.InterfaceAction;
-import com.yfletch.ocbloods.lib.event.WrappedEvent;
+import com.yfletch.occore.action.WidgetAction;
+import com.yfletch.occore.event.WrappedEvent;
 
-public class RepairPouch extends InterfaceAction<OCBloodsContext>
+public class RepairPouch extends WidgetAction<OCBloodsContext>
 {
 	public RepairPouch()
 	{

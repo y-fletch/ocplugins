@@ -1,7 +1,7 @@
 package com.yfletch.ocbloods;
 
-import com.yfletch.ocbloods.lib.ActionContext;
-import com.yfletch.ocbloods.lib.ObjectHelper;
+import com.yfletch.occore.ActionContext;
+import com.yfletch.occore.util.ObjectHelper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.Getter;

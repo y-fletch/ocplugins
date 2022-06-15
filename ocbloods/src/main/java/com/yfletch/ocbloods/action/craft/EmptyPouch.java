@@ -1,8 +1,8 @@
 package com.yfletch.ocbloods.action.craft;
 
 import com.yfletch.ocbloods.OCBloodsContext;
-import com.yfletch.ocbloods.lib.ItemAction;
-import com.yfletch.ocbloods.lib.event.WrappedEvent;
+import com.yfletch.occore.action.ItemAction;
+import com.yfletch.occore.event.WrappedEvent;
 import net.runelite.api.ItemID;
 
 public class EmptyPouch extends ItemAction<OCBloodsContext>

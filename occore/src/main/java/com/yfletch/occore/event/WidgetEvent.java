@@ -1,4 +1,4 @@
-package com.yfletch.ocbloods.lib.event;
+package com.yfletch.occore.event;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -29,14 +29,20 @@ public class WidgetEvent extends EventOverride
 		super.validate();
 	}
 
-	public WidgetEvent setOption(String option, int optionId)
+	/**
+	 * Set option name and index (one-based)
+	 */
+	public WidgetEvent setOption(String option, int index)
 	{
 		setOption(option);
-		setIdentifier(optionId);
+		setIdentifier(index);
 
 		return this;
 	}
 
+	/**
+	 * Click on a dialog option containing the given text
+	 */
 	public WidgetEvent setDialogOption(String optionName)
 	{
 		Widget dialogOptions = client.getWidget(WidgetInfo.DIALOG_OPTION_OPTIONS);
@@ -62,6 +68,9 @@ public class WidgetEvent extends EventOverride
 		return this;
 	}
 
+	/**
+	 * Click on a dialog option with the given widget ID
+	 */
 	public WidgetEvent setDialogOption(int dialogWidgetId)
 	{
 		setOption("Continue", 0);
@@ -71,6 +80,9 @@ public class WidgetEvent extends EventOverride
 		return this;
 	}
 
+	/**
+	 * Target the widget
+	 */
 	public WidgetEvent setWidget(Widget widget)
 	{
 		setParam0(widget.getIndex());
@@ -79,24 +91,40 @@ public class WidgetEvent extends EventOverride
 		return this;
 	}
 
+	/**
+	 * Target the widget using its WidgetInfo
+	 */
 	public WidgetEvent setWidget(WidgetInfo widgetInfo)
 	{
 		Widget widget = client.getWidget(widgetInfo);
 		return widget != null ? setWidget(widget) : this;
 	}
 
+	/**
+	 * Target the widget by ID
+	 */
 	public WidgetEvent setWidget(int widgetInfo)
 	{
 		Widget widget = client.getWidget(widgetInfo);
 		return widget != null ? setWidget(widget) : this;
 	}
 
+
+	/**
+	 * Target the widget by group and widget ID.
+	 * Useful if there is no enum value in WidgetInfo for
+	 * the widget we wish to target.
+	 */
 	public WidgetEvent setWidget(int groupId, int widgetId)
 	{
 		Widget widget = client.getWidget(groupId << 16 | widgetId);
 		return widget != null ? setWidget(widget) : this;
 	}
 
+	/**
+	 * Target a child of the current widget (widget must also be set).
+	 * Used to target children that all share the same widget ID.
+	 */
 	public WidgetEvent setChild(int childId)
 	{
 		setParam0(childId);

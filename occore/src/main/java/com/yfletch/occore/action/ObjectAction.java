@@ -1,9 +1,13 @@
-package com.yfletch.ocbloods.lib;
+package com.yfletch.occore.action;
 
+import com.yfletch.occore.ActionContext;
 import java.awt.Color;
 import lombok.AllArgsConstructor;
 import net.runelite.client.ui.overlay.components.LineComponent;
 
+/**
+ * Represents an action on a game or tile object in the world.
+ */
 @AllArgsConstructor
 public class ObjectAction<T extends ActionContext> extends Action<T>
 {

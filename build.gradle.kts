@@ -77,23 +77,6 @@ subprojects {
         compileOnly(group = "com.squareup.okhttp3", name = "okhttp", version = "4.9.1")
         compileOnly(group = "org.pf4j", name = "pf4j", version = "3.6.0")
         compileOnly(group = "io.reactivex.rxjava3", name = "rxjava", version = "3.1.1")
-
-        testAnnotationProcessor(group = "org.projectlombok", name = "lombok", version = "1.18.16")
-
-        testImplementation(group = "com.openosrs", name = "http-api", version = ProjectVersions.openosrsVersion)
-        testImplementation(group = "com.openosrs", name = "runelite-api", version = ProjectVersions.openosrsVersion)
-        testImplementation(group = "com.openosrs", name = "runelite-client", version = ProjectVersions.openosrsVersion)
-
-        testImplementation(group = "org.pf4j", name = "pf4j", version = "3.5.0")
-        testImplementation(group = "com.google.inject.extensions", name = "guice-testlib", version = "4.2.3")
-        testImplementation(group = "com.google.code.gson", name = "gson", version = "2.8.6")
-        testImplementation(group = "net.sf.jopt-simple", name = "jopt-simple", version = "5.0.4")
-        testImplementation(group = "junit", name = "junit", version = "4.13.1")
-        testImplementation(group = "org.mockito", name = "mockito-core", version = "3.6.0")
-        testImplementation(group = "org.mockito", name = "mockito-inline", version = "3.6.0")
-        testImplementation(group = "org.projectlombok", name = "lombok", version = "1.18.16")
-        testImplementation(group = "org.hamcrest", name = "hamcrest-library", version = "2.2")
-        testImplementation(group = "org.slf4j", name = "slf4j-api", version = "1.7.32")
     }
 
     checkstyle {
@@ -135,10 +118,6 @@ subprojects {
 
         withType<Checkstyle> {
             group = "verification"
-
-            exclude("**/ScriptVarType.java")
-            exclude("**/LayoutSolver.java")
-            exclude("**/RoomType.java")
         }
 
         register<Copy>("copyDeps") {

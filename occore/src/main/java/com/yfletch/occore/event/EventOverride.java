@@ -1,4 +1,4 @@
-package com.yfletch.ocbloods.lib.event;
+package com.yfletch.occore.event;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,7 @@ import net.runelite.api.events.MenuOptionClicked;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class EventOverride
+public abstract class EventOverride
 {
 	private MenuOptionClicked targetEvent;
 
@@ -34,6 +34,9 @@ public class EventOverride
 		}
 	}
 
+	/**
+	 * Override the current event with this override's options
+	 */
 	public void override()
 	{
 		validate();

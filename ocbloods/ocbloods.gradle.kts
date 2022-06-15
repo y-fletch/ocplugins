@@ -28,8 +28,13 @@ version = "0.0.1-alpha"
 project.extra["PluginName"] = "OC Bloods [alpha]"
 project.extra["PluginDescription"] = "One-click Blood Runecrafting"
 
+dependencies {
+    compileOnly(project(":occore"))
+}
+
 tasks {
     jar {
+
         manifest {
             attributes(
                 mapOf(
