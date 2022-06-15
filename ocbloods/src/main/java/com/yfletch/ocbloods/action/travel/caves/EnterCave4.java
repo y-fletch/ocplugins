@@ -18,12 +18,6 @@ public class EnterCave4 extends ObjectAction<OCBloodsContext>
 	}
 
 	@Override
-	public boolean isWorking(OCBloodsContext ctx)
-	{
-		return ctx.isPathingTo(43762);
-	}
-
-	@Override
 	public boolean isDone(OCBloodsContext ctx)
 	{
 		return !ctx.isInTunnel4();

@@ -30,11 +30,11 @@ project.extra["PluginDescription"] = "One-click Blood Runecrafting"
 
 dependencies {
     compileOnly(project(":occore"))
+    implementation(project(":occore"))
 }
 
 tasks {
     jar {
-
         manifest {
             attributes(
                 mapOf(
@@ -46,5 +46,11 @@ tasks {
                 )
             )
         }
+        val dependencies = configurations
+            .runtimeClasspath
+            .get()
+            .map(::zipTree) // OR .map { zipTree(it) }
+        from(dependencies)
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 }

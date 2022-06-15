@@ -15,15 +15,13 @@ public class DrinkRejuvenation extends ObjectAction<OCBloodsContext>
 	public boolean isReady(OCBloodsContext ctx)
 	{
 		return ctx.isInInstance()
-			&& ctx.getRunEnergy() < ctx.getConfig().restoreRunThreshold()
-			&& !ctx.isNextTo(ctx.getPoolOfRejuvenation());
+			&& ctx.getRunEnergy() < ctx.getConfig().restoreRunThreshold();
 	}
 
 	@Override
 	public boolean isWorking(OCBloodsContext ctx)
 	{
-		return ctx.isPathingTo(ctx.getPoolOfRejuvenation())
-			|| ctx.flag("drink-pool");
+		return ctx.isPathingTo(ctx.getPoolOfRejuvenation());
 	}
 
 	@Override
@@ -39,7 +37,5 @@ public class DrinkRejuvenation extends ObjectAction<OCBloodsContext>
 			.setOption("Drink", 1)
 			.setObject(ctx.getPoolOfRejuvenation())
 			.override();
-
-		ctx.flag("drink-pool", true, 4);
 	}
 }
