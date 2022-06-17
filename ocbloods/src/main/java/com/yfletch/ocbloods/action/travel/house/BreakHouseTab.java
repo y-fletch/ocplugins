@@ -21,6 +21,12 @@ public class BreakHouseTab extends ItemAction<OCBloodsContext>
 	}
 
 	@Override
+	public boolean isWorking(OCBloodsContext ctx)
+	{
+		return ctx.flag("broke-tab");
+	}
+
+	@Override
 	public boolean isDone(OCBloodsContext ctx)
 	{
 		return ctx.isInInstance();
@@ -33,5 +39,6 @@ public class BreakHouseTab extends ItemAction<OCBloodsContext>
 			.setOption("Break", 2)
 			.setItem(ItemID.TELEPORT_TO_HOUSE)
 			.override();
+		ctx.flag("broke-tab", true, 1);
 	}
 }

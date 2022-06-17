@@ -21,12 +21,6 @@ public class DepositRunePouch extends ItemAction<OCBloodsContext>
 	}
 
 	@Override
-	public boolean isWorking(OCBloodsContext ctx)
-	{
-		return ctx.flag("rp-deposited");
-	}
-
-	@Override
 	public boolean isDone(OCBloodsContext ctx)
 	{
 		return !ctx.hasItem(ItemID.RUNE_POUCH);
@@ -40,7 +34,5 @@ public class DepositRunePouch extends ItemAction<OCBloodsContext>
 			.setItem(ItemID.RUNE_POUCH)
 			.setOption("Deposit-1", 2)
 			.override();
-
-		ctx.flag("rp-deposited", true, 2);
 	}
 }

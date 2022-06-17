@@ -110,11 +110,23 @@ public interface OCBloodsConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "showAdvancedStatistics",
+		name = "Show advanced statistics",
+		description = "Show more statistics",
+		section = overlays,
+		position = 2
+	)
+	default boolean showAdvancedStatistics()
+	{
+		return true;
+	}
+
+	@ConfigItem(
 		keyName = "showPouchUsesOverlay",
 		name = "Show pouch usage overlay",
 		description = "Show pouch usage overlay",
 		section = overlays,
-		position = 2
+		position = 3
 	)
 	default boolean showPouchUsesOverlay()
 	{
@@ -126,7 +138,7 @@ public interface OCBloodsConfig extends Config
 		name = "Show debug overlay",
 		description = "Pretty self explanatory I reckon",
 		section = overlays,
-		position = 3
+		position = 4
 	)
 	default boolean showDebugOverlay()
 	{

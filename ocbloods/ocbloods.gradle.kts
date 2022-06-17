@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.1-alpha"
+version = "0.0.2-alpha"
 
 project.extra["PluginName"] = "OC Bloods [alpha]"
 project.extra["PluginDescription"] = "One-click Blood Runecrafting"
@@ -49,7 +49,7 @@ tasks {
         val dependencies = configurations
             .runtimeClasspath
             .get()
-            .map(::zipTree) // OR .map { zipTree(it) }
+            .map(::zipTree)
         from(dependencies)
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }

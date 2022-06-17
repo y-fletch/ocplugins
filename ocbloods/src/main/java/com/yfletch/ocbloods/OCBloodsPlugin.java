@@ -165,6 +165,9 @@ public class OCBloodsPlugin extends Plugin
 				case ActionOverlay.ACTION_SKIP_REPAIR:
 					context.repairPouch();
 					break;
+				case StatisticsOverlay.ACTION_RESET_STATISTICS:
+					statistics.reset();
+					break;
 			}
 		}
 	}
