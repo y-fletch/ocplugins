@@ -327,7 +327,7 @@ public class OCBloodsContext extends ActionContext
 
 	public int getRunEnergy()
 	{
-		return client.getEnergy();
+		return client.getEnergy() / 100;
 	}
 
 	public TileObject getPoolOfRejuvenation()

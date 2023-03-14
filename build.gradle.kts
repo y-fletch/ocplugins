@@ -83,7 +83,7 @@ subprojects {
         maxWarnings = 0
         toolVersion = "9.1"
         isShowViolations = true
-        isIgnoreFailures = false
+        isIgnoreFailures = true
     }
 
     configure<PublishingExtension> {

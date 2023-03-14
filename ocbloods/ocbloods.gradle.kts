@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.2-alpha"
+version = "0.0.3-alpha"
 
 project.extra["PluginName"] = "OC Bloods [alpha]"
 project.extra["PluginDescription"] = "One-click Blood Runecrafting"
