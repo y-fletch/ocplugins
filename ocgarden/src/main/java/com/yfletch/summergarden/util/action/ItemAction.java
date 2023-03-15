@@ -1,10 +1,9 @@
 package com.yfletch.summergarden.util.action;
 
 import com.yfletch.summergarden.util.WrappedEvent;
+import java.awt.Color;
 import lombok.AllArgsConstructor;
 import net.runelite.client.ui.overlay.components.LineComponent;
-
-import java.awt.*;
 import org.apache.commons.lang3.NotImplementedException;
 
 @AllArgsConstructor
@@ -32,7 +31,7 @@ public class ItemAction implements Action
 	@Override
 	public boolean isReady(ActionContext context)
 	{
-		throw new NotImplementedException();
+		throw new NotImplementedException("Missing isReady implementation");
 	}
 
 	@Override
@@ -44,8 +43,7 @@ public class ItemAction implements Action
 	@Override
 	public void run(ActionContext context, WrappedEvent event)
 	{
-
-		throw new NotImplementedException();
+		throw new NotImplementedException("Missing run implementation");
 	}
 
 	@Override

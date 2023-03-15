@@ -4,6 +4,7 @@ include(":occore")
 include(":ocgarden")
 include(":ocrift")
 include(":ocbloods")
+include(":occlicker")
 
 for (project in rootProject.children) {
     project.apply {

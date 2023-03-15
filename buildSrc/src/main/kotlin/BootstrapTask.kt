@@ -11,7 +11,6 @@ import java.nio.file.Paths
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 open class BootstrapTask : DefaultTask() {
@@ -74,6 +73,8 @@ open class BootstrapTask : DefaultTask() {
                         "projectUrl" to "https://github.com/y-fletch/ocplugins",
                         "releases" to releases.toTypedArray()
                     ).jsonObject()
+
+                    println(releases)
 
                     for (i in 0 until baseBootstrap.length()) {
                         val item = baseBootstrap.getJSONObject(i)
