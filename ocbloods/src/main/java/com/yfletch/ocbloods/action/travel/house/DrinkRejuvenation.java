@@ -14,18 +14,8 @@ public class DrinkRejuvenation extends ObjectAction<OCBloodsContext>
 	@Override
 	public boolean isReady(OCBloodsContext ctx)
 	{
-		boolean result = ctx.isInInstance()
+		return ctx.isInInstance()
 			&& ctx.getRunEnergy() < ctx.getConfig().restoreRunThreshold();
-
-		if (!result)
-		{
-			System.out.println("Not drinking rejuvenation");
-			System.out.println("In instance: " + (ctx.isInInstance() ? "Yessir" : "Nope"));
-			System.out.println(
-				"Run energy: " + ctx.getRunEnergy() + ", threshold: " + ctx.getConfig().restoreRunThreshold());
-		}
-
-		return result;
 	}
 
 	@Override

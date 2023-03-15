@@ -4,7 +4,6 @@ package com.yfletch.occlicker;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.util.Random;
@@ -63,9 +62,7 @@ public class OCClickerPlugin extends Plugin
 		@Override
 		public void hotkeyPressed()
 		{
-			System.out.println("Hotkey pressed");
 			enabled = !enabled;
-			System.out.println("Enabled: " + (enabled ? "true" : "false"));
 			point = client.getMouseCanvasPosition();
 		}
 	};
@@ -142,7 +139,7 @@ public class OCClickerPlugin extends Plugin
 	{
 		client.getCanvas().dispatchEvent(
 			new MouseEvent(
-				(Component) client.getCanvas(), id,
+				client.getCanvas(), id,
 				System.currentTimeMillis(),
 				0, point.getX(), point.getY(),
 				1, false, 1
