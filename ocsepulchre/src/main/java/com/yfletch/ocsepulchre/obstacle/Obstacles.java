@@ -3,6 +3,7 @@ package com.yfletch.ocsepulchre.obstacle;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.yfletch.ocsepulchre.OCSepulchreContext;
+import com.yfletch.ocsepulchre.obstacle.floor1.F1EWizard1;
 import com.yfletch.ocsepulchre.obstacle.floor1.F1SKnight;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,9 +19,11 @@ public class Obstacles
 
 	@Inject F1SKnight f1SKnight;
 
+	@Inject F1EWizard1 f1EWizard1;
+
 	public Set<Obstacle> all()
 	{
-		return Set.of(f1SKnight);
+		return Set.of(f1SKnight, f1EWizard1);
 	}
 
 	public Set<DrawableObstacle> allDrawable()

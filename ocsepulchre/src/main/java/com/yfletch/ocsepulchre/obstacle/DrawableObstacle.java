@@ -7,4 +7,6 @@ public interface DrawableObstacle
 	WorldPoint getDebugPosition();
 
 	String getDebugText();
+
+	String getDebugTextLine2();
 }

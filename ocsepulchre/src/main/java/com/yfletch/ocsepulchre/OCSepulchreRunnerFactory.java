@@ -7,6 +7,7 @@ import com.yfletch.occore.event.EventBuilder;
 import com.yfletch.ocsepulchre.action.Wait;
 import com.yfletch.ocsepulchre.action.bank.ClimbDownStairs;
 import com.yfletch.ocsepulchre.action.floor1.east.MoveToF1E1;
+import com.yfletch.ocsepulchre.action.floor1.east.MoveToF1E2;
 import com.yfletch.ocsepulchre.action.floor1.north.MoveToF1N1;
 import com.yfletch.ocsepulchre.action.floor1.south.MoveToF1S1;
 import com.yfletch.ocsepulchre.action.floor1.south.MoveToF1S1a;
@@ -40,6 +41,7 @@ public class OCSepulchreRunnerFactory
 
 		// east
 		runner.add(new MoveToF1E1());
+		runner.add(new MoveToF1E2());
 
 		// west
 		runner.add(new MoveToF1W1());

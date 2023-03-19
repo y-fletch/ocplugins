@@ -120,4 +120,10 @@ public abstract class Knight implements Obstacle, DrawableObstacle
 
 		return facing + " / " + swordDirection + " / " + RegionPoint.fromWorldInstance(location);
 	}
+
+	@Override
+	public String getDebugTextLine2()
+	{
+		return null;
+	}
 }

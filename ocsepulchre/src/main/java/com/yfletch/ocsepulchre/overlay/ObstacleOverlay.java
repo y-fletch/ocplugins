@@ -68,6 +68,24 @@ public class ObstacleOverlay extends Overlay
 			textComponent.setText(obstacle.getDebugText());
 
 			textComponent.render(graphics);
+
+			if (obstacle.getDebugTextLine2() != null)
+			{
+				TextComponent textComponent2 = new TextComponent();
+				Rectangle bounds2 = polygon.getBounds();
+
+				int textWidth2 = fontMetrics.stringWidth(obstacle.getDebugTextLine2());
+
+				textComponent2.setPosition(new Point(
+					bounds2.x + bounds2.width / 2 - textWidth2 / 2,
+					bounds2.y
+				));
+
+				textComponent2.setColor(color);
+				textComponent2.setText(obstacle.getDebugTextLine2());
+
+				textComponent2.render(graphics);
+			}
 		}
 
 		return null;

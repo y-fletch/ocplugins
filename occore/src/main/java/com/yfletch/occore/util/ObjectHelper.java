@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -35,6 +36,23 @@ public class ObjectHelper
 	public static ObjectHelper instance()
 	{
 		return new ObjectHelper(Static.getClient());
+	}
+
+	public List<TileObject> where(Predicate<TileObject> predicate)
+	{
+		return new ObjectQuery()
+			.filter(predicate)
+			.result(client)
+			.list;
+	}
+
+	public List<TileObject> where(int id, Predicate<TileObject> predicate)
+	{
+		return new ObjectQuery()
+			.idEquals(id)
+			.filter(predicate)
+			.result(client)
+			.list;
 	}
 
 	/**
