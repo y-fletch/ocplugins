@@ -18,16 +18,27 @@ import net.runelite.api.Tile;
 import net.runelite.api.TileObject;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.queries.TileObjectQuery;
+import net.unethicalite.client.Static;
 
 @Slf4j
 @Singleton
 public class ObjectHelper
 {
+	private final Client client;
+
 	@Inject
-	private Client client;
+	public ObjectHelper(Client client)
+	{
+		this.client = client;
+	}
+
+	public static ObjectHelper instance()
+	{
+		return new ObjectHelper(Static.getClient());
+	}
 
 	/**
-	 * Get nearest object containing the search term to the current player (case ignored)
+	 * Get the nearest object containing the search term to the current player (case ignored)
 	 */
 	public TileObject getNearest(String search)
 	{
@@ -75,12 +86,12 @@ public class ObjectHelper
 		Point maxScene = object.getSceneMaxLocation();
 
 		return WorldPoint.isInZone(
-			WorldPoint.fromScene(client, minScene.getX() - 1, minScene.getY() - 1, 0),
-			WorldPoint.fromScene(client, maxScene.getX() + 1, maxScene.getY() + 1, 0),
+			WorldPoint.fromScene(client, minScene.getX() - 1, minScene.getY() - 1, object.getPlane()),
+			WorldPoint.fromScene(client, maxScene.getX() + 1, maxScene.getY() + 1, object.getPlane()),
 			player
 		) && !WorldPoint.isInZone(
-			WorldPoint.fromScene(client, minScene.getX(), minScene.getY(), 0),
-			WorldPoint.fromScene(client, maxScene.getX(), maxScene.getY(), 0),
+			WorldPoint.fromScene(client, minScene.getX(), minScene.getY(), object.getPlane()),
+			WorldPoint.fromScene(client, maxScene.getX(), maxScene.getY(), object.getPlane()),
 			player
 		);
 	}
@@ -106,16 +117,26 @@ public class ObjectHelper
 		);
 	}
 
+	public boolean isBeside(Locatable locatable, TileObject object)
+	{
+		return isBeside(locatable.getWorldLocation(), object);
+	}
+
+	public boolean isBeside(Locatable locatable, GameObject object)
+	{
+		return isBeside(locatable.getWorldLocation(), object);
+	}
+
 	private static class ObjectQuery extends TileObjectQuery<TileObject, ObjectQuery>
 	{
 		@Override
 		public LocatableQueryResults<TileObject> result(Client client)
 		{
 			return new LocatableQueryResults<>(getObjects(client).stream()
-				.filter(Objects::nonNull)
-				.filter(predicate)
-				.distinct()
-				.collect(Collectors.toList()));
+												   .filter(Objects::nonNull)
+												   .filter(predicate)
+												   .distinct()
+												   .collect(Collectors.toList()));
 		}
 
 		public Collection<TileObject> getObjects(Client client)

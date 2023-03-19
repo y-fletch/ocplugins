@@ -1,7 +1,7 @@
 package com.yfletch.rift.action;
 
-import com.yfletch.rift.enums.Pouch;
 import com.yfletch.rift.RiftContext;
+import com.yfletch.rift.enums.Pouch;
 import com.yfletch.rift.helper.PouchSolver;
 import com.yfletch.rift.lib.ItemAction;
 import com.yfletch.rift.lib.WrappedEvent;
@@ -31,7 +31,6 @@ public class EmptyPouch extends ItemAction<RiftContext>
 			&& !ctx.isEmpty(pouch)
 			&& (ctx.hasItem(pouch.getItemId()) || ctx.hasItem(pouch.getDegradedItemId()))
 			&& (!ctx.hasItem(ItemID.GUARDIAN_ESSENCE)
-			|| ctx.getOptimisticFreeSlots() > pouch.getCapacity()
 			|| ctx.flag("emptying-pouches"));
 	}
 
@@ -39,7 +38,6 @@ public class EmptyPouch extends ItemAction<RiftContext>
 	public boolean isDone(RiftContext ctx)
 	{
 		return ctx.flag("p-empty-" + pouch.getItemId())
-			|| !ctx.isFull(pouch)
 			|| ctx.hasItem(ItemID.GUARDIAN_ESSENCE);
 	}
 
@@ -50,7 +48,10 @@ public class EmptyPouch extends ItemAction<RiftContext>
 		event.overrideItemAction(3, MenuAction.CC_OP, itemId);
 
 		// @see fill pouch logic
-		ctx.flag("p-empty-" + pouch.getItemId(), true);
+		if (pouch != Pouch.COLOSSAL)
+		{
+			ctx.flag("p-empty-" + pouch.getItemId(), true);
+		}
 	}
 
 	@Override

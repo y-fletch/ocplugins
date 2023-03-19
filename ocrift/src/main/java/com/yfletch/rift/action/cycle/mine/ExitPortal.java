@@ -21,7 +21,7 @@ public class ExitPortal extends ObjectAction<RiftContext>
 	public boolean isReady(RiftContext ctx)
 	{
 		return ctx.isInHugeMine()
-			&& ctx.areAllPouchesFull()
+			&& ctx.allPouchesAreFull()
 			&& ctx.getFreeInventorySlots() == 0;
 	}
 

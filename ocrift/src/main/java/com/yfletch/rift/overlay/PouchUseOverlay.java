@@ -1,14 +1,15 @@
 package com.yfletch.rift.overlay;
 
-import com.yfletch.rift.enums.Pouch;
 import com.yfletch.rift.RiftConfig;
 import com.yfletch.rift.RiftContext;
+import com.yfletch.rift.enums.Pouch;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import javax.inject.Inject;
 import net.runelite.api.widgets.WidgetItem;
+import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.WidgetItemOverlay;
 import net.runelite.client.ui.overlay.components.TextComponent;
 
@@ -33,7 +34,7 @@ public class PouchUseOverlay extends WidgetItemOverlay
 		}
 
 		int left = max - timesUsed;
-		if (left <= 5)
+		if (left <= 2)
 		{
 			return Color.RED;
 		}
@@ -66,6 +67,7 @@ public class PouchUseOverlay extends WidgetItemOverlay
 		Rectangle bounds = widgetItem.getCanvasBounds();
 		TextComponent textComponent = new TextComponent();
 
+		textComponent.setFont(FontManager.getRunescapeSmallFont());
 		textComponent.setColor(color);
 		textComponent.setText((timesUsed < 0 ? "?" : timesUsed) + "/" + pouch.getUses());
 		textComponent.setPosition(new Point(bounds.x - 1, bounds.y + bounds.height));

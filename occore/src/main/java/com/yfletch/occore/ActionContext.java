@@ -1,10 +1,18 @@
 package com.yfletch.occore;
 
+import com.google.inject.Inject;
+import com.yfletch.occore.util.ObjectHelper;
+import com.yfletch.occore.util.RegionPoint;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import net.runelite.api.Client;
+import net.runelite.api.Player;
+import net.runelite.api.TileObject;
+import net.runelite.api.coords.LocalPoint;
+import net.runelite.api.coords.WorldPoint;
 
 /**
  * Contains context (game state, configs) to pass to
@@ -14,6 +22,12 @@ import lombok.Setter;
  */
 public class ActionContext
 {
+	@Inject
+	private Client client;
+
+	@Inject
+	private ObjectHelper objectHelper;
+
 	private final Map<String, Boolean> flags = new HashMap<>();
 	private final Map<String, Integer> ephemeral = new HashMap<>();
 
@@ -105,5 +119,75 @@ public class ActionContext
 		}
 
 		return debugFlags;
+	}
+
+	/**
+	 * Get current player
+	 */
+	public Player getPlayer()
+	{
+		return client.getLocalPlayer();
+	}
+
+	/**
+	 * Get current player location
+	 */
+	public WorldPoint getPlayerLocation()
+	{
+		return getPlayer().getWorldLocation();
+	}
+
+	/**
+	 * Get current player destination location
+	 */
+	public WorldPoint getDestinationLocation()
+	{
+		LocalPoint location = client.getLocalDestinationLocation();
+		return location != null ? WorldPoint.fromLocal(client, location) : null;
+	}
+
+	/**
+	 * Check if player is at position
+	 */
+	public boolean isAt(WorldPoint worldPoint)
+	{
+		return getPlayerLocation().equals(worldPoint);
+	}
+
+	/**
+	 * Check if player is at position
+	 */
+	public boolean isAt(RegionPoint regionPoint)
+	{
+		return getPlayerLocation().equals(regionPoint.toWorld());
+	}
+
+	/**
+	 * Check if player is pathing to the nearest object
+	 * matching the given id
+	 */
+	public boolean isPathingTo(int objectId)
+	{
+		return isPathingTo(objectHelper.getNearest(objectId));
+	}
+
+	/**
+	 * Check if the player is pathing to the object
+	 */
+	public boolean isPathingTo(TileObject object)
+	{
+		WorldPoint dest = getDestinationLocation();
+		return object != null
+			&& dest != null
+			&& objectHelper.isBeside(dest, object);
+	}
+
+	/**
+	 * Check if the player is pathing to the given position
+	 */
+	public boolean isPathingTo(WorldPoint worldPoint)
+	{
+		WorldPoint destination = getDestinationLocation();
+		return destination != null && destination.equals(worldPoint);
 	}
 }

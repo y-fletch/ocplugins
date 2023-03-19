@@ -1,7 +1,7 @@
 package com.yfletch.rift.helper;
 
-import com.yfletch.rift.enums.Cell;
 import com.yfletch.rift.RiftContext;
+import com.yfletch.rift.enums.Cell;
 import com.yfletch.rift.enums.Rune;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,6 +52,13 @@ public class CellTileDecider
 					target = guardian.getWorldLocation();
 				}
 			}
+		}
+
+		// prioritize closest to portal when open
+		TileObject hugeEssencePortal = context.getHugeEssencePortal();
+		if (hugeEssencePortal != null)
+		{
+			return getClosest(tiles, hugeEssencePortal.getWorldLocation());
 		}
 
 		TileObject closestHealable = getClosest(

@@ -21,6 +21,7 @@ public class EnterAltar extends ObjectAction<RiftContext>
 		return !ctx.isInHugeMine()
 			&& ctx.getElementalRune() != null
 			&& ctx.hasItem(ItemID.GUARDIAN_ESSENCE)
+			&& !ctx.hasGuardianStones()
 			&& !ctx.hasCell();
 	}
 

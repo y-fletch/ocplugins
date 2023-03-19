@@ -27,7 +27,7 @@ import org.pf4j.Extension;
 @Extension
 @Slf4j
 @PluginDescriptor(
-	name = "OC Bloods [alpha]",
+	name = "OC Bloods",
 	enabledByDefault = false,
 	description = "One-click Blood Runecrafting"
 )

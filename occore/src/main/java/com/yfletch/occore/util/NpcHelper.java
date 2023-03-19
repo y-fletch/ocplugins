@@ -7,13 +7,24 @@ import net.runelite.api.Client;
 import net.runelite.api.Locatable;
 import net.runelite.api.NPC;
 import net.runelite.api.queries.NPCQuery;
+import net.unethicalite.client.Static;
 
 @Slf4j
 @Singleton
 public class NpcHelper
 {
+	private final Client client;
+
 	@Inject
-	private Client client;
+	public NpcHelper(Client client)
+	{
+		this.client = client;
+	}
+
+	public static NpcHelper instance()
+	{
+		return new NpcHelper(Static.getClient());
+	}
 
 	/**
 	 * Get nearest NPC with the given ID to the locatable
@@ -30,7 +41,7 @@ public class NpcHelper
 	{
 		return new NPCQuery().idEquals(npcIds).result(client).nearestTo(locatable);
 	}
-	
+
 	/**
 	 * Get nearest NPC with the given ID to the player
 	 */

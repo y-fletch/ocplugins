@@ -25,7 +25,7 @@
 
 version = "0.0.3-alpha"
 
-project.extra["PluginName"] = "OC Bloods [alpha]"
+project.extra["PluginName"] = "OC Bloods"
 project.extra["PluginDescription"] = "One-click Blood Runecrafting"
 
 dependencies {

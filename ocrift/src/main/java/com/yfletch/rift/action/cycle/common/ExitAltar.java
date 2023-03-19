@@ -18,7 +18,7 @@ public class ExitAltar extends ObjectAction<RiftContext>
 	{
 		return ctx.isOutsideRift()
 			&& !ctx.hasItem(ItemID.GUARDIAN_ESSENCE)
-			&& ctx.areAllPouchesEmpty();
+			&& ctx.allPouchesAreEmpty();
 	}
 
 	@Override

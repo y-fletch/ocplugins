@@ -55,4 +55,9 @@ public class EventBuilder
 	{
 		return (NpcEvent) new NpcEvent(npcHelper).setTargetEvent(targetEvent);
 	}
+
+	public MoveEvent move()
+	{
+		return (MoveEvent) new MoveEvent(client).setTargetEvent(targetEvent);
+	}
 }

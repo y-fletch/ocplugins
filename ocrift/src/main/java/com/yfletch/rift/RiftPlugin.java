@@ -14,17 +14,17 @@ import com.yfletch.rift.action.cycle.common.ExitAltar;
 import com.yfletch.rift.action.cycle.common.PlaceCell;
 import com.yfletch.rift.action.cycle.common.PowerUpGuardian;
 import com.yfletch.rift.action.cycle.craft.MineGuardianParts;
+import com.yfletch.rift.action.cycle.craft.WorkAtWorkbench;
+import com.yfletch.rift.action.cycle.mine.EnterPortal;
 import com.yfletch.rift.action.cycle.mine.ExitPortal;
 import com.yfletch.rift.action.cycle.mine.MineHugeRemains;
-import com.yfletch.rift.action.cycle.mine.EnterPortal;
 import com.yfletch.rift.action.cycle.start.ClimbUpRubble;
-import com.yfletch.rift.action.cycle.craft.WorkAtWorkbench;
 import com.yfletch.rift.action.cycle.start.MineLargeRemains;
 import com.yfletch.rift.action.postgame.DropCell;
-import com.yfletch.rift.action.pregame.UseSpecialAttack;
 import com.yfletch.rift.action.pregame.ClimbDownRubble;
 import com.yfletch.rift.action.pregame.TakeUnchargedCells;
 import com.yfletch.rift.action.pregame.TakeWeakCell;
+import com.yfletch.rift.action.pregame.UseSpecialAttack;
 import com.yfletch.rift.action.pregame.WalkToLargeRemains;
 import com.yfletch.rift.action.repair.CastNpcContact;
 import com.yfletch.rift.action.repair.ClickToContinueNPC;
@@ -178,7 +178,6 @@ public class RiftPlugin extends Plugin
 
 		context.setGameTime(context.getGameTime() + 0.6);
 
-		// default to negative game time when entering
 		if (context.isInLobbyArea())
 		{
 			context.reset();

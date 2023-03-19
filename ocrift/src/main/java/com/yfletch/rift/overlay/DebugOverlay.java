@@ -12,7 +12,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.ItemID;
-import net.runelite.api.ObjectID;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.components.LineComponent;
 
@@ -36,7 +35,9 @@ public class DebugOverlay extends OverlayPanel
 		Map<String, String> debugs = new HashMap<>();
 		debugs.put("Game time", "" + new DecimalFormat("0.00").format(context.getGameTime()));
 //		debugs.put("Pouch capacity", "" + context.getPouchCapacity());
-		context.getPouchEssence().forEach((pouch, qty) -> debugs.put(pouch.getItemName(), "" + qty));
+		context.getPouchEssence().forEach((pouch, qty) -> {
+			debugs.put(pouch.getItemName(), qty + "/" + pouch.getCapacity());
+		});
 		context.getFlags().forEach((flag, value) -> debugs.put(flag, "" + value));
 		debugs.put("Free slots", "" + context.getFreeInventorySlots());
 		debugs.put("Opt. free slots", "" + context.getOptimisticFreeSlots());
@@ -47,8 +48,8 @@ public class DebugOverlay extends OverlayPanel
 		Pouch fil = new PouchSolver(context).getNextFilledPouch();
 		debugs.put("Next fil", "" + (fil != null ? fil.getItemName() : "null"));
 
-		debugs.forEach((name, value) ->
-			panelComponent.getChildren().add(LineComponent.builder().left(name).right(value).build())
+		debugs.forEach(
+			(name, value) -> panelComponent.getChildren().add(LineComponent.builder().left(name).right(value).build())
 		);
 
 		return super.render(graphics);

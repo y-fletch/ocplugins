@@ -1,7 +1,7 @@
 package com.yfletch.rift.action;
 
-import com.yfletch.rift.enums.Pouch;
 import com.yfletch.rift.RiftContext;
+import com.yfletch.rift.enums.Pouch;
 import com.yfletch.rift.helper.PouchSolver;
 import com.yfletch.rift.lib.ItemAction;
 import com.yfletch.rift.lib.WrappedEvent;
@@ -63,7 +63,10 @@ public class FillPouch extends ItemAction<RiftContext>
 		// after one click, letting the control move to the next
 		// pouch.
 		// i.e. multiple clicks in one tick.
-		ctx.flag("p-fill-" + pouch.getItemId(), true);
+		if (pouch != Pouch.COLOSSAL)
+		{
+			ctx.flag("p-fill-" + pouch.getItemId(), true);
+		}
 	}
 
 	@Override

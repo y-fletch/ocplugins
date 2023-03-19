@@ -1,7 +1,7 @@
 package com.yfletch.rift.action.cycle.common;
 
-import com.yfletch.rift.enums.Cell;
 import com.yfletch.rift.RiftContext;
+import com.yfletch.rift.enums.Cell;
 import com.yfletch.rift.helper.CellTileDecider;
 import com.yfletch.rift.lib.ObjectAction;
 import com.yfletch.rift.lib.WrappedEvent;

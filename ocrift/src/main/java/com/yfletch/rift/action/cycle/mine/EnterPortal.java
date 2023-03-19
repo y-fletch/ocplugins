@@ -19,7 +19,8 @@ public class EnterPortal extends ObjectAction<RiftContext>
 			&& !ctx.hasRunes()
 			&& !ctx.hasGuardianStones()
 			&& !ctx.hasCell()
-			&& ctx.getHugeEssencePortal() != null;
+			&& ctx.getHugeEssencePortal() != null
+			&& ctx.getGuardianPower() < 94;
 	}
 
 	@Override

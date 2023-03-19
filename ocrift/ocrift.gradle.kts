@@ -25,8 +25,13 @@
 
 version = "0.0.4-alpha"
 
-project.extra["PluginName"] = "OC GOTR [alpha]"
+project.extra["PluginName"] = "OC Rift [alpha]"
 project.extra["PluginDescription"] = "One-click Guardians of the Rift"
+
+dependencies {
+    compileOnly(project(":occore"))
+    implementation(project(":occore"))
+}
 
 tasks {
     jar {

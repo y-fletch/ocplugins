@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
@@ -33,6 +34,7 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 
+@Slf4j
 @Singleton
 public class RiftContext extends ActionContext
 {
@@ -278,23 +280,31 @@ public class RiftContext extends ActionContext
 
 	public int getTimesUsed(Pouch pouch)
 	{
-		return pouchUses.getOrDefault(pouch, -1);
+		return pouchUses.getOrDefault(pouch, 0);
 	}
 
 	public void fillPouch(Pouch pouch)
 	{
 		int capacity = hasItem(pouch.getItemId()) ? pouch.getCapacity() : pouch.getDegradedCapacity();
-		int prev = pouchEssence.getOrDefault(pouch, 0);
-		int curr = Math.min(getOptimisticEssenceCount(), capacity);
-		int diff = curr - prev;
+		int inPouch = pouchEssence.getOrDefault(pouch, 0);
+		int capacityLeft = capacity - inPouch;
+		int essenceAdded = Math.min(getOptimisticEssenceCount(), capacityLeft);
 
-		if (diff > 0)
+		if (essenceAdded > 0)
 		{
-			pouchEssence.put(pouch, curr);
-			pouchUses.put(pouch, pouchUses.getOrDefault(pouch, 0) + 1);
+			int newEssence = inPouch + essenceAdded;
+			pouchEssence.put(pouch, newEssence);
 
-			optimisticFreeSlots += diff;
-			optimisticEssenceCount -= diff;
+			// only counts as a use when pouch is filled
+			// (not exactly, but it's ok as the plugin should
+			// always completely fill/empty colossal pouches)
+			if (newEssence == capacity)
+			{
+				pouchUses.put(pouch, pouchUses.getOrDefault(pouch, 0) + 1);
+			}
+
+			optimisticFreeSlots += essenceAdded;
+			optimisticEssenceCount -= essenceAdded;
 		}
 	}
 
@@ -315,11 +325,11 @@ public class RiftContext extends ActionContext
 
 		for (Pouch pouch : Pouch.values())
 		{
-			if (getItemCount(pouch.getItemId()) > 0)
+			if (hasItem(pouch.getItemId()))
 			{
 				total += pouch.getCapacity();
 			}
-			else if (getItemCount(pouch.getDegradedItemId()) > 0)
+			else if (hasItem(pouch.getDegradedItemId()))
 			{
 				total += pouch.getDegradedCapacity();
 			}
@@ -339,12 +349,12 @@ public class RiftContext extends ActionContext
 		return total;
 	}
 
-	public boolean areAllPouchesEmpty()
+	public boolean allPouchesAreEmpty()
 	{
 		return getEssenceInPouches() == 0;
 	}
 
-	public boolean areAllPouchesFull()
+	public boolean allPouchesAreFull()
 	{
 		return getEssenceInPouches() == getPouchCapacity();
 	}
@@ -371,7 +381,7 @@ public class RiftContext extends ActionContext
 				continue;
 			}
 
-			if (pouchUses.getOrDefault(pouch, pouch.getUses()) >= pouch.getUses() - POUCH_USES_PER_GAME)
+			if (pouchUses.getOrDefault(pouch, 0) >= pouch.getUses() - POUCH_USES_PER_GAME)
 			{
 				return true;
 			}
@@ -399,7 +409,7 @@ public class RiftContext extends ActionContext
 	public boolean hasEqupped(int itemId)
 	{
 		ItemContainer container = client.getItemContainer(InventoryID.EQUIPMENT);
-		return container != null ? container.count(itemId) > 0 : false;
+		return container != null && container.count(itemId) > 0;
 	}
 
 	public int getFreeInventorySlots()
