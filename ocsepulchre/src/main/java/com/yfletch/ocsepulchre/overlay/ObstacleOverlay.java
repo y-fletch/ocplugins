@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.yfletch.ocsepulchre.OCSepulchreConfig;
 import com.yfletch.ocsepulchre.OCSepulchreContext;
 import com.yfletch.ocsepulchre.obstacle.DrawableObstacle;
+import com.yfletch.ocsepulchre.util.TileDebugInfo;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -34,60 +35,63 @@ public class ObstacleOverlay extends Overlay
 			return null;
 		}
 
-		Client client = Static.getClient();
-		Color color = Color.PINK;
-
 		for (DrawableObstacle obstacle : context.getObstacles().allDrawable())
 		{
-			if (obstacle.getDebugPosition() == null) continue;
+			if (obstacle.getTileDebug() == null) continue;
 
-			LocalPoint point = LocalPoint.fromWorld(client, obstacle.getDebugPosition());
-			if (point == null) return null;
-
-			Polygon polygon = Perspective.getCanvasTilePoly(client, point);
-			if (polygon == null) return null;
-
-			graphics.setColor(color);
-			graphics.draw(polygon);
-			graphics.setColor(new Color(color.getRed(), color.getBlue(), color.getGreen(), 20));
-			graphics.fill(polygon);
-
-			TextComponent textComponent = new TextComponent();
-			Rectangle bounds = polygon.getBounds();
-
-			FontMetrics fontMetrics = graphics.getFontMetrics();
-			int textWidth = fontMetrics.stringWidth(obstacle.getDebugText());
-			int textHeight = fontMetrics.getHeight();
-
-			textComponent.setPosition(new Point(
-				bounds.x + bounds.width / 2 - textWidth / 2,
-				bounds.y - textHeight
-			));
-
-			textComponent.setColor(color);
-			textComponent.setText(obstacle.getDebugText());
-
-			textComponent.render(graphics);
-
-			if (obstacle.getDebugTextLine2() != null)
+			for (TileDebugInfo debug : obstacle.getTileDebug())
 			{
-				TextComponent textComponent2 = new TextComponent();
-				Rectangle bounds2 = polygon.getBounds();
-
-				int textWidth2 = fontMetrics.stringWidth(obstacle.getDebugTextLine2());
-
-				textComponent2.setPosition(new Point(
-					bounds2.x + bounds2.width / 2 - textWidth2 / 2,
-					bounds2.y
-				));
-
-				textComponent2.setColor(color);
-				textComponent2.setText(obstacle.getDebugTextLine2());
-
-				textComponent2.render(graphics);
+				renderDebugTile(graphics, debug);
 			}
 		}
 
 		return null;
+	}
+
+	private void renderDebugTile(Graphics2D graphics, TileDebugInfo debug)
+	{
+		Client client = Static.getClient();
+		Color color = Color.PINK;
+
+		LocalPoint point = debug.getRegionPoint().toLocal();
+		if (point == null) return;
+
+		Polygon polygon = Perspective.getCanvasTilePoly(client, point);
+		if (polygon == null) return;
+
+		graphics.setColor(color);
+		graphics.draw(polygon);
+		graphics.setColor(new Color(color.getRed(), color.getBlue(), color.getGreen(), 20));
+		graphics.fill(polygon);
+
+		if (debug.getLine1() != null)
+		{
+			renderDebugText(graphics, polygon.getBounds(), color, debug.getLine1(), 0);
+		}
+
+		if (debug.getLine2() != null)
+		{
+			renderDebugText(graphics, polygon.getBounds(), color, debug.getLine2(), 1);
+		}
+	}
+
+	private void renderDebugText(Graphics2D graphics, Rectangle bounds, Color color, String text, int offset)
+	{
+
+		TextComponent textComponent = new TextComponent();
+
+		FontMetrics fontMetrics = graphics.getFontMetrics();
+		int textWidth = fontMetrics.stringWidth(text);
+		int textHeight = fontMetrics.getHeight();
+
+		textComponent.setPosition(new Point(
+			bounds.x + bounds.width / 2 - textWidth / 2,
+			bounds.y - textHeight * offset
+		));
+
+		textComponent.setColor(color);
+		textComponent.setText(text);
+
+		textComponent.render(graphics);
 	}
 }

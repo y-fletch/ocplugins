@@ -3,6 +3,9 @@ package com.yfletch.ocsepulchre.obstacle;
 import com.yfletch.occore.util.NpcHelper;
 import com.yfletch.occore.util.RegionPoint;
 import com.yfletch.ocsepulchre.OCSepulchreContext;
+import com.yfletch.ocsepulchre.util.TileDebugInfo;
+import java.util.Collection;
+import java.util.List;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
@@ -97,33 +100,28 @@ public abstract class Knight implements Obstacle, DrawableObstacle
 		}
 	}
 
-	@Override
-	public WorldPoint getDebugPosition()
-	{
-		return location;
-	}
-
 	public int getRegionX()
 	{
+		if (location == null) return -1;
 		return RegionPoint.fromWorldInstance(location).getX();
 	}
 
 	public int getRegionY()
 	{
+		if (location == null) return -1;
 		return RegionPoint.fromWorldInstance(location).getY();
 	}
 
 	@Override
-	public String getDebugText()
+	public Collection<TileDebugInfo> getTileDebug()
 	{
-		if (location == null) return "";
+		if (location == null) return null;
 
-		return facing + " / " + swordDirection + " / " + RegionPoint.fromWorldInstance(location);
-	}
-
-	@Override
-	public String getDebugTextLine2()
-	{
-		return null;
+		return List.of(
+			new TileDebugInfo(
+				RegionPoint.fromWorldInstance(location),
+				facing + " / " + swordDirection + " / " + RegionPoint.fromWorldInstance(location)
+			)
+		);
 	}
 }

@@ -4,7 +4,9 @@ import com.yfletch.occore.util.ObjectHelper;
 import com.yfletch.occore.util.RegionPoint;
 import com.yfletch.ocsepulchre.Const;
 import com.yfletch.ocsepulchre.OCSepulchreContext;
+import com.yfletch.ocsepulchre.util.TileDebugInfo;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import net.runelite.api.DynamicObject;
 import net.runelite.api.GameObject;
@@ -19,12 +21,19 @@ public abstract class Wizard implements Obstacle, DrawableObstacle
 	private final RegionPoint referencePoint;
 	private final Direction direction;
 	private final WizardCycle cycle;
+	private final int totalStatues;
 
-	public Wizard(RegionPoint referencePoint, Direction direction, WizardCycle cycle)
+	public Wizard(RegionPoint referencePoint, Direction direction, WizardCycle cycle, int totalStatues)
 	{
 		this.referencePoint = referencePoint;
 		this.direction = direction;
 		this.cycle = cycle;
+		this.totalStatues = totalStatues;
+	}
+
+	public boolean isSynced()
+	{
+		return cycle.isSynced();
 	}
 
 	public int getCurrentTick()
@@ -36,24 +45,47 @@ public abstract class Wizard implements Obstacle, DrawableObstacle
 	{
 		ObjectHelper objectHelper = ObjectHelper.instance();
 
-		return objectHelper.where(Const.FIRE_OBJECT, obj -> {
+		List<TileObject> fires = objectHelper.where(Const.FIRE_OBJECT, obj -> {
 			RegionPoint objRegionPoint = RegionPoint.fromWorldInstance(obj.getWorldLocation());
 
 			if (direction == Direction.NORTH || direction == Direction.SOUTH)
 			{
-				return objRegionPoint.getX() == referencePoint.getX();
+				return objRegionPoint.getX() == referencePoint.getX()
+					&& Math.abs(objRegionPoint.getY() - referencePoint.getY()) <= totalStatues;
 			}
 			else
 			{
-				return objRegionPoint.getY() == referencePoint.getY();
+				return objRegionPoint.getY() == referencePoint.getY()
+					&& Math.abs(objRegionPoint.getX() - referencePoint.getX()) <= totalStatues;
 			}
 		});
+
+		// put in zig-zag order, beginning closest left of reference tile,
+		// ending farthest right of reference tile
+		fires.sort((a, b) -> {
+			RegionPoint aRegion = RegionPoint.fromWorldInstance(a.getWorldLocation());
+			RegionPoint bRegion = RegionPoint.fromWorldInstance(b.getWorldLocation());
+			int aDist = direction == Direction.NORTH || direction == Direction.SOUTH
+				? Math.abs(aRegion.getY() - referencePoint.getY())
+				: Math.abs(aRegion.getX() - referencePoint.getX());
+			int bDist = direction == Direction.NORTH || direction == Direction.SOUTH
+				? Math.abs(bRegion.getY() - referencePoint.getY())
+				: Math.abs(bRegion.getX() - referencePoint.getX());
+
+			if (aDist == bDist)
+			{
+				// prefer left
+				aDist -= 1;
+			}
+
+			return aDist - bDist;
+		});
+
+		return fires;
 	}
 
 	private void trySync()
 	{
-		if (cycle.isSynced()) return;
-
 		List<Boolean> activeLeft = new ArrayList<>();
 		List<Boolean> activeRight = new ArrayList<>();
 
@@ -73,9 +105,8 @@ public abstract class Wizard implements Obstacle, DrawableObstacle
 	@Override
 	public void tick(OCSepulchreContext ctx)
 	{
-		trySync();
-
 		cycle.tick();
+		trySync();
 	}
 
 	@Override
@@ -84,17 +115,7 @@ public abstract class Wizard implements Obstacle, DrawableObstacle
 		return true;
 	}
 
-	@Override
-	public String getDebugText()
-	{
-
-		return (cycle.getCurrentStepIndex() + " " + cycle.getCurrentTick() + "/" + cycle.getCycleTime() + " " + cycle.getLeftActive() + " / " + cycle.getRightActive())
-			.replace("true", "1")
-			.replace("false", "0");
-	}
-
-	@Override
-	public String getDebugTextLine2()
+	public String getDebugLine1()
 	{
 		List<Boolean> activeLeft = new ArrayList<>();
 		List<Boolean> activeRight = new ArrayList<>();
@@ -112,6 +133,37 @@ public abstract class Wizard implements Obstacle, DrawableObstacle
 		return (activeLeft + " / " + activeRight)
 			.replace("true", "1")
 			.replace("false", "0")
-			+ " o: " + cycle.getPossibleOffsets() + " s:" + (cycle.isSynced() ? "true" : "false");
+			+ " o: " + cycle.getPossibleOffsets() + " s:" + (cycle.isSynced() ? "true" : "false")
+			+ " f: " + getFires().size();
+	}
+
+	public String getDebugLine2()
+	{
+
+		return (cycle.getCurrentStepIndex() + " " + cycle.getCurrentTick() + "/" + cycle.getCycleTime() + " " + cycle.getLeftActive() + " / " + cycle.getRightActive())
+			.replace("true", "1")
+			.replace("false", "0");
+	}
+
+	@Override
+	public Collection<TileDebugInfo> getTileDebug()
+	{
+		List<TileDebugInfo> debugs = new ArrayList<>();
+
+		// main tile
+		debugs.add(new TileDebugInfo(referencePoint, getDebugLine1(), getDebugLine2()));
+
+		// obstacle orders
+//		int i = 0;
+//		for (TileObject fire : getFires())
+//		{
+//			debugs.add(new TileDebugInfo(
+//				RegionPoint.fromWorldInstance(fire.getWorldLocation()),
+//				i + ""
+//			));
+//			i++;
+//		}
+
+		return debugs;
 	}
 }

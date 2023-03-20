@@ -4,11 +4,11 @@ import com.yfletch.occore.action.MoveAction;
 import com.yfletch.ocsepulchre.OCSepulchreContext;
 import com.yfletch.ocsepulchre.Tiles;
 
-public class MoveToF1E2 extends MoveAction<OCSepulchreContext>
+public class MoveToF1E3 extends MoveAction<OCSepulchreContext>
 {
-	public MoveToF1E2()
+	public MoveToF1E3()
 	{
-		super(Tiles.F1E2);
+		super(Tiles.F1E3);
 	}
 
 	@Override
@@ -16,7 +16,7 @@ public class MoveToF1E2 extends MoveAction<OCSepulchreContext>
 	{
 		return ctx.isFloor(1)
 			&& ctx.isEastPath()
-			&& ctx.isAt(Tiles.F1E1)
-			&& ctx.getObstacles().getF1EWizard1().isSafe(ctx);
+			&& ctx.isAt(Tiles.F1E2)
+			&& ctx.getObstacles().getF1EKnight().isSafe();
 	}
 }

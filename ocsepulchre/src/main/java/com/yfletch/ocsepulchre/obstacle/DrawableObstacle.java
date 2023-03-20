@@ -1,12 +1,9 @@
 package com.yfletch.ocsepulchre.obstacle;
 
-import net.runelite.api.coords.WorldPoint;
+import com.yfletch.ocsepulchre.util.TileDebugInfo;
+import java.util.Collection;
 
 public interface DrawableObstacle
 {
-	WorldPoint getDebugPosition();
-
-	String getDebugText();
-
-	String getDebugTextLine2();
+	Collection<TileDebugInfo> getTileDebug();
 }

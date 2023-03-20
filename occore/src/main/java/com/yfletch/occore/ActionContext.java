@@ -163,6 +163,22 @@ public class ActionContext
 	}
 
 	/**
+	 * Check if player is in zone
+	 */
+	public boolean isInZone(WorldPoint lowerBound, WorldPoint upperBound)
+	{
+		return WorldPoint.isInZone(lowerBound, upperBound, getPlayerLocation());
+	}
+
+	/**
+	 * Check if player is in zone
+	 */
+	public boolean isInZone(RegionPoint lowerBound, RegionPoint upperBound)
+	{
+		return isInZone(lowerBound.toWorld(), upperBound.toWorld());
+	}
+
+	/**
 	 * Check if player is pathing to the nearest object
 	 * matching the given id
 	 */

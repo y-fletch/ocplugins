@@ -34,7 +34,7 @@ public class OCSepulchreContext extends ActionContext
 	private int floor = 1;
 
 	@Getter
-	private Direction floorPath = Direction.SOUTH;
+	private Direction floorPath = Direction.EAST;
 
 	@Override
 	public void tick()
@@ -159,5 +159,26 @@ public class OCSepulchreContext extends ActionContext
 	public boolean isSouthPath()
 	{
 		return floorPath == Direction.SOUTH;
+	}
+
+	public TileObject getNearestObject(String search)
+	{
+		return objectHelper.getNearest(search);
+	}
+
+	public boolean isInSubfloor1East()
+	{
+		return isInZone(
+			new RegionPoint(9053, 41, 31, 1),
+			new RegionPoint(9053, 43, 33, 1)
+		);
+	}
+
+	public boolean isInFloor1Centre()
+	{
+		return isInZone(
+			new RegionPoint(9053, 27, 31, 1),
+			new RegionPoint(9053, 37, 33, 1)
+		);
 	}
 }

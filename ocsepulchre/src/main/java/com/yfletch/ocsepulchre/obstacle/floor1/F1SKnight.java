@@ -11,7 +11,7 @@ public class F1SKnight extends Knight
 {
 	public F1SKnight()
 	{
-		super(Const.F1S_KNIGHT_SWORD, Direction.WEST);
+		super(Const.F1_KNIGHT_SWORD, Direction.WEST);
 		setYPlane(0);
 	}
 

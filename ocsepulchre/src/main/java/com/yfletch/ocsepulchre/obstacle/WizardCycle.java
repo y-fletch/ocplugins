@@ -25,7 +25,7 @@ public class WizardCycle
 	 * the current cycle in game
 	 */
 	@Getter
-	private final List<Integer> possibleOffsets = new ArrayList<>();
+	private List<Integer> possibleOffsets = new ArrayList<>();
 
 	private final List<WizardCycleStep> cycle = new ArrayList<>();
 
@@ -102,29 +102,42 @@ public class WizardCycle
 
 	public void trySync(List<Boolean> currentActiveLeft, List<Boolean> currentActiveRight)
 	{
+		WizardCycleStep currentStep = getCurrentStep();
+		if (
+			synced &&
+				(!currentActiveLeft.equals(currentStep.getLeft()) || !currentActiveRight.equals(currentStep.getRight()))
+		)
+		{
+			synced = false;
+			possibleOffsets.clear();
+		}
+
+		if (synced) return;
+
 		int cycleTime = getCycleTime();
 
 		if (possibleOffsets.size() > 1)
 		{
-			List<Integer> checkOffsets = new ArrayList<>(possibleOffsets);
 			// reduce possible offsets
-			for (int i : checkOffsets)
+			List<Integer> stillValidOffsets = new ArrayList<>();
+			for (int i : possibleOffsets)
 			{
 				int tick = (currentTick + i) % cycleTime;
 				WizardCycleStep step = getStepAt(tick);
 
-				if (!step.getLeft().equals(currentActiveLeft) || !step.getRight().equals(currentActiveRight))
+				if (step.getLeft().equals(currentActiveLeft) && step.getRight().equals(currentActiveRight))
 				{
-					possibleOffsets.remove((Integer) i);
+					stillValidOffsets.add(i);
 				}
 			}
+			possibleOffsets = stillValidOffsets;
 			return;
 		}
 
 		if (possibleOffsets.size() == 0)
 		{
-			// no possible offsets - let's create the first guess
-			for (int i = 0; i < getCycleTime(); i++)
+			// no possible offsets yet - let's create the first guess
+			for (int i = 1; i < getCycleTime(); i++)
 			{
 				int tick = (currentTick + i) % cycleTime;
 				WizardCycleStep step = getStepAt(tick);
@@ -139,7 +152,7 @@ public class WizardCycle
 		if (possibleOffsets.size() == 1)
 		{
 			synced = true;
-			currentTick = (currentTick + possibleOffsets.get(0) - 1) % cycleTime;
+			currentTick = (currentTick + possibleOffsets.get(0)) % cycleTime;
 		}
 	}
 

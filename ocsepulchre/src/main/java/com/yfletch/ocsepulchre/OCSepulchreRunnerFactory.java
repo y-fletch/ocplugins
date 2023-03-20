@@ -6,8 +6,12 @@ import com.yfletch.occore.ActionRunner;
 import com.yfletch.occore.event.EventBuilder;
 import com.yfletch.ocsepulchre.action.Wait;
 import com.yfletch.ocsepulchre.action.bank.ClimbDownStairs;
+import com.yfletch.ocsepulchre.action.common.ActivateMagicalObelisk;
+import com.yfletch.ocsepulchre.action.floor1.JumpPlatform;
 import com.yfletch.ocsepulchre.action.floor1.east.MoveToF1E1;
 import com.yfletch.ocsepulchre.action.floor1.east.MoveToF1E2;
+import com.yfletch.ocsepulchre.action.floor1.east.MoveToF1E3;
+import com.yfletch.ocsepulchre.action.floor1.east.MoveToF1E4;
 import com.yfletch.ocsepulchre.action.floor1.north.MoveToF1N1;
 import com.yfletch.ocsepulchre.action.floor1.south.MoveToF1S1;
 import com.yfletch.ocsepulchre.action.floor1.south.MoveToF1S1a;
@@ -42,9 +46,15 @@ public class OCSepulchreRunnerFactory
 		// east
 		runner.add(new MoveToF1E1());
 		runner.add(new MoveToF1E2());
+		runner.add(new MoveToF1E3());
+		runner.add(new MoveToF1E4());
 
 		// west
 		runner.add(new MoveToF1W1());
+
+		// finish
+		runner.add(new JumpPlatform());
+		runner.add(new ActivateMagicalObelisk());
 
 		// consume waiting time
 		runner.add(new Wait());

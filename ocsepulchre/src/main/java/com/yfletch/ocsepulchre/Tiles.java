@@ -16,6 +16,7 @@ public class Tiles
 	public static RegionPoint F1E1 = new RegionPoint(9053, 59, 52, 2);
 	public static RegionPoint F1E2 = new RegionPoint(9053, 63, 34, 2);
 	public static RegionPoint F1E3 = new RegionPoint(9053, 55, 17, 2);
+	public static RegionPoint F1E4 = new RegionPoint(9053, 0, 0, 2);
 
 	// SOUTH
 	public static RegionPoint F1S1 = new RegionPoint(9053, 40, 3, 2);
