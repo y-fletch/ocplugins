@@ -42,6 +42,9 @@ open class BootstrapTask : DefaultTask() {
             val bootstrapDir = File("${project.buildDir}")
             val bootstrapReleaseDir = File("${project.buildDir}/release")
 
+            val finalDir = File(".")
+            val finalReleaseDir = File("release")
+
             bootstrapDir.mkdirs()
             bootstrapReleaseDir.mkdirs()
 
@@ -74,8 +77,6 @@ open class BootstrapTask : DefaultTask() {
                         "releases" to releases.toTypedArray()
                     ).jsonObject()
 
-                    println(releases)
-
                     for (i in 0 until baseBootstrap.length()) {
                         val item = baseBootstrap.getJSONObject(i)
 
@@ -104,14 +105,15 @@ open class BootstrapTask : DefaultTask() {
 
                     plugin.copyTo(
                         Paths.get(
-                            bootstrapReleaseDir.toString(),
+                            finalReleaseDir.toString(),
                             "${it.project.name}-${it.project.version}.jar"
-                        ).toFile()
+                        ).toFile(),
+                        true
                     )
                 }
             }
 
-            File(bootstrapDir, "plugins.json").printWriter().use { out ->
+            File(finalDir, "plugins.json").printWriter().use { out ->
                 out.println(plugins.toString())
             }
         }

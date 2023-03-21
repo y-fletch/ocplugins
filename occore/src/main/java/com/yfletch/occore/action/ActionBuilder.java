@@ -30,6 +30,11 @@ public class ActionBuilder<T extends ActionContext>
 		return new PrepAction<>();
 	}
 
+	public ConsumeAction<T> consume(String name)
+	{
+		return new ConsumeAction<>(name);
+	}
+
 	public WidgetAction<T> widget(String action, String widgetName)
 	{
 		return new WidgetAction<>(action, widgetName);

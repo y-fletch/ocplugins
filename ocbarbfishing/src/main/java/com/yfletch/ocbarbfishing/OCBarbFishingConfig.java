@@ -1,5 +1,6 @@
 package com.yfletch.ocbarbfishing;
 
+import com.yfletch.ocbarbfishing.util.Method;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;

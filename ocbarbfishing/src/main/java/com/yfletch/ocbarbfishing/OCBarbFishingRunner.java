@@ -12,9 +12,6 @@ import net.runelite.api.ItemID;
 public class OCBarbFishingRunner extends ActionRunner<OCBarbFishingContext>
 {
 	@Inject
-	private OCBarbFishingConfig config;
-
-	@Inject
 	public OCBarbFishingRunner(OCBarbFishingContext context, EventBuilder eventBuilder)
 	{
 		super(context, eventBuilder);
@@ -27,12 +24,12 @@ public class OCBarbFishingRunner extends ActionRunner<OCBarbFishingContext>
 					map.put("Missing barbarian rod", ctx.hasItem(ItemID.BARBARIAN_ROD));
 					map.put("Missing feathers", ctx.hasItem(ItemID.FEATHER));
 
-					if (config.method() == Method.CUT_EAT || config.method() == Method.CUT_EAT_TAR_DROP)
+					if (ctx.isCutEatMethod() || ctx.isHybridMethod())
 					{
 						map.put("Missing knife", ctx.hasItem(ItemID.KNIFE));
 					}
 
-					if (config.method() == Method.TAR_DROP || config.method() == Method.CUT_EAT_TAR_DROP)
+					if (ctx.isTarDropMethod() || ctx.isHybridMethod())
 					{
 						map.put("Missing guam leaf", ctx.hasItem(ItemID.GUAM_LEAF));
 						map.put("Missing swamp tar", ctx.hasItem(ItemID.SWAMP_TAR));
@@ -54,13 +51,13 @@ public class OCBarbFishingRunner extends ActionRunner<OCBarbFishingContext>
 					ctx -> ctx.getTick() > 5
 						// in cycle, only do actions on tick 3 if the
 						// interrupt has happened
-						|| (ctx.getTick() == 3
+						|| (ctx.isTick(3)
 						&& ctx.flag("interrupt")
 						&& (ctx.flag("secondary")
 						// allow skipping secondary if tar/drop and no fish to drop
-						|| !ctx.hasFish() && config.method() == Method.TAR_DROP)
+						|| ctx.hasNoFish() && ctx.isTarDropMethod())
 						// allow skipping seocndary if cut/eat and no food to eat
-						|| !ctx.hasFood() && config.method() == Method.CUT_EAT))
+						|| ctx.hasNoFish() && !ctx.hasFood() && ctx.isCutEatMethod()))
 				.workingIf(
 					// prevent spam-clicking fishing spot
 					ctx -> ctx.isFishing()
@@ -97,8 +94,8 @@ public class OCBarbFishingRunner extends ActionRunner<OCBarbFishingContext>
 			// interrupt t3
 			add(builder().item("Use Knife", entry.getKey())
 					.readyIf(
-						ctx -> config.method() != Method.TAR_DROP
-							&& ctx.isTick(3)
+						ctx -> !ctx.isTarDropMethod()
+							&& ctx.isTick(2)
 							&& ctx.hasItem(entry.getValue())
 							&& !ctx.flag("interrupt")
 					)
@@ -128,7 +125,7 @@ public class OCBarbFishingRunner extends ActionRunner<OCBarbFishingContext>
 			// eat roe/caviar
 			add(builder().item("Eat", entry.getKey())
 					.readyIf(
-						ctx -> config.method() != Method.TAR_DROP
+						ctx -> !ctx.isTarDropMethod()
 							&& ctx.hasItem(entry.getValue())
 							&& ctx.flag("interrupt")
 							&& !ctx.flag("secondary")
@@ -153,7 +150,7 @@ public class OCBarbFishingRunner extends ActionRunner<OCBarbFishingContext>
 		// interrupt
 		add(builder().item("Use Guam leaf", "Swamp tar")
 				.readyIf(
-					ctx -> config.method() != Method.CUT_EAT
+					ctx -> !ctx.isCutEatMethod()
 						&& ctx.isTick(2)
 						&& !ctx.flag("interrupt")
 				)
@@ -174,7 +171,7 @@ public class OCBarbFishingRunner extends ActionRunner<OCBarbFishingContext>
 			// drop fish
 			add(builder().item("Drop", entry.getKey())
 					.readyIf(
-						ctx -> config.method() == Method.TAR_DROP
+						ctx -> ctx.isTarDropMethod()
 							&& ctx.hasItem(entry.getValue())
 							&& ctx.flag("interrupt")
 							&& !ctx.flag("secondary")
@@ -191,5 +188,7 @@ public class OCBarbFishingRunner extends ActionRunner<OCBarbFishingContext>
 					)
 			);
 		}
+
+		add(builder().consume("No action"));
 	}
 }

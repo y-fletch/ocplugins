@@ -2,6 +2,8 @@ package com.yfletch.ocbarbfishing;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.yfletch.ocbarbfishing.util.Const;
+import com.yfletch.ocbarbfishing.util.Method;
 import com.yfletch.occore.ActionContext;
 import lombok.Getter;
 import net.runelite.api.Client;
@@ -13,6 +15,9 @@ public class OCBarbFishingContext extends ActionContext
 {
 	@Inject
 	private Client client;
+
+	@Inject
+	private OCBarbFishingConfig config;
 
 	@Getter
 	private int tick = 0;
@@ -38,11 +43,11 @@ public class OCBarbFishingContext extends ActionContext
 		);
 	}
 
-	public boolean hasFish()
+	public boolean hasNoFish()
 	{
-		return hasItem(ItemID.LEAPING_TROUT)
-			|| hasItem(ItemID.LEAPING_SALMON)
-			|| hasItem(ItemID.LEAPING_STURGEON);
+		return !hasItem(ItemID.LEAPING_TROUT)
+			&& !hasItem(ItemID.LEAPING_SALMON)
+			&& !hasItem(ItemID.LEAPING_STURGEON);
 	}
 
 	public boolean hasFood()
@@ -53,11 +58,26 @@ public class OCBarbFishingContext extends ActionContext
 
 	public boolean isFishing()
 	{
-		return client.getLocalPlayer().getAnimation() == 9349;
+		return client.getLocalPlayer().getAnimation() == Const.FISHING_ANIMATION;
 	}
 
 	public void beginFishing()
 	{
 		tick = 0;
+	}
+
+	public boolean isTarDropMethod()
+	{
+		return config.method() == Method.TAR_DROP;
+	}
+
+	public boolean isCutEatMethod()
+	{
+		return config.method() == Method.CUT_EAT;
+	}
+
+	public boolean isHybridMethod()
+	{
+		return config.method() == Method.TAR_THEN_CUT_EAT;
 	}
 }

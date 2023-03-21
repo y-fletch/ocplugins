@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.yfletch.ocbarbfishing.overlay.ActionOverlay;
 import com.yfletch.ocbarbfishing.overlay.DebugOverlay;
+import com.yfletch.ocbarbfishing.util.Const;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.events.AnimationChanged;
@@ -19,7 +20,7 @@ import org.pf4j.Extension;
 @Slf4j
 @Extension
 @PluginDescriptor(
-	name = "OC Barb Fishing [alpha]",
+	name = "OC Barb Fishing",
 	description = "One-click Barbarian Fishing"
 )
 public class OCBarbFishingPlugin extends Plugin
@@ -81,7 +82,7 @@ public class OCBarbFishingPlugin extends Plugin
 	public void onAnimationChanged(AnimationChanged event)
 	{
 		if (event.getActor().equals(client.getLocalPlayer())
-			&& event.getActor().getAnimation() == 9349)
+			&& event.getActor().getAnimation() == Const.FISHING_ANIMATION)
 		{
 			context.beginFishing();
 		}
