@@ -3,16 +3,22 @@ package com.yfletch.occore;
 import com.google.inject.Inject;
 import com.yfletch.occore.util.ObjectHelper;
 import com.yfletch.occore.util.RegionPoint;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.runelite.api.Client;
+import net.runelite.api.InventoryID;
+import net.runelite.api.Item;
+import net.runelite.api.ItemContainer;
 import net.runelite.api.Player;
 import net.runelite.api.TileObject;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.widgets.Widget;
+import net.runelite.api.widgets.WidgetInfo;
 
 /**
  * Contains context (game state, configs) to pass to
@@ -205,5 +211,106 @@ public class ActionContext
 	{
 		WorldPoint destination = getDestinationLocation();
 		return destination != null && destination.equals(worldPoint);
+	}
+
+	/**
+	 * Check if bank interface is open
+	 */
+	public boolean isBankOpen()
+	{
+		Widget bankContainer = client.getWidget(WidgetInfo.BANK_ITEM_CONTAINER);
+		return bankContainer != null && !bankContainer.isHidden();
+	}
+
+	/**
+	 * Get count of item in player inventory
+	 */
+	public int getItemCount(int... itemId)
+	{
+		ItemContainer container = client.getItemContainer(InventoryID.INVENTORY);
+		if (container == null)
+		{
+			return 0;
+		}
+
+		return Arrays.stream(itemId).map(container::count).sum();
+	}
+
+	/**
+	 * Check if item is in player inventory
+	 */
+	public boolean hasItem(int... itemId)
+	{
+		return getItemCount(itemId) > 0;
+	}
+
+	/**
+	 * Get count of item in player bank
+	 * <p>
+	 * Bank interface needs to be opened at least once
+	 */
+	public int getBankItemCount(int... itemId)
+	{
+		ItemContainer container = client.getItemContainer(InventoryID.BANK);
+		if (container == null)
+		{
+			return 0;
+		}
+
+		return Arrays.stream(itemId).map(container::count).sum();
+	}
+
+	/**
+	 * Check if item is in player bank
+	 * <p>
+	 * Bank interface needs to be opened at least once
+	 */
+	public boolean hasBanked(int... itemId)
+	{
+		return getBankItemCount(itemId) > 0;
+	}
+
+	/**
+	 * Get count of item in player equipment
+	 */
+	public int getEquipmentItemCount(int... itemId)
+	{
+		ItemContainer container = client.getItemContainer(InventoryID.EQUIPMENT);
+		if (container == null)
+		{
+			return 0;
+		}
+
+		return Arrays.stream(itemId).map(container::count).sum();
+	}
+
+	/**
+	 * Check if player has item equipped
+	 */
+	public boolean hasEquipped(int itemId)
+	{
+		return getEquipmentItemCount(itemId) > 0;
+	}
+
+	/**
+	 * Get amount of free slots in player inventory
+	 */
+	public int getFreeInventorySlots()
+	{
+		ItemContainer container = client.getItemContainer(InventoryID.INVENTORY);
+		if (container == null)
+		{
+			return 0;
+		}
+
+		int freeSlots = 28;
+		for (Item item : container.getItems())
+		{
+			if (item.getQuantity() > 0)
+			{
+				freeSlots--;
+			}
+		}
+		return freeSlots;
 	}
 }

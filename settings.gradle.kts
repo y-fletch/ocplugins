@@ -5,7 +5,9 @@ include(":ocgarden")
 include(":ocrift")
 include(":ocbloods")
 include(":ocsepulchre")
+include(":ocbarbfishing")
 include(":occlicker")
+include(":ocbarbfishing")
 
 for (project in rootProject.children) {
     project.apply {

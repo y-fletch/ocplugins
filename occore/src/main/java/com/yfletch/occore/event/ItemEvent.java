@@ -3,6 +3,7 @@ package com.yfletch.occore.event;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import net.runelite.api.Client;
 import net.runelite.api.MenuAction;
 import net.runelite.api.widgets.Widget;
@@ -12,6 +13,8 @@ public class ItemEvent extends EventOverride
 {
 	private final Client client;
 	private WidgetInfo inventoryType = WidgetInfo.INVENTORY;
+
+	private Widget usedItemWidget;
 
 	ItemEvent(Client client)
 	{
@@ -57,6 +60,26 @@ public class ItemEvent extends EventOverride
 			}
 		}
 		return matchedItems;
+	}
+
+	public ItemEvent use(int itemId)
+	{
+		usedItemWidget = getItem(Set.of(itemId));
+		if (usedItemWidget == null)
+		{
+			throw new RuntimeException("Could not find use item in inventory: " + itemId);
+		}
+
+		setType(MenuAction.WIDGET_TARGET_ON_WIDGET);
+
+		return this;
+	}
+
+	public ItemEvent on(Collection<Integer> itemIds)
+	{
+		setOption("Use", 0);
+		setItems(itemIds);
+		return this;
 	}
 
 	/**
@@ -145,7 +168,7 @@ public class ItemEvent extends EventOverride
 	{
 		return setInventory(WidgetInfo.BANK_ITEM_CONTAINER);
 	}
-	
+
 	/**
 	 * Shortcut for `setInventory(WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER)`.
 	 * Set the target inventory to the given widget. Must be called before
@@ -169,5 +192,21 @@ public class ItemEvent extends EventOverride
 			|| inventoryType == WidgetInfo.EQUIPMENT_GLOVES
 			|| inventoryType == WidgetInfo.EQUIPMENT_BOOTS
 			|| inventoryType == WidgetInfo.EQUIPMENT_RING;
+	}
+
+	@Override
+	public void override()
+	{
+		if (usedItemWidget != null)
+		{
+			setTarget(usedItemWidget + "<col=ffffff> -> " + getTarget());
+
+			client.setSelectedSpellWidget(WidgetInfo.INVENTORY.getId());
+			client.setSelectedSpellChildIndex(usedItemWidget.getIndex());
+			client.setSelectedSpellItemId(usedItemWidget.getItemId());
+			client.setSpellSelected(true);
+		}
+
+		super.override();
 	}
 }
