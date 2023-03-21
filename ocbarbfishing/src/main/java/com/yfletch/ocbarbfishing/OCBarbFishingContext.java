@@ -3,6 +3,7 @@ package com.yfletch.ocbarbfishing;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.yfletch.occore.ActionContext;
+import lombok.Getter;
 import net.runelite.api.Client;
 import net.runelite.api.ItemID;
 import net.runelite.api.coords.WorldPoint;
@@ -13,44 +14,20 @@ public class OCBarbFishingContext extends ActionContext
 	@Inject
 	private Client client;
 
-	private int tick;
+	@Getter
+	private int tick = 0;
 
 	@Override
 	public void tick()
 	{
 		super.tick();
 
-		if (!hasFish() && !hasFood())
-		{
-			tick = 0;
-			return;
-		}
-
 		tick++;
-		if (tick >= 3)
-		{
-			tick = 0;
-		}
 	}
 
 	public boolean isTick(int t)
 	{
 		return tick == t;
-	}
-
-	public boolean hasBarbarianRod()
-	{
-		return hasItem(ItemID.BARBARIAN_ROD);
-	}
-
-	public boolean hasFeathers()
-	{
-		return hasItem(ItemID.FEATHER);
-	}
-
-	public boolean hasKnife()
-	{
-		return hasItem(ItemID.KNIFE);
 	}
 
 	public boolean isAtFishingSpots()
@@ -77,5 +54,10 @@ public class OCBarbFishingContext extends ActionContext
 	public boolean isFishing()
 	{
 		return client.getLocalPlayer().getAnimation() == 9349;
+	}
+
+	public void beginFishing()
+	{
+		tick = 0;
 	}
 }

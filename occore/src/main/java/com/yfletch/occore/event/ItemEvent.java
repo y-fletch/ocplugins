@@ -82,6 +82,13 @@ public class ItemEvent extends EventOverride
 		return this;
 	}
 
+	public ItemEvent on(int itemId)
+	{
+		setOption("Use", 0);
+		setItem(itemId);
+		return this;
+	}
+
 	/**
 	 * Target the first item in the inventory matching one of the
 	 * given IDs.

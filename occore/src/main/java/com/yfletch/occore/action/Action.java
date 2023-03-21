@@ -2,10 +2,19 @@ package com.yfletch.occore.action;
 
 import com.yfletch.occore.ActionContext;
 import com.yfletch.occore.event.WrappedEvent;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import net.runelite.client.ui.overlay.components.LineComponent;
 
 public class Action<T extends ActionContext>
 {
+	private Predicate<T> isReady;
+	private Predicate<T> isWorking;
+	private Predicate<T> isDone;
+	private BiConsumer<T, WrappedEvent> run;
+	private Consumer<T> done;
+
 	/**
 	 * Get content to display in the UI overlay when this action
 	 * is up next.
@@ -20,6 +29,11 @@ public class Action<T extends ActionContext>
 	 */
 	public boolean isReady(T ctx)
 	{
+		if (isReady != null)
+		{
+			return isReady.test(ctx);
+		}
+
 		return false;
 	}
 
@@ -32,6 +46,11 @@ public class Action<T extends ActionContext>
 	 */
 	public boolean isWorking(T ctx)
 	{
+		if (isWorking != null)
+		{
+			return isWorking.test(ctx);
+		}
+
 		return false;
 	}
 
@@ -41,6 +60,11 @@ public class Action<T extends ActionContext>
 	 */
 	public boolean isDone(T ctx)
 	{
+		if (isDone != null)
+		{
+			return isDone.test(ctx);
+		}
+
 		return false;
 	}
 
@@ -50,6 +74,10 @@ public class Action<T extends ActionContext>
 	 */
 	public void run(T ctx, WrappedEvent event)
 	{
+		if (run != null)
+		{
+			run.accept(ctx, event);
+		}
 	}
 
 	/**
@@ -57,5 +85,39 @@ public class Action<T extends ActionContext>
 	 */
 	public void done(T ctx)
 	{
+		if (done != null)
+		{
+			done.accept(ctx);
+		}
+	}
+
+	public Action<T> readyIf(Predicate<T> isReady)
+	{
+		this.isReady = isReady;
+		return this;
+	}
+
+	public Action<T> workingIf(Predicate<T> isWorking)
+	{
+		this.isWorking = isWorking;
+		return this;
+	}
+
+	public Action<T> doneIf(Predicate<T> isDone)
+	{
+		this.isDone = isDone;
+		return this;
+	}
+
+	public Action<T> onRun(BiConsumer<T, WrappedEvent> run)
+	{
+		this.run = run;
+		return this;
+	}
+
+	public Action<T> onDone(Consumer<T> done)
+	{
+		this.done = done;
+		return this;
 	}
 }

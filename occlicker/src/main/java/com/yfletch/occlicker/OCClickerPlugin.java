@@ -89,10 +89,15 @@ public class OCClickerPlugin extends Plugin
 		if (enabled)
 		{
 			CLICK_EXECUTOR.execute(() -> {
+				var intervals = generateIntervals(config.clicksPerTick());
+
 				try
 				{
-					Thread.sleep((long) (random.nextFloat() * 100));
-					click(point);
+					for (var interval : intervals)
+					{
+						click(point);
+						Thread.sleep((long) (interval * 1000));
+					}
 				}
 				catch (InterruptedException e)
 				{
@@ -145,6 +150,31 @@ public class OCClickerPlugin extends Plugin
 				1, false, 1
 			)
 		);
+	}
+
+	private double[] generateIntervals(int n)
+	{
+		var target = 0.6d;
+		var values = new double[n];
+		var random = new Random();
+		for (var i = 0; i < n - 1; i++)
+		{
+			values[i] = random.nextDouble() * target;
+			target -= values[i];
+		}
+		// fill in rest
+		values[n - 1] = target;
+
+		// shuffle
+		for (var i = n - 1; i > 0; i--)
+		{
+			var j = random.nextInt(i + 1);
+			var tmp = values[i];
+			values[i] = values[j];
+			values[j] = tmp;
+		}
+
+		return values;
 	}
 
 	@Provides

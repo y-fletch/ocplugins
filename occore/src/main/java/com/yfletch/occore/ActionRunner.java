@@ -1,6 +1,7 @@
 package com.yfletch.occore;
 
 import com.yfletch.occore.action.Action;
+import com.yfletch.occore.action.ActionBuilder;
 import com.yfletch.occore.event.EventBuilder;
 import com.yfletch.occore.event.WrappedEvent;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class ActionRunner<T extends ActionContext>
 	private final T ctx;
 	private final EventBuilder eventBuilder;
 	private final List<Action<T>> actions = new ArrayList<>();
+	private final ActionBuilder<T> builder = new ActionBuilder<>();
 
 	@Getter
 	private Action<T> current = null;
@@ -35,6 +37,11 @@ public class ActionRunner<T extends ActionContext>
 	public void add(Action<T> action)
 	{
 		this.actions.add(action);
+	}
+
+	public ActionBuilder<T> builder()
+	{
+		return builder;
 	}
 
 	/**

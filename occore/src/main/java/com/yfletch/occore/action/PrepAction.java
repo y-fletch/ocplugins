@@ -6,13 +6,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import net.runelite.client.ui.overlay.components.LineComponent;
 import org.apache.commons.lang3.NotImplementedException;
 
 public class PrepAction<T extends ActionContext> extends Action<T>
 {
+	private Function<T, HashMap<String, Boolean>> getConditions;
+
+	public PrepAction<T> withConditions(Function<T, HashMap<String, Boolean>> getConditions)
+	{
+		this.getConditions = getConditions;
+		return this;
+	}
+
 	protected HashMap<String, Boolean> getConditions(T ctx)
 	{
+		if (getConditions != null)
+		{
+			return getConditions.apply(ctx);
+		}
+
 		throw new NotImplementedException("Missing conditions for prep action");
 	}
 

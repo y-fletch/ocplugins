@@ -1,9 +1,11 @@
 package com.yfletch.occore.event;
 
+import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.runelite.api.MenuAction;
+import net.runelite.api.MenuEntry;
 import net.runelite.api.events.MenuOptionClicked;
 
 @Getter
@@ -21,6 +23,8 @@ public abstract class EventOverride
 	private int param1 = -1;
 	private boolean forceLeftClick = false;
 
+	private Consumer<MenuEntry> callback;
+
 	protected void validate()
 	{
 		if (getTarget() == null)
@@ -32,6 +36,12 @@ public abstract class EventOverride
 		{
 			throw new RuntimeException("EventOverride: Missing type/menuAction");
 		}
+	}
+
+	public EventOverride onClick(Consumer<MenuEntry> callback)
+	{
+		this.callback = callback;
+		return this;
 	}
 
 	/**
@@ -49,6 +59,7 @@ public abstract class EventOverride
 			targetEvent.setMenuAction(getType());
 			targetEvent.setParam0(getParam0());
 			targetEvent.setParam1(getParam1());
+			targetEvent.getMenuEntry().onClick(callback);
 		}
 		catch (Exception e)
 		{

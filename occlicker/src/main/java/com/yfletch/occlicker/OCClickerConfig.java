@@ -22,11 +22,22 @@ public interface OCClickerConfig extends Config
 	@ConfigItem(
 		keyName = "consumeYellowClicks",
 		name = "Consume yellow clicks",
-		description = "Consume yellow clicks that may occur if the OC plugins messes up",
+		description = "Consume yellow clicks that may occur if the OC plugin messes up",
 		position = 2
 	)
 	default boolean consumeYellowClicks()
 	{
 		return true;
+	}
+
+	@ConfigItem(
+		keyName = "clicksPerTick",
+		name = "Clicks per tick",
+		description = "Amount of clicks per tick. Time between clicks will be randomized",
+		position = 3
+	)
+	default int clicksPerTick()
+	{
+		return 2;
 	}
 }

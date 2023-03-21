@@ -17,4 +17,15 @@ public interface OCBarbFishingConfig extends Config
 	{
 		return true;
 	}
+
+	@ConfigItem(
+		keyName = "method",
+		name = "Method",
+		description = "",
+		position = 2
+	)
+	default Method method()
+	{
+		return Method.CUT_EAT;
+	}
 }

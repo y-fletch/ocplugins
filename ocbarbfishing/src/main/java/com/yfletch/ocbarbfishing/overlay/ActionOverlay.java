@@ -1,7 +1,8 @@
 package com.yfletch.ocbarbfishing.overlay;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.yfletch.occore.ActionRunner;
+import com.yfletch.ocbarbfishing.OCBarbFishingRunner;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import net.runelite.client.ui.overlay.OverlayPanel;
@@ -10,12 +11,8 @@ import net.runelite.client.ui.overlay.components.LineComponent;
 @Singleton
 public class ActionOverlay extends OverlayPanel
 {
-	private final ActionRunner<?> runner;
-
-	public ActionOverlay(ActionRunner<?> runner)
-	{
-		this.runner = runner;
-	}
+	@Inject
+	private OCBarbFishingRunner runner;
 
 	@Override
 	public Dimension render(Graphics2D graphics)
