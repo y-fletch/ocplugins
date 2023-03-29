@@ -77,6 +77,8 @@ open class BootstrapTask : DefaultTask() {
                         "releases" to releases.toTypedArray()
                     ).jsonObject()
 
+                    println(pluginObject)
+
                     for (i in 0 until baseBootstrap.length()) {
                         val item = baseBootstrap.getJSONObject(i)
 
@@ -84,7 +86,9 @@ open class BootstrapTask : DefaultTask() {
                             continue
                         }
 
-                        if (it.project.version.toString() in item.getJSONArray("releases").toString()) {
+                        val versionProperty = "\"version\":\"${it.project.version}\""
+
+                        if (versionProperty in item.getJSONArray("releases").toString()) {
                             pluginAdded = true
                             plugins.add(item)
                             break
