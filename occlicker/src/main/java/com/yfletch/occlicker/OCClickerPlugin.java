@@ -95,7 +95,7 @@ public class OCClickerPlugin extends Plugin
 				{
 					for (var interval : intervals)
 					{
-						click(point);
+						if (enabled) click(point);
 						Thread.sleep((long) (interval * 1000));
 					}
 				}
