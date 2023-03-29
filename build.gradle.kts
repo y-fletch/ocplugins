@@ -13,9 +13,9 @@ plugins {
     kotlin("jvm") version "1.6.21"
 }
 
-project.extra["GithubUrl"] = "https://github.com/jbx5/devious-plugins-release"
-project.extra["GithubUserName"] = "jbx5"
-project.extra["GithubRepoName"] = "devious-plugins-release"
+project.extra["GithubUrl"] = "https://github.com/y-fletch/ocplugins"
+project.extra["GithubUserName"] = "y-fletch"
+project.extra["GithubRepoName"] = "ocplugins"
 
 apply<BootstrapPlugin>()
 

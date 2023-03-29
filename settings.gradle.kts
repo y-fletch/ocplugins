@@ -1,4 +1,4 @@
-rootProject.name = "OCPlugins"
+rootProject.name = "ocplugins"
 
 include(":occore")
 include(":ocgarden")
