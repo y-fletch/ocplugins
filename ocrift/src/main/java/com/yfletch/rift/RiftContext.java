@@ -429,6 +429,16 @@ public class RiftContext extends ActionContext
 		return getItemCount(itemId) > 0;
 	}
 
+	public boolean hasAnyEquipped(int... itemIds)
+	{
+		ItemContainer container = client.getItemContainer(InventoryID.EQUIPMENT);
+		if (container == null)
+		{
+			return false;
+		}
+		return Arrays.stream(itemIds).anyMatch(container::contains);
+	}
+
 	public boolean hasEqupped(int itemId)
 	{
 		ItemContainer container = client.getItemContainer(InventoryID.EQUIPMENT);

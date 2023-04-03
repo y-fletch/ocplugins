@@ -17,17 +17,14 @@ public class UseSpecialAttack extends InterfaceAction<RiftContext>
 	@Override
 	public boolean isReady(RiftContext ctx)
 	{
-		if (!ctx.hasEqupped(ItemID.DRAGON_PICKAXE)
-				|| !ctx.hasEqupped(ItemID.DRAGON_PICKAXE_OR)
-				|| !ctx.hasEqupped(ItemID.DRAGON_PICKAXE_12797)
-				|| !ctx.hasEqupped(ItemID.DRAGON_PICKAXE_OR_25376)
-				|| !ctx.hasEqupped(ItemID.INFERNAL_PICKAXE)
-				|| !ctx.hasEqupped(ItemID.INFERNAL_PICKAXE_OR)
-				|| !ctx.hasEqupped(ItemID.CRYSTAL_PICKAXE)
-		)
-		{
-			return false;
-		}
+		if (!ctx.hasAnyEquipped(
+				ItemID.DRAGON_PICKAXE,
+				ItemID.DRAGON_PICKAXE_OR,
+				ItemID.DRAGON_PICKAXE_12797,
+				ItemID.DRAGON_PICKAXE_OR_25376,
+				ItemID.INFERNAL_PICKAXE,
+				ItemID.INFERNAL_PICKAXE_OR)
+		) return false;
 
 		return (ctx.getGameTime() < 0
 			&& ctx.getGameTime() > -5
