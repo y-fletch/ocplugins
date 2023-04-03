@@ -28,7 +28,7 @@ public class DebugOverlay extends OverlayPanel
 		context.getDebugFlags().forEach((key, value) -> debugs.put(key, "" + value));
 
 		debugs.forEach((name, value) ->
-						   panelComponent.getChildren().add(LineComponent.builder().left(name).right(value).build())
+			panelComponent.getChildren().add(LineComponent.builder().left(name).right(value).build())
 		);
 
 		return super.render(graphics);

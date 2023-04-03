@@ -4,7 +4,6 @@ import com.yfletch.summergarden.Consts;
 import com.yfletch.summergarden.util.WrappedEvent;
 import com.yfletch.summergarden.util.action.ActionContext;
 import com.yfletch.summergarden.util.action.ItemAction;
-
 import net.runelite.api.MenuAction;
 
 public class DrinkStamina4 extends ItemAction

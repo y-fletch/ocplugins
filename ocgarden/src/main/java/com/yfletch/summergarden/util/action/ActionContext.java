@@ -6,7 +6,6 @@ import com.yfletch.summergarden.SummerGardenConfig;
 import com.yfletch.summergarden.util.ObjectManager;
 import javax.inject.Inject;
 import lombok.Getter;
-
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;

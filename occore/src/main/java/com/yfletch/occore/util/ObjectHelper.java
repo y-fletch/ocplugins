@@ -151,10 +151,10 @@ public class ObjectHelper
 		public LocatableQueryResults<TileObject> result(Client client)
 		{
 			return new LocatableQueryResults<>(getObjects(client).stream()
-												   .filter(Objects::nonNull)
-												   .filter(predicate)
-												   .distinct()
-												   .collect(Collectors.toList()));
+					.filter(Objects::nonNull)
+					.filter(predicate)
+					.distinct()
+					.collect(Collectors.toList()));
 		}
 
 		public Collection<TileObject> getObjects(Client client)
