@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.runelite.api.NPC;
 import net.runelite.api.coords.WorldPoint;
-
 import javax.inject.Singleton;
 import java.util.Arrays;
 

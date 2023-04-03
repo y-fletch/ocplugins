@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
 import java.util.HashMap;
 import java.util.Map;
 import net.runelite.api.TileObject;

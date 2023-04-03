@@ -6,7 +6,6 @@ import com.yfletch.summergarden.util.action.ActionContext;
 import com.yfletch.summergarden.util.action.ItemAction;
 import net.runelite.api.ItemID;
 import net.runelite.api.MenuAction;
-
 import javax.inject.Singleton;
 
 @Singleton

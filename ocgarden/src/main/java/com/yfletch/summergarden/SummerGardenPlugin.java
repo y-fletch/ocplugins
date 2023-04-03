@@ -31,9 +31,8 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.infobox.InfoBox;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
-
 import javax.inject.Inject;
-import java.awt.*;
+import java.awt.Color;
 import org.pf4j.Extension;
 
 @Extension

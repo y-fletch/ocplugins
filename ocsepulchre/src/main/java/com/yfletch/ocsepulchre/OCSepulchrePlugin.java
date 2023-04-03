@@ -106,8 +106,8 @@ public class OCSepulchrePlugin extends Plugin
 		{
 			int previousFloor = Integer.parseInt(matcher.group(1));
 			context.setFloor(previousFloor < 5
-								 ? previousFloor + 1
-								 : 0);
+				? previousFloor + 1
+				: 0);
 		}
 	}
 
