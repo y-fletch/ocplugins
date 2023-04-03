@@ -20,15 +20,17 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
-import net.runelite.api.InventoryID;
-import net.runelite.api.Item;
-import net.runelite.api.ItemContainer;
 import net.runelite.api.ItemID;
-import net.runelite.api.ObjectID;
-import net.runelite.api.Point;
-import net.runelite.api.Skill;
+import net.runelite.api.AnimationID;
+import net.runelite.api.InventoryID;
 import net.runelite.api.TileObject;
+import net.runelite.api.Point;
+import net.runelite.api.ItemContainer;
 import net.runelite.api.VarPlayer;
+import net.runelite.api.Item;
+import net.runelite.api.ObjectID;
+import net.runelite.api.QuestState;
+import net.runelite.api.Skill;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.widgets.Widget;
@@ -264,7 +266,28 @@ public class RiftContext extends ActionContext
 
 	public boolean isMining()
 	{
-		return client.getLocalPlayer().getAnimation() == 7139;
+		int animationId = client.getLocalPlayer().getAnimation();
+		// `AnimationID` is a class so reflection is required for arrays
+		switch (animationId)
+		{
+			case AnimationID.MINING_3A_PICKAXE:
+			case AnimationID.MINING_ADAMANT_PICKAXE:
+			case AnimationID.MINING_BRONZE_PICKAXE:
+			case AnimationID.MINING_BLACK_PICKAXE:
+			case AnimationID.MINING_CRYSTAL_PICKAXE:
+			case AnimationID.MINING_DRAGON_PICKAXE:
+			case AnimationID.MINING_DRAGON_PICKAXE_OR:
+			case AnimationID.MINING_DRAGON_PICKAXE_UPGRADED:
+			case AnimationID.MINING_GILDED_PICKAXE:
+			case AnimationID.MINING_INFERNAL_PICKAXE:
+			case AnimationID.MINING_IRON_PICKAXE:
+			case AnimationID.MINING_MITHRIL_PICKAXE:
+			case AnimationID.MINING_RUNE_PICKAXE:
+			case AnimationID.MINING_STEEL_PICKAXE:
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	public boolean isFull(Pouch pouch)
@@ -594,5 +617,17 @@ public class RiftContext extends ActionContext
 
 		return statistics.getCatalyticEnergy() < statistics.getElementalEnergy()
 			? -1 : 1;
+	}
+
+	/**
+	 * Checks if player can craft the required rune
+	 * @param rune {@link Rune} enum
+	 * @return `true` if player can craft Rune
+	 */
+	public boolean canCraftRune(Rune rune)
+	{
+		return rune != null
+				&& rune.getRequiredLevel() <= this.getRunecraftLevel()
+				&& (rune.getRequiredQuest() == null || rune.getRequiredQuest().getState(this.client).equals(QuestState.FINISHED));
 	}
 }

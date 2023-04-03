@@ -39,7 +39,7 @@ public class RuneDecider
 	public Rune pick()
 	{
 		List<Rune> possible = context.getPossibleGuardians().stream()
-			.filter(rune -> rune != null && rune.getRequiredLevel() <= context.getRunecraftLevel())
+			.filter(context::canCraftRune)
 			.collect(Collectors.toList());
 
 		if (possible.isEmpty())

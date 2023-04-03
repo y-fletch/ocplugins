@@ -16,7 +16,6 @@ import net.runelite.api.LocatableQueryResults;
 import net.runelite.api.Point;
 import net.runelite.api.Tile;
 import net.runelite.api.TileObject;
-import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.queries.TileObjectQuery;
 

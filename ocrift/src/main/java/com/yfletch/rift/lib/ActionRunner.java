@@ -6,7 +6,9 @@ import lombok.Getter;
 import net.runelite.api.MenuAction;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.client.ui.overlay.components.LineComponent;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ActionRunner<T extends ActionContext>
 {
 	private final T ctx;

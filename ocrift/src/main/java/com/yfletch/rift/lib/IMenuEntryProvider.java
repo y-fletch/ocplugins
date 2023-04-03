@@ -4,7 +4,6 @@ import java.util.Collection;
 import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.TileObject;
-import net.runelite.api.widgets.WidgetInfo;
 
 public interface IMenuEntryProvider
 {
