@@ -169,6 +169,22 @@ public class ActionContext
 	}
 
 	/**
+	 * Check if player is near a position
+	 */
+	public boolean isNear(WorldPoint worldPoint, int maxDist)
+	{
+		return getPlayerLocation().distanceTo(worldPoint) < maxDist;
+	}
+
+	/**
+	 * Check if player is near a position
+	 */
+	public boolean isNear(RegionPoint regionPoint, int maxDist)
+	{
+		return getPlayerLocation().distanceTo(regionPoint.toWorld()) < maxDist;
+	}
+
+	/**
 	 * Check if player is in zone
 	 */
 	public boolean isInZone(WorldPoint lowerBound, WorldPoint upperBound)
