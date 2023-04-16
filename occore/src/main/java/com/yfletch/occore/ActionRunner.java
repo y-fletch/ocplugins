@@ -7,15 +7,22 @@ import com.yfletch.occore.event.WrappedEvent;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.experimental.Accessors;
 import net.runelite.api.MenuAction;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.client.ui.overlay.components.LineComponent;
 
 public class ActionRunner<T extends ActionContext>
 {
-	private final T ctx;
+	@Getter
+	private final T context;
 	private final EventBuilder eventBuilder;
+
+	@Getter
 	private final List<Action<T>> actions = new ArrayList<>();
+
+	@Getter
+	@Accessors(fluent = true)
 	private final ActionBuilder<T> builder = new ActionBuilder<>();
 
 	@Getter
@@ -25,10 +32,28 @@ public class ActionRunner<T extends ActionContext>
 	 * Create a new ActionRunner. Requires an injected
 	 * EventBuilder instance
 	 */
-	public ActionRunner(T ctx, EventBuilder eventBuilder)
+	public ActionRunner(T context, EventBuilder eventBuilder)
 	{
-		this.ctx = ctx;
+		this.context = context;
 		this.eventBuilder = eventBuilder;
+
+		setup();
+	}
+
+	/**
+	 * Run after runner initialization, add your steps here
+	 */
+	public void setup()
+	{
+	}
+
+	/**
+	 * Clear all actions, and run setup again
+	 */
+	public void refresh()
+	{
+		actions.clear();
+		setup();
 	}
 
 	/**
@@ -36,12 +61,7 @@ public class ActionRunner<T extends ActionContext>
 	 */
 	public void add(Action<T> action)
 	{
-		this.actions.add(action);
-	}
-
-	public ActionBuilder<T> builder()
-	{
-		return builder;
+		actions.add(action);
 	}
 
 	/**
@@ -51,18 +71,27 @@ public class ActionRunner<T extends ActionContext>
 	 */
 	public void tick()
 	{
-		if (current != null)
+		// check to reset all actions
+		for (final var action : actions)
 		{
-			if (current.isDone(ctx))
+			if (action.shouldReset(context))
 			{
-				// allow next action to run
-				current.done(ctx);
+				action.hasRun(false);
 			}
 		}
 
-		for (Action<T> action : actions)
+		if (current != null)
 		{
-			if (action.isReady(ctx) && !action.isDone(ctx))
+			if (current.isDone(context))
+			{
+				// allow next action to run
+				current.done(context);
+			}
+		}
+
+		for (final var action : actions)
+		{
+			if (action.isReady(context) && !action.isDone(context))
 			{
 				current = action;
 				return;
@@ -79,16 +108,16 @@ public class ActionRunner<T extends ActionContext>
 	 */
 	public void run(MenuOptionClicked event)
 	{
-		ctx.setUsingItemName(null);
+		context.setUsingItemName(null);
 
 		// "use"
 		if (event.getMenuAction() == MenuAction.WIDGET_TARGET)
 		{
-			String target = event.getMenuTarget();
+			var target = event.getMenuTarget();
 			if (!target.contains("->"))
 			{
 				target = target.replaceAll("</?col(?:=\\w{6})?>", "");
-				ctx.setUsingItemName(target);
+				context.setUsingItemName(target);
 			}
 		}
 
@@ -97,18 +126,19 @@ public class ActionRunner<T extends ActionContext>
 			return;
 		}
 
-		if (current.isWorking(ctx))
+		if (current.isWorking(context))
 		{
 			event.consume();
 			return;
 		}
 
-		current.run(ctx, new WrappedEvent(event, eventBuilder));
+		current.run(context, new WrappedEvent(event, eventBuilder));
+		current.hasRun(true);
 	}
 
 	public boolean isWorking()
 	{
-		return current != null && current.isWorking(ctx);
+		return current != null && current.isWorking(context);
 	}
 
 	/**
@@ -121,6 +151,6 @@ public class ActionRunner<T extends ActionContext>
 			return null;
 		}
 
-		return current.getDisplayLine(ctx);
+		return current.getDisplayLine(context);
 	}
 }

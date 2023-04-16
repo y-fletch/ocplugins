@@ -1,5 +1,6 @@
 package com.yfletch.occore.util;
 
+import java.util.function.Predicate;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
@@ -48,5 +49,21 @@ public class NpcHelper
 	public NPC getNearest(int npcId)
 	{
 		return getNearestTo(npcId, client.getLocalPlayer());
+	}
+
+	/**
+	 * Get nearest NPC matching the predicate
+	 */
+	public NPC getNearest(Predicate<NPC> predicate, Locatable locatable)
+	{
+		return new NPCQuery().filter(predicate).result(client).nearestTo(locatable);
+	}
+
+	/**
+	 * Get nearest NPC matching the predicate to the player
+	 */
+	public NPC getNearest(Predicate<NPC> predicate)
+	{
+		return getNearest(predicate, client.getLocalPlayer());
 	}
 }

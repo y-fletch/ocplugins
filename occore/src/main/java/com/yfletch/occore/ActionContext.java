@@ -329,4 +329,9 @@ public class ActionContext
 		}
 		return freeSlots;
 	}
+
+	public int getPlayerAnimation()
+	{
+		return client.getLocalPlayer().getAnimation();
+	}
 }

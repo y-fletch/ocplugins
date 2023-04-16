@@ -96,7 +96,7 @@ public class OCBlastFurnaceRunner extends ActionRunner<OCBlastFurnaceContext>
 					.readyIf(ctx -> ctx.isBankOpen()
 						&& ctx.requiresStamina()
 						&& ctx.hasItem(entry.getValue()))
-					.doneIf(ctx -> !ctx.requiresStamina())
+					.onceUntil(ctx -> !ctx.requiresStamina())
 					.onRun(
 						(ctx, event) -> event.builder().item()
 							.deposit()
@@ -112,7 +112,7 @@ public class OCBlastFurnaceRunner extends ActionRunner<OCBlastFurnaceContext>
 		add(builder().widget("Deposit inventory")
 				.readyIf(ctx -> ctx.isBankOpen()
 					&& ctx.hasItem(BANKABLE_ITEMS))
-				.doneIf(ctx -> !ctx.hasItem(BANKABLE_ITEMS))
+				.onceUntil(ctx -> !ctx.hasItem(BANKABLE_ITEMS))
 				.onRun(
 					(ctx, event) -> event.builder().widget()
 						.setOption("Deposit inventory", 1)
@@ -125,8 +125,9 @@ public class OCBlastFurnaceRunner extends ActionRunner<OCBlastFurnaceContext>
 		// TODO - other methods
 		add(builder().item("Withdraw-All", "Gold ore")
 				.readyIf(ctx -> ctx.isBankOpen()
-					&& !ctx.hasItem(ItemID.GOLD_ORE))
-				.doneIf(ctx -> ctx.hasItem(ItemID.GOLD_ORE))
+					&& !ctx.hasItem(ItemID.GOLD_ORE)
+					&& ctx.hasFreeInventorySlot())
+				.onceUntil(ctx -> ctx.hasItem(ItemID.GOLD_ORE))
 				.onRun(
 					(ctx, event) -> event.builder().item()
 						.withdraw()
@@ -155,7 +156,7 @@ public class OCBlastFurnaceRunner extends ActionRunner<OCBlastFurnaceContext>
 		add(builder().item("Wear", "Goldsmith gauntlets")
 				.readyIf(ctx -> ctx.isAtConveyorBelt()
 					&& !ctx.hasEquipped(ItemID.GOLDSMITH_GAUNTLETS))
-				.doneIf(ctx -> ctx.hasEquipped(ItemID.GOLDSMITH_GAUNTLETS))
+				.onceUntil(ctx -> ctx.hasEquipped(ItemID.GOLDSMITH_GAUNTLETS))
 				.onRun(
 					(ctx, event) -> event.builder().item()
 						.setOption("Wear", 3)

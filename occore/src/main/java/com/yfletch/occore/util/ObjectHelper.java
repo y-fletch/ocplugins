@@ -67,6 +67,17 @@ public class ObjectHelper
 	}
 
 	/**
+	 * Get the nearest object matching the predicate to the current player
+	 */
+	public TileObject getNearest(Predicate<TileObject> predicate)
+	{
+		return new ObjectQuery()
+			.filter(predicate)
+			.result(client)
+			.nearestTo(client.getLocalPlayer());
+	}
+
+	/**
 	 * Get nearest object with the matching ID to the locatable
 	 */
 	public TileObject getNearest(int objectId, Locatable locatable)
@@ -151,10 +162,10 @@ public class ObjectHelper
 		public LocatableQueryResults<TileObject> result(Client client)
 		{
 			return new LocatableQueryResults<>(getObjects(client).stream()
-					.filter(Objects::nonNull)
-					.filter(predicate)
-					.distinct()
-					.collect(Collectors.toList()));
+												   .filter(Objects::nonNull)
+												   .filter(predicate)
+												   .distinct()
+												   .collect(Collectors.toList()));
 		}
 
 		public Collection<TileObject> getObjects(Client client)

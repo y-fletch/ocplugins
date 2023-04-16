@@ -117,8 +117,31 @@ public class WidgetEvent extends EventOverride
 	 */
 	public WidgetEvent setWidget(int groupId, int widgetId)
 	{
-		Widget widget = client.getWidget(groupId << 16 | widgetId);
+		final var widget = client.getWidget(groupId << 16 | widgetId);
 		return widget != null ? setWidget(widget) : this;
+	}
+
+
+	/**
+	 * Target the widget by group and widget ID.
+	 * Useful if there is no enum value in WidgetInfo for
+	 * the widget we wish to target.
+	 */
+	public WidgetEvent setWidget(int groupId, int widgetId, int childIndex)
+	{
+		final var widget = client.getWidget(groupId << 16 | widgetId);
+		if (widget == null)
+		{
+			return null;
+		}
+
+		final var children = widget.getChildren();
+		if (children == null || childIndex >= children.length)
+		{
+			return null;
+		}
+
+		return setWidget(children[childIndex]);
 	}
 
 	/**

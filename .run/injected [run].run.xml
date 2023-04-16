@@ -1,32 +1,32 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="injected [run]" type="GradleRunConfiguration" factoryName="Gradle">
-    <ExternalSystemSettings>
-      <option name="env">
-        <map>
-          <entry key="PLUGIN_DEVELOPMENT_PATH" value="../ocplugins"/>
-        </map>
-      </option>
-      <option name="executionName" />
-      <option name="externalProjectPath" value="$PROJECT_DIR$/../devious-client" />
-      <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="-x test -x checkstyleMain" />
-      <option name="taskDescriptions">
-        <list />
-      </option>
-      <option name="taskNames">
-        <list>
-          <option value="run" />
-          <option value="publishToMavenLocal" />
-          <option value=":runelite-client:publishToMavenLocal" />
-          <option value=":runelite-api:publishToMavenLocal" />
-          <option value=":http-api:publishToMavenLocal" />
-        </list>
-      </option>
-      <option name="vmOptions" />
-    </ExternalSystemSettings>
-    <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-    <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-    <DebugAllEnabled>false</DebugAllEnabled>
-    <method v="2" />
-  </configuration>
+	<configuration default="false" name="injected [run]" type="GradleRunConfiguration" factoryName="Gradle">
+		<ExternalSystemSettings>
+			<option name="env">
+				<map>
+					<entry key="PLUGIN_DEVELOPMENT_PATH" value="../ocplugins"/>
+				</map>
+			</option>
+			<option name="executionName"/>
+			<option name="externalProjectPath" value="$PROJECT_DIR$/../devious-client"/>
+			<option name="externalSystemIdString" value="GRADLE"/>
+			<option name="scriptParameters" value="-x test -x checkstyleMain"/>
+			<option name="taskDescriptions">
+				<list/>
+			</option>
+			<option name="taskNames">
+				<list>
+					<option value="run"/>
+					<option value="publishToMavenLocal"/>
+					<option value=":runelite-client:publishToMavenLocal"/>
+					<option value=":runelite-api:publishToMavenLocal"/>
+					<option value=":http-api:publishToMavenLocal"/>
+				</list>
+			</option>
+			<option name="vmOptions"/>
+		</ExternalSystemSettings>
+		<ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+		<ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+		<DebugAllEnabled>false</DebugAllEnabled>
+		<method v="2"/>
+	</configuration>
 </component>

@@ -5,6 +5,9 @@ import com.yfletch.occore.event.WrappedEvent;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.runelite.client.ui.overlay.components.LineComponent;
 
 public class Action<T extends ActionContext>
@@ -12,8 +15,14 @@ public class Action<T extends ActionContext>
 	private Predicate<T> isReady;
 	private Predicate<T> isWorking;
 	private Predicate<T> isDone;
+	private Predicate<T> shouldReset;
 	private BiConsumer<T, WrappedEvent> run;
 	private Consumer<T> done;
+
+	@Getter
+	@Setter
+	@Accessors(fluent = true)
+	private boolean hasRun = false;
 
 	/**
 	 * Get content to display in the UI overlay when this action
@@ -69,6 +78,20 @@ public class Action<T extends ActionContext>
 	}
 
 	/**
+	 * Determines when the `hasRun` value should be reset.
+	 * Only relevant for once-off actions.
+	 */
+	public boolean shouldReset(T ctx)
+	{
+		if (shouldReset != null)
+		{
+			return shouldReset.test(ctx);
+		}
+
+		return false;
+	}
+
+	/**
 	 * Code to run when a MenuOption is clicked while this action is active.
 	 * Use this to override the event.
 	 */
@@ -105,6 +128,11 @@ public class Action<T extends ActionContext>
 
 	public Action<T> doneIf(Predicate<T> isDone)
 	{
+		if (shouldReset != null)
+		{
+			throw new IllegalArgumentException("Do not set an isDone condition for once-off actions");
+		}
+
 		this.isDone = isDone;
 		return this;
 	}
@@ -118,6 +146,27 @@ public class Action<T extends ActionContext>
 	public Action<T> onDone(Consumer<T> done)
 	{
 		this.done = done;
+		return this;
+	}
+
+	/**
+	 * Ensure this action is only run once, and can only run again
+	 * once the reset condition has been met.
+	 */
+	public Action<T> onceUntil(Predicate<T> resetCondition)
+	{
+		shouldReset = resetCondition;
+		isDone = ctx -> hasRun();
+		return this;
+	}
+
+	/**
+	 * Block any extra clicks after this action is run once.
+	 */
+	public Action<T> blockExtraClicks()
+	{
+		shouldReset = isDone;
+		isWorking = ctx -> hasRun();
 		return this;
 	}
 }

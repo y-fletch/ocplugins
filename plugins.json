@@ -118,6 +118,13 @@
         "version": "0.0.3",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.3.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "3512E1F1B9DA29547E96EF14C4543430A500447857D1427CB057602DE26EF742BF85E283C477CBCF29FDE7978582AB29B0BE994A205F28677BCE376552E77E62",
+        "version": "0.0.4",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.4.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
@@ -147,6 +154,22 @@
         "sha512sum": "91F45C150EDEB5CA3FAE823BFEDBDEC359A344BE8E26513550D519D6A73F09723348211B659614DED51AD17CFE01E4290798652DB7B7B51113EB8A1661B3B528",
         "version": "1.0.2",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocgarden-1.0.2.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Herblore",
+    "description": "One-click herblore",
+    "id": "ocherblore-plugin",
+    "releases": [
+      {
+        "date": "2023-04-17",
+        "sha512sum": "C915D72A5D367CC59853FD9D4ABE28512E49172E1D6FBDE2C23755DE617B93911775EAEECE9007B085682C63251CB111A229116E9239E1D069ED68C9C6AC91E3",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocherblore-1.0.0.jar?raw=true",
         "requires": "^1.0.0"
       }
     ]

@@ -38,6 +38,7 @@ public class OCBlastFurnaceContext extends ActionContext
 	@Override
 	public void tick()
 	{
+		super.tick();
 		furnaceState.tick();
 	}
 
