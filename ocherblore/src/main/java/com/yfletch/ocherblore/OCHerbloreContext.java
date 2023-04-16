@@ -74,7 +74,14 @@ public class OCHerbloreContext extends ActionContext
 
 	public boolean isMixing()
 	{
-		return getPlayerAnimation() == 363;
+		final var current = getPlayerAnimation() == 363;
+		if (current)
+		{
+			flag("mixing", true, 3);
+			return true;
+		}
+
+		return flag("mixing");
 	}
 
 	public Widget getMakeButton()

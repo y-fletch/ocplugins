@@ -6,10 +6,12 @@ import com.yfletch.occore.ActionContext;
 import com.yfletch.occore.ActionRunner;
 import com.yfletch.occore.event.EventBuilder;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetInfo;
 import net.unethicalite.client.Static;
 
+@Slf4j
 @Singleton
 public class OCHerbloreRunner extends ActionRunner<OCHerbloreContext>
 {
@@ -109,7 +111,9 @@ public class OCHerbloreRunner extends ActionRunner<OCHerbloreContext>
 
 		add(builder().item("Withdraw-14", primary.getName())
 				.readyIf(ctx -> ctx.isBankOpen()
+					&& !ctx.hasItem(primary.getId())
 					&& ctx.getFreeInventorySlots() == 28)
+				.blockExtraClicks()
 				.onceUntil(ctx -> ctx.hasItem(primary.getId()))
 				.onRun(
 					(ctx, event) -> event.builder().item()
@@ -123,8 +127,8 @@ public class OCHerbloreRunner extends ActionRunner<OCHerbloreContext>
 
 		add(builder().item("Withdraw-14", secondary.getName())
 				.readyIf(ctx -> ctx.isBankOpen()
-					&& ctx.hasItem(primary.getId())
 					&& ctx.getFreeInventorySlots() == 14)
+				.blockExtraClicks()
 				.onceUntil(ctx -> ctx.hasItem(secondary.getId()))
 				.onRun(
 					(ctx, event) -> event.builder().item()
@@ -150,10 +154,12 @@ public class OCHerbloreRunner extends ActionRunner<OCHerbloreContext>
 
 		add(builder().item("Use " + primary.getName() + " ->", secondary.getName())
 				.readyIf(ctx -> !ctx.isBankOpen()
-					&& ctx.getFreeInventorySlots() == 0)
+					&& ctx.hasItem(primary.getId())
+					&& ctx.hasItem(secondary.getId())
+					&& !ctx.isMixing()
+					&& !ctx.isSkillInterfaceOpen())
 				.doneIf(ctx -> ctx.isSkillInterfaceOpen()
 					|| ctx.isMixing())
-				.blockExtraClicks()
 				.onRun(
 					(ctx, event) -> event.builder().item()
 						.use(primary.getId())
@@ -173,5 +179,7 @@ public class OCHerbloreRunner extends ActionRunner<OCHerbloreContext>
 						.override()
 				)
 		);
+
+		add(builder().consume("Waiting"));
 	}
 }

@@ -65,8 +65,6 @@ public class OCHerblorePlugin extends Plugin
 	@Subscribe
 	public void onMenuOptionClicked(MenuOptionClicked event)
 	{
-		log.info(event.getMenuEntry().toString());
-
 		runner.tick();
 
 		if (config.ocEnabled())

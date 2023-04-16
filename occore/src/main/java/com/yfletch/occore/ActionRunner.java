@@ -59,9 +59,10 @@ public class ActionRunner<T extends ActionContext>
 	/**
 	 * Add an action to the runner. Order here is important - FIFO
 	 */
-	public void add(Action<T> action)
+	public Action<T> add(Action<T> action)
 	{
 		actions.add(action);
+		return action;
 	}
 
 	/**
