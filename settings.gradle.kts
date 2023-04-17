@@ -10,6 +10,7 @@ include(":occlicker")
 include(":ocbarbfishing")
 include(":ocblastfurnace")
 include(":ocbankskills")
+include(":occonstruction")
 
 for (project in rootProject.children) {
     project.apply {
