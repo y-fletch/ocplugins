@@ -23,10 +23,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.7-alpha"
+version = "1.0.0"
 
-project.extra["PluginName"] = "OC Rift [alpha]"
-project.extra["PluginDescription"] = "One-click Guardians of the Rift"
+project.extra["PluginName"] = "OC Bwans"
+project.extra["PluginDescription"] = "One-click one-tick Karambwans"
 
 dependencies {
     compileOnly(project(":occore"))
@@ -46,5 +46,11 @@ tasks {
                 )
             )
         }
+        val dependencies = configurations
+            .runtimeClasspath
+            .get()
+            .map(::zipTree)
+        from(dependencies)
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 }

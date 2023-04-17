@@ -62,6 +62,14 @@ public class ItemEvent extends EventOverride
 		return matchedItems;
 	}
 
+	public ItemEvent select(int itemId)
+	{
+		setOption("Use", 0);
+		setType(MenuAction.WIDGET_TARGET);
+		setItem(itemId);
+		return this;
+	}
+
 	public ItemEvent use(int itemId)
 	{
 		usedItemWidget = getItem(Set.of(itemId));
