@@ -14,7 +14,7 @@ import org.pf4j.Extension;
 	name = "OC Bank Skills",
 	enabledByDefault = false
 )
-public class OCBankSkills extends OCPlugin
+public class OCBankSkillsPlugin extends OCPlugin
 {
 	@Inject
 	protected void setup(Context context, Runner runner, Config config)

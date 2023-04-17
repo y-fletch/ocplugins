@@ -2,6 +2,22 @@
   {
     "projectUrl": "https://github.com/y-fletch/ocplugins",
     "provider": "yfletch",
+    "name": "OC Bank Skills",
+    "description": "One-click bank skills (Herblore, Fletching, Crafting)",
+    "id": "ocbankskills-plugin",
+    "releases": [
+      {
+        "date": "2023-04-17",
+        "sha512sum": "14A4AC0E162EB9A6BBE240E392C5A93FA8C41508793BF635696ACDFC2F4AAB663917E82EA65B33AA3522721F3D777939FF4D0576378F0DE50C0133B9EB096548",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
     "name": "OC Barbarian Fishing",
     "description": "One-click OC Barbarian Fishing",
     "id": "ocbarbarianfishing-plugin",
@@ -161,29 +177,6 @@
         "sha512sum": "91F45C150EDEB5CA3FAE823BFEDBDEC359A344BE8E26513550D519D6A73F09723348211B659614DED51AD17CFE01E4290798652DB7B7B51113EB8A1661B3B528",
         "version": "1.0.2",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocgarden-1.0.2.jar?raw=true",
-        "requires": "^1.0.0"
-      }
-    ]
-  },
-  {
-    "projectUrl": "https://github.com/y-fletch/ocplugins",
-    "provider": "yfletch",
-    "name": "OC Herblore",
-    "description": "One-click herblore",
-    "id": "ocherblore-plugin",
-    "releases": [
-      {
-        "date": "2023-04-17",
-        "sha512sum": "C915D72A5D367CC59853FD9D4ABE28512E49172E1D6FBDE2C23755DE617B93911775EAEECE9007B085682C63251CB111A229116E9239E1D069ED68C9C6AC91E3",
-        "version": "1.0.0",
-        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocherblore-1.0.0.jar?raw=true",
-        "requires": "^1.0.0"
-      },
-      {
-        "date": "2023-04-17",
-        "sha512sum": "596B3F8D643243466501CE6E78C95857C0C3D656B196BF9803BBE2538E3FF3DE78AB97E79A6480B5B58311CDCB6DD0887950DD9296EB41288249753617235E92",
-        "version": "1.0.1",
-        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocherblore-1.0.1.jar?raw=true",
         "requires": "^1.0.0"
       }
     ]
