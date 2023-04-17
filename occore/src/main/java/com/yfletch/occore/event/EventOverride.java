@@ -23,6 +23,8 @@ public abstract class EventOverride
 	private int param1 = -1;
 	private boolean forceLeftClick = false;
 
+	private final int itemId = -1;
+
 	private Consumer<MenuEntry> callback;
 
 	protected void validate()
@@ -59,6 +61,7 @@ public abstract class EventOverride
 			targetEvent.setMenuAction(getType());
 			targetEvent.setParam0(getParam0());
 			targetEvent.setParam1(getParam1());
+			targetEvent.setItemId(getItemId());
 			targetEvent.getMenuEntry().onClick(callback);
 		}
 		catch (Exception e)

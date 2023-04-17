@@ -108,6 +108,22 @@
   {
     "projectUrl": "https://github.com/y-fletch/ocplugins",
     "provider": "yfletch",
+    "name": "OC Bwans",
+    "description": "One-click one-tick Karambwans",
+    "id": "ocbwans-plugin",
+    "releases": [
+      {
+        "date": "2023-04-17",
+        "sha512sum": "6AAEA7B5E7C31B4827B38AA11811D9053EF17D32E2E8BDF9562AE13677F7413D98141FF4235B0C4E782E74D7D468B07476935DF3BD00E92311190FFA6E58F366",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbwans-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
     "name": "OC Clicker",
     "description": "Auto-clicker for OC plugins",
     "id": "occlicker-plugin",

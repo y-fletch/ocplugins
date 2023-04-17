@@ -49,6 +49,11 @@ public abstract class OCPlugin extends Plugin
 
 	protected void setup(ActionContext context, ActionRunner<?> runner, OCConfig config)
 	{
+		if (context == null || runner == null || config == null)
+		{
+			throw new IllegalArgumentException("OCPlugin was not injected properly");
+		}
+
 		this.context = context;
 		this.runner = runner;
 		actionOverlay = new ActionOverlay(getName(), runner, config);
@@ -98,7 +103,7 @@ public abstract class OCPlugin extends Plugin
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
-		context.tick();
+		context.tick(true);
 		runner.tick();
 	}
 

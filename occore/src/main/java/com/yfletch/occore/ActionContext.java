@@ -69,11 +69,21 @@ public class ActionContext
 		return flags.getOrDefault(key, false);
 	}
 
+	public void tick()
+	{
+		tick(false);
+	}
+
 	/**
 	 * Decay ephemeral flags each tick.
 	 */
-	public void tick()
+	public void tick(boolean isGameTick)
 	{
+		if (!isGameTick)
+		{
+			return;
+		}
+
 		for (Map.Entry<String, Integer> entry : ephemeral.entrySet())
 		{
 			if (entry.getValue() < 1)

@@ -86,10 +86,12 @@ open class BootstrapTask : DefaultTask() {
                             continue
                         }
 
-                        val versionProperty = "\"version\":\"${it.project.version}\""
+                        pluginAdded = true
+
+                        val fileName = "${it.project.name}-${it.project.version}"
 
                         // version already exists
-                        if (versionProperty in item.getJSONArray("releases").toString()) {
+                        if (fileName in item.getJSONArray("releases").toString()) {
                             plugins.add(item)
                             break
                         }
@@ -105,8 +107,17 @@ open class BootstrapTask : DefaultTask() {
                             Paths.get(
                                 finalReleaseDir.toString(),
                                 "${it.project.name}-${it.project.version}.jar"
-                            ).toFile(),
-                            true
+                            ).toFile()
+                        )
+                    }
+
+                    if (!pluginAdded) {
+                        plugins.add(pluginObject)
+                        plugin.copyTo(
+                            Paths.get(
+                                finalReleaseDir.toString(),
+                                "${it.project.name}-${it.project.version}.jar"
+                            ).toFile()
                         )
                     }
                 }
