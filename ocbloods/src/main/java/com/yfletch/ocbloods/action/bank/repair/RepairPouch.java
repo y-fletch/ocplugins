@@ -8,7 +8,7 @@ public class RepairPouch extends WidgetAction<OCBloodsContext>
 {
 	public RepairPouch()
 	{
-		super("Continue", null);
+		super("Continue");
 	}
 
 	@Override

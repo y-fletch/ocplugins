@@ -2,6 +2,7 @@ package com.yfletch.occore.action;
 
 import com.yfletch.occore.ActionContext;
 import com.yfletch.occore.util.RegionPoint;
+import java.util.function.Function;
 
 public class ActionBuilder<T extends ActionContext>
 {
@@ -40,8 +41,13 @@ public class ActionBuilder<T extends ActionContext>
 		return new WidgetAction<>(action, widgetName);
 	}
 
+	public WidgetAction<T> widget(String action, Function<T, String> widgetNameGetter)
+	{
+		return new WidgetAction<>(action, widgetNameGetter);
+	}
+
 	public WidgetAction<T> widget(String action)
 	{
-		return new WidgetAction<>(action, null);
+		return new WidgetAction<>(action);
 	}
 }

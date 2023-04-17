@@ -10,7 +10,7 @@ public class ClickToContinuePlayer extends WidgetAction<OCBloodsContext>
 
 	public ClickToContinuePlayer()
 	{
-		super("Continue", null);
+		super("Continue");
 	}
 
 	@Override

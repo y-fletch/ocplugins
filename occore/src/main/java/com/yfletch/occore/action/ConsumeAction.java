@@ -15,11 +15,17 @@ public class ConsumeAction<T extends ActionContext> extends Action<T>
 	private String name;
 
 	@Override
+	public String getName()
+	{
+		return name + " (consume)";
+	}
+
+	@Override
 	public LineComponent getDisplayLine(T ctx)
 	{
 		return LineComponent.builder()
 			.left(name).leftColor(Color.WHITE)
-			.right("(consume)").rightColor(Color.BLUE)
+			.right("(consume)").rightColor(Color.ORANGE)
 			.build();
 	}
 

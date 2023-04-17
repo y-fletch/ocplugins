@@ -8,6 +8,12 @@ import net.runelite.client.ui.overlay.components.LineComponent;
 public class Wait extends Action<OCSepulchreContext>
 {
 	@Override
+	public String getName()
+	{
+		return "Waiting";
+	}
+
+	@Override
 	public LineComponent getDisplayLine(OCSepulchreContext ctx)
 	{
 		return LineComponent.builder()

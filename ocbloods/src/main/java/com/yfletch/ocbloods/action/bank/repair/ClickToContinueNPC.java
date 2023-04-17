@@ -10,7 +10,7 @@ public class ClickToContinueNPC extends WidgetAction<OCBloodsContext>
 
 	public ClickToContinueNPC()
 	{
-		super("Continue", null);
+		super("Continue");
 	}
 
 	@Override

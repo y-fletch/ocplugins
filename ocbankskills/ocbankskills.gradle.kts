@@ -23,10 +23,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "1.0.1"
+version = "0.0.1-alpha"
 
-project.extra["PluginName"] = "OC Herblore"
-project.extra["PluginDescription"] = "One-click herblore"
+project.extra["PluginName"] = "OC Bank Skills [alpha]"
+project.extra["PluginDescription"] = "One-click bank skills"
 
 dependencies {
     compileOnly(project(":occore"))

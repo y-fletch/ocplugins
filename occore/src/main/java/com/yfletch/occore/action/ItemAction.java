@@ -15,6 +15,12 @@ public class ItemAction<T extends ActionContext> extends Action<T>
 	protected String itemName;
 
 	@Override
+	public String getName()
+	{
+		return action + " " + itemName;
+	}
+
+	@Override
 	public LineComponent getDisplayLine(ActionContext context)
 	{
 		return LineComponent.builder()

@@ -10,7 +10,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.runelite.client.ui.overlay.components.LineComponent;
 
-public class Action<T extends ActionContext>
+public abstract class Action<T extends ActionContext>
 {
 	private Predicate<T> isReady;
 	private Predicate<T> isWorking;
@@ -23,6 +23,8 @@ public class Action<T extends ActionContext>
 	@Setter
 	@Accessors(fluent = true)
 	private boolean hasRun = false;
+
+	public abstract String getName();
 
 	/**
 	 * Get content to display in the UI overlay when this action

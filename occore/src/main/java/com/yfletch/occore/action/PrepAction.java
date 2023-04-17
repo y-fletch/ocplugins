@@ -13,6 +13,12 @@ public class PrepAction<T extends ActionContext> extends Action<T>
 {
 	private Function<T, Map<String, Boolean>> getConditions;
 
+	@Override
+	public String getName()
+	{
+		return "Prepare";
+	}
+
 	public PrepAction<T> withConditions(Function<T, Map<String, Boolean>> getConditions)
 	{
 		this.getConditions = getConditions;

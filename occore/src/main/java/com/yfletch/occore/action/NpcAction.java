@@ -15,6 +15,12 @@ public class NpcAction<T extends ActionContext> extends Action<T>
 	protected String npcName;
 
 	@Override
+	public String getName()
+	{
+		return action + " " + npcName;
+	}
+
+	@Override
 	public LineComponent getDisplayLine(ActionContext context)
 	{
 		return LineComponent.builder()

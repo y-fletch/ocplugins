@@ -9,7 +9,7 @@ include(":ocbarbfishing")
 include(":occlicker")
 include(":ocbarbfishing")
 include(":ocblastfurnace")
-include(":ocherblore")
+include(":ocbankskills")
 
 for (project in rootProject.children) {
     project.apply {

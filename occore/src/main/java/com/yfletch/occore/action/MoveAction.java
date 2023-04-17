@@ -23,6 +23,22 @@ public class MoveAction<T extends ActionContext> extends Action<T>
 	}
 
 	@Override
+	public String getName()
+	{
+		WorldPoint worldPoint = target.toWorld();
+		String text = "???";
+
+		if (worldPoint != null)
+		{
+			text = markerName != null
+				? markerName + " " + worldPoint.getX() + "," + worldPoint.getY() + "," + worldPoint.getPlane()
+				: worldPoint.getX() + "," + worldPoint.getY() + "," + worldPoint.getPlane();
+		}
+
+		return "Move to " + text;
+	}
+
+	@Override
 	public LineComponent getDisplayLine(ActionContext context)
 	{
 		WorldPoint worldPoint = target.toWorld();

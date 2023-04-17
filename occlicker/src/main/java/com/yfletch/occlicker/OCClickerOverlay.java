@@ -18,8 +18,8 @@ public class OCClickerOverlay extends OverlayPanel
 		panelComponent.getChildren().add(
 			LineComponent.builder()
 				.left("OC Clicker").leftColor(Color.CYAN)
-				.right(plugin.isEnabled() ? "Enabled" : "Not enabled")
-				.rightColor(plugin.isEnabled() ? Color.RED : Color.WHITE)
+				.right(plugin.isEnabled() ? "ON" : "OFF")
+				.rightColor(plugin.isEnabled() ? Color.GREEN : Color.YELLOW)
 				.build()
 		);
 

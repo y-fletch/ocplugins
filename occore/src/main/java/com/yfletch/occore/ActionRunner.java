@@ -8,13 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.MenuAction;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.client.ui.overlay.components.LineComponent;
 
+@Slf4j
 public class ActionRunner<T extends ActionContext>
 {
-	@Getter
 	private final T context;
 	private final EventBuilder eventBuilder;
 
@@ -37,13 +38,13 @@ public class ActionRunner<T extends ActionContext>
 		this.context = context;
 		this.eventBuilder = eventBuilder;
 
-		setup();
+		setup(context);
 	}
 
 	/**
 	 * Run after runner initialization, add your steps here
 	 */
-	public void setup()
+	public void setup(T context)
 	{
 	}
 
@@ -53,7 +54,7 @@ public class ActionRunner<T extends ActionContext>
 	public void refresh()
 	{
 		actions.clear();
-		setup();
+		setup(context);
 	}
 
 	/**
@@ -92,6 +93,11 @@ public class ActionRunner<T extends ActionContext>
 
 		for (final var action : actions)
 		{
+//			final var ready = action.isReady(context);
+//			final var done = action.isDone(context);
+//
+//			log.info(action.getName() + " - " + "ready:" + ready + " done:" + done);
+
 			if (action.isReady(context) && !action.isDone(context))
 			{
 				current = action;

@@ -15,6 +15,12 @@ public class ObjectAction<T extends ActionContext> extends Action<T>
 	private String objectName;
 
 	@Override
+	public String getName()
+	{
+		return action + " " + objectName;
+	}
+
+	@Override
 	public LineComponent getDisplayLine(T ctx)
 	{
 		return LineComponent.builder()

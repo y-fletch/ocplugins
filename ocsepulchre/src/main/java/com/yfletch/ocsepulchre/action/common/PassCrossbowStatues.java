@@ -5,4 +5,9 @@ import com.yfletch.ocsepulchre.OCSepulchreContext;
 
 public class PassCrossbowStatues extends Action<OCSepulchreContext>
 {
+	@Override
+	public String getName()
+	{
+		return null;
+	}
 }
