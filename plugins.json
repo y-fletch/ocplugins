@@ -12,6 +12,13 @@
         "version": "1.0.0",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-1.0.0.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "B154820F5B7B303EABF0C6E261729034E8D9CBDBE0CD6FED425A29CBA3DB6D53F97ECBC624F64722631B468D7D6F4DBFB6EBFAC535E68C5EDE5F0E85236E9450",
+        "version": "1.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-1.0.1.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
@@ -19,7 +26,7 @@
     "projectUrl": "https://github.com/y-fletch/ocplugins",
     "provider": "yfletch",
     "name": "OC Barbarian Fishing",
-    "description": "One-click OC Barbarian Fishing",
+    "description": "One-click Barbarian Fishing",
     "id": "ocbarbarianfishing-plugin",
     "releases": [
       {
@@ -34,6 +41,13 @@
         "sha512sum": "FC00E68FE737E1D0D096E743124EC967D968AE87FC2F54367B87D6DE56E5891D6FF8F153985847C840CCF58517514BD255F64CD559C8C6982AD903A2B3BB446C",
         "version": "1.0.1",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbarbfishing-1.0.1.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "547EC5D5135B16A656931F23D8673D6A1902EEBC5676155C6A4D2E2464D113A9E0EF4139B4EFEE30E32A36DEA29C7C50629ABF798EDEDE6AD731DE0245A6E478",
+        "version": "1.0.2",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbarbfishing-1.0.2.jar?raw=true",
         "requires": "^1.0.0"
       }
     ]
@@ -50,6 +64,13 @@
         "sha512sum": "C22CAA6B18E0170594D2F776C7C268473630B649ECF717D83DF3065BE851A95D838DB52A796651A0AB2D1CB945B00BFA2D2CCC506C43A3AC59ADBB77D05B2817",
         "version": "0.0.1-alpha",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocblastfurnace-0.0.1-alpha.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "F1A1B1BF03996497D0E60B9BEB2384214BE204372A38F2B361E5457C02760F0EA0B669B4AA20E72007F1D932DFF6C9C22BC9A05EE4A95DC78526BF879038B56A",
+        "version": "0.0.2-alpha",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocblastfurnace-0.0.2-alpha.jar?raw=true",
         "requires": "^1.0.0"
       }
     ]
@@ -73,6 +94,13 @@
         "sha512sum": "4CF8F79C46C708EFD9998B5EBC56A6D4043EF292A1228A601C8D900964350DC44BA21B7D9B7D6BAB34876BBD21A3E1E835AC1D99B4311D5F24D3FB50FD44F0B9",
         "version": "0.0.5",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbloods-0.0.5.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "5E5B05C518E27F03335D488B5155AC18A91FBB06F94C1A5461BCBBA175326B593152FE552AC1CED5E0C6F8658E77E2B2BA4D1860D24D7BE84313A1C8E4AF836C",
+        "version": "0.0.6",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbloods-0.0.6.jar?raw=true",
         "requires": "^1.0.0"
       }
     ]
@@ -103,6 +131,13 @@
         "sha512sum": "4509E8214D1977B7CF9B298D5C8F9ADBC85C1E526D15528E148553FC8E8D1F9D4D6891F82D76C875F5E29B30C247E454107603EC36B1B39C046B6C3E107024AA",
         "version": "1.0.2",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occlicker-1.0.2.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "69C837D16F619D0C5BCD4380F86C7C71BF61E9978403C4D2BA7686ED7240C5A085478C45B5B8E6B53B1CB7E5F8164FCB13D2DF0F20705F987781F767B4A75441",
+        "version": "1.0.3",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occlicker-1.0.3.jar?raw=true",
         "requires": "^1.0.0"
       }
     ]
@@ -148,6 +183,13 @@
         "version": "0.0.5",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.5.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "269160B8FF438B25472119189B256159A68BCD5D9D70A8C7425DF98F3205617B219DA5C9CF8E3F6CF54BFF5A02FCA0F1FF48C309C3B4896552C2C896D211E258",
+        "version": "0.0.6",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.6.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
@@ -177,6 +219,13 @@
         "sha512sum": "91F45C150EDEB5CA3FAE823BFEDBDEC359A344BE8E26513550D519D6A73F09723348211B659614DED51AD17CFE01E4290798652DB7B7B51113EB8A1661B3B528",
         "version": "1.0.2",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocgarden-1.0.2.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "85507F1D84941FFACB7E57259B99E45D9AD75FAD315EF55DDFB1A63723DE804E76CD1112C38D3504C3177C7C4002943BB9A5ADC8D6467CF750EBE5E599422762",
+        "version": "1.0.3",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocgarden-1.0.3.jar?raw=true",
         "requires": "^1.0.0"
       }
     ]
@@ -208,6 +257,13 @@
         "version": "0.0.6-alpha",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocrift-0.0.6-alpha.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "01180ECDDFFC742665A5C370A94C873AA4358A70B6D010F02F7860B0C841553A007CA2346A9495126A3470945DCD8E16C30FF1DF245B64FA9971D6CBFB643CDC",
+        "version": "0.0.7-alpha",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocrift-0.0.7-alpha.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
@@ -230,6 +286,13 @@
         "sha512sum": "76896899F85623E1D48BEC9709F2D3FD74BB3ECE79F10674D657D1623A3134E7E38A0BB0C5D6022201B8129F6F31E18D4E5624C43EE1CF6BE7E5E32B642EAC25",
         "version": "0.0.2-alpha",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocsepulchre-0.0.2-alpha.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "1D743F5F2A946FC54C49E7D968DBE23F3B90D95644B86EFE63BD58A7A307C24D3C1BBDCC40CCA5AEBE61388D1095372E67C4B5FD05D52D05B8F987963DD43710",
+        "version": "0.0.3-alpha",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocsepulchre-0.0.3-alpha.jar?raw=true",
         "requires": "^1.0.0"
       }
     ]

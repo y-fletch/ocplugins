@@ -88,32 +88,27 @@ open class BootstrapTask : DefaultTask() {
 
                         val versionProperty = "\"version\":\"${it.project.version}\""
 
+                        // version already exists
                         if (versionProperty in item.getJSONArray("releases").toString()) {
-                            pluginAdded = true
                             plugins.add(item)
                             break
                         }
 
+                        // new version
                         plugins.add(
                             JsonMerger(arrayMergeMode = JsonMerger.ArrayMergeMode.MERGE_ARRAY).merge(
                                 item,
                                 pluginObject
                             )
                         )
-                        pluginAdded = true
+                        plugin.copyTo(
+                            Paths.get(
+                                finalReleaseDir.toString(),
+                                "${it.project.name}-${it.project.version}.jar"
+                            ).toFile(),
+                            true
+                        )
                     }
-
-                    if (!pluginAdded) {
-                        plugins.add(pluginObject)
-                    }
-
-                    plugin.copyTo(
-                        Paths.get(
-                            finalReleaseDir.toString(),
-                            "${it.project.name}-${it.project.version}.jar"
-                        ).toFile(),
-                        true
-                    )
                 }
             }
 
