@@ -38,7 +38,7 @@ public class PrepAction<T extends ActionContext> extends Action<T>
 	@Override
 	public boolean isReady(T ctx)
 	{
-		return getConditions(ctx).values().stream().anyMatch(b -> b);
+		return getConditions(ctx).values().stream().anyMatch(b -> !b);
 	}
 
 	@Override
