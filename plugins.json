@@ -1,1 +1,339 @@
-[{"projectUrl":"https://github.com/y-fletch/ocplugins","provider":"yfletch","name":"OC Bank Skills","description":"One-click bank skills (Herblore, Fletching, Crafting)","id":"ocbankskills-plugin","releases":[{"date":"2023-04-17","sha512sum":"14A4AC0E162EB9A6BBE240E392C5A93FA8C41508793BF635696ACDFC2F4AAB663917E82EA65B33AA3522721F3D777939FF4D0576378F0DE50C0133B9EB096548","version":"1.0.0","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-1.0.0.jar?raw=true","requires":"^1.0.0"},{"date":"2023-04-17","sha512sum":"B154820F5B7B303EABF0C6E261729034E8D9CBDBE0CD6FED425A29CBA3DB6D53F97ECBC624F64722631B468D7D6F4DBFB6EBFAC535E68C5EDE5F0E85236E9450","version":"1.0.1","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-1.0.1.jar?raw=true","requires":"^1.0.0"}]}, {"projectUrl":"https://github.com/y-fletch/ocplugins","provider":"yfletch","name":"OC Barbarian Fishing","description":"One-click Barbarian Fishing","id":"ocbarbarianfishing-plugin","releases":[{"date":"2023-03-22","sha512sum":"D8F92148D8A1A1562D55390AD55E4D18A5ADC7C5B6DD8490EC1E2A9A4432A674EBBA5D98A44BA22C2CDCFB66CBD026AD8148DAC63E7D407341BA2DDFC3700F31","version":"1.0.0","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocbarbfishing-1.0.0.jar?raw=true","requires":"^1.0.0"},{"date":"2023-03-30","sha512sum":"FC00E68FE737E1D0D096E743124EC967D968AE87FC2F54367B87D6DE56E5891D6FF8F153985847C840CCF58517514BD255F64CD559C8C6982AD903A2B3BB446C","version":"1.0.1","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocbarbfishing-1.0.1.jar?raw=true","requires":"^1.0.0"},{"date":"2023-04-17","sha512sum":"547EC5D5135B16A656931F23D8673D6A1902EEBC5676155C6A4D2E2464D113A9E0EF4139B4EFEE30E32A36DEA29C7C50629ABF798EDEDE6AD731DE0245A6E478","version":"1.0.2","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocbarbfishing-1.0.2.jar?raw=true","requires":"^1.0.0"}]}, {"projectUrl":"https://github.com/y-fletch/ocplugins","provider":"yfletch","name":"OC Blast Furnace [alpha]","description":"One-click Blast Furnace","id":"ocblastfurnacealpha-plugin","releases":[{"date":"2023-04-14","sha512sum":"C22CAA6B18E0170594D2F776C7C268473630B649ECF717D83DF3065BE851A95D838DB52A796651A0AB2D1CB945B00BFA2D2CCC506C43A3AC59ADBB77D05B2817","version":"0.0.1-alpha","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocblastfurnace-0.0.1-alpha.jar?raw=true","requires":"^1.0.0"},{"date":"2023-04-17","sha512sum":"F1A1B1BF03996497D0E60B9BEB2384214BE204372A38F2B361E5457C02760F0EA0B669B4AA20E72007F1D932DFF6C9C22BC9A05EE4A95DC78526BF879038B56A","version":"0.0.2-alpha","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocblastfurnace-0.0.2-alpha.jar?raw=true","requires":"^1.0.0"}]}, {"projectUrl":"https://github.com/y-fletch/ocplugins","provider":"yfletch","name":"OC Bloods","description":"One-click Blood Runecrafting","id":"ocbloods-plugin","releases":[{"date":"2023-03-22","sha512sum":"078F5130EE29CF0251492DB43871E9CD8414E271DCADE979E639BF28F2DB178CEC334765AD33583064D27AA338C2ABA3746BD55DDAC2431F717E9A2A018E985F","version":"0.0.4","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocbloods-0.0.4.jar?raw=true","requires":"^1.0.0"},{"date":"2023-03-30","sha512sum":"4CF8F79C46C708EFD9998B5EBC56A6D4043EF292A1228A601C8D900964350DC44BA21B7D9B7D6BAB34876BBD21A3E1E835AC1D99B4311D5F24D3FB50FD44F0B9","version":"0.0.5","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocbloods-0.0.5.jar?raw=true","requires":"^1.0.0"},{"date":"2023-04-17","sha512sum":"5E5B05C518E27F03335D488B5155AC18A91FBB06F94C1A5461BCBBA175326B593152FE552AC1CED5E0C6F8658E77E2B2BA4D1860D24D7BE84313A1C8E4AF836C","version":"0.0.6","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocbloods-0.0.6.jar?raw=true","requires":"^1.0.0"}]}, {"projectUrl":"https://github.com/y-fletch/ocplugins","provider":"yfletch","name":"OC Bwans","description":"One-click one-tick Karambwans","id":"ocbwans-plugin","releases":[{"date":"2023-04-17","sha512sum":"6AAEA7B5E7C31B4827B38AA11811D9053EF17D32E2E8BDF9562AE13677F7413D98141FF4235B0C4E782E74D7D468B07476935DF3BD00E92311190FFA6E58F366","version":"1.0.0","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocbwans-1.0.0.jar?raw=true","requires":"^1.0.0"}]}, {"projectUrl":"https://github.com/y-fletch/ocplugins","provider":"yfletch","name":"OC Clicker","description":"Auto-clicker for OC plugins","id":"occlicker-plugin","releases":[{"date":"2023-03-16","sha512sum":"F8C93382F252BCC2889E628CB60C28BE9C01D53DC636E0B37D939DC194A9EC8A7ECD88717CB30AC5EEDB81C5550452984DB98D23B54096771CDBB192FC605F1C","version":"0.0.1","url":"https://github.com/y-fletch/ocplugins/blob/main/release/occlicker-0.0.1.jar?raw=true","requires":"^1.0.0"},{"date":"2023-03-22","sha512sum":"CA68D30C7484C3D51B07319A2E5A4ACAF99BAF836589709A4829EFAB1CA31316B56723DA04B160B1EEA2684EB7E7C792167E62FEF51056C31A15DF80B80A016A","version":"1.0.0","url":"https://github.com/y-fletch/ocplugins/blob/main/release/occlicker-1.0.0.jar?raw=true","requires":"^1.0.0"},{"date":"2023-03-30","sha512sum":"4509E8214D1977B7CF9B298D5C8F9ADBC85C1E526D15528E148553FC8E8D1F9D4D6891F82D76C875F5E29B30C247E454107603EC36B1B39C046B6C3E107024AA","version":"1.0.2","url":"https://github.com/y-fletch/ocplugins/blob/main/release/occlicker-1.0.2.jar?raw=true","requires":"^1.0.0"},{"date":"2023-04-17","sha512sum":"69C837D16F619D0C5BCD4380F86C7C71BF61E9978403C4D2BA7686ED7240C5A085478C45B5B8E6B53B1CB7E5F8164FCB13D2DF0F20705F987781F767B4A75441","version":"1.0.3","url":"https://github.com/y-fletch/ocplugins/blob/main/release/occlicker-1.0.3.jar?raw=true","requires":"^1.0.0"}]}, {"projectUrl":"https://github.com/y-fletch/ocplugins","provider":"yfletch","name":"OC Core","description":"Library package for OCPlugins","id":"occore-plugin","releases":[{"date":"2022-06-16","sha512sum":"A379EDBF1CA2B54E883D69F4A8231EFA405DD30065E3878279AFC8829D449973D2496E894A6BA92E5D7C4B19E55D904C533E4875F6E442B89828E3CD0A46E316","version":"0.0.1","url":"https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.1.jar?raw=true","requires":"^1.0.0"},{"date":"2023-03-30","sha512sum":"38891CE58C6A6A4B5065B24B4B35057868A50342A8949F39E86BE7243217F0EF8A58EE2E21814CB4069D7FA398C3CBEE3EAF4289CC7DE48F82882F2C0AE40B3D","version":"0.0.2","url":"https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.2.jar?raw=true","requires":"^1.0.0"},{"date":"2023-04-14","sha512sum":"0D4F67F11FDAF3147EF60E80A1D98101668792A89F5FD0F6EBDBB43F860117A9FC788D3C06A8D2D29CA5307E39E5ACFA94319EAF99DD3BD396D66268B0659D40","version":"0.0.3","url":"https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.3.jar?raw=true","requires":"^1.0.0"},{"date":"2023-04-17","sha512sum":"3512E1F1B9DA29547E96EF14C4543430A500447857D1427CB057602DE26EF742BF85E283C477CBCF29FDE7978582AB29B0BE994A205F28677BCE376552E77E62","version":"0.0.4","url":"https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.4.jar?raw=true","requires":"^1.0.0"},{"date":"2023-04-17","sha512sum":"E08835431D7A5359A57103493511DD42D8132F65D794B38AECD11B199FD4C5D6868434B8BF1E82788248D2F65B6ECF44E065BBA27CD4065A87D16F3B84CC5AE2","version":"0.0.5","url":"https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.5.jar?raw=true","requires":"^1.0.0"},{"date":"2023-04-17","sha512sum":"269160B8FF438B25472119189B256159A68BCD5D9D70A8C7425DF98F3205617B219DA5C9CF8E3F6CF54BFF5A02FCA0F1FF48C309C3B4896552C2C896D211E258","version":"0.0.6","url":"https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.6.jar?raw=true","requires":"^1.0.0"}]}, {"projectUrl":"https://github.com/y-fletch/ocplugins","provider":"yfletch","name":"OC Summer garden","description":"One-click summer garden","id":"ocsummergarden-plugin","releases":[{"date":"2022-05-22","sha512sum":"1CE6B4088BD778077E48CFC73C6A1086889022CBBA147B5F0D50B3E83345931E5C9C3CB3F0445C75CE536842B56FBB632A44BA50F77774A6A4A3E82490E609B3","version":"1.0.0","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocgarden-1.0.0.jar?raw=true","requires":"^1.0.0"},{"date":"2022-05-22","sha512sum":"CB793BA013D13848F4C64264A06FF6AD86FCE7726BBCC54DFAC4933158B8D1EBEA3A0E7EFE18023C96AD94662D8FE3DFFA5A297351BA5E308A13C7CDB8687C93","version":"1.0.1","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocgarden-1.0.1.jar?raw=true","requires":"^1.0.0"},{"date":"2023-03-30","sha512sum":"91F45C150EDEB5CA3FAE823BFEDBDEC359A344BE8E26513550D519D6A73F09723348211B659614DED51AD17CFE01E4290798652DB7B7B51113EB8A1661B3B528","version":"1.0.2","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocgarden-1.0.2.jar?raw=true","requires":"^1.0.0"},{"date":"2023-04-17","sha512sum":"85507F1D84941FFACB7E57259B99E45D9AD75FAD315EF55DDFB1A63723DE804E76CD1112C38D3504C3177C7C4002943BB9A5ADC8D6467CF750EBE5E599422762","version":"1.0.3","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocgarden-1.0.3.jar?raw=true","requires":"^1.0.0"}]}, {"projectUrl":"https://github.com/y-fletch/ocplugins","provider":"yfletch","name":"OC Nightmare Zone","description":"One-click Nightmare Zone","id":"ocnightmarezone-plugin","releases":[{"date":"2023-04-25","sha512sum":"C36962E0BED0B2FE80CC3C4A641E9B2307640FC1F82EFEE2CE8904A07A80E7D93D2CD750BFFF515C178BE2D28FC9D66607025B2FF34EDB7C82F5A1AE97984360","version":"1.0.0","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocnightmarezone-1.0.0.jar?raw=true","requires":"^1.0.0"}]}, {"projectUrl":"https://github.com/y-fletch/ocplugins","provider":"yfletch","name":"OC Rift [alpha]","description":"One-click Guardians of the Rift","id":"ocriftalpha-plugin","releases":[{"date":"2023-03-22","sha512sum":"04EC2919C52CDFB8B35A7371D421FE79CA65D76DBBDB116592E50DF9C8B2035E79C1EA3CB3BA91785E9A437400981FA6334390357F3A6E5E6BBEFE53E2D81745","version":"0.0.4-alpha","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocrift-0.0.4-alpha.jar?raw=true","requires":"^1.0.0"},{"date":"2023-03-30","sha512sum":"AE5C5890EA260F41D001F44D5C660C95E63ECE580076237D8CCF13821027AF7D6FEC25CDC88FB48C5786024605F4107E81F9BB0AF6D4ED4D2E917CD2E89C205D","version":"0.0.5-alpha","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocrift-0.0.5-alpha.jar?raw=true","requires":"^1.0.0"},{"date":"2023-04-03","sha512sum":"EEF13E5673ADDE170F626195BC5DC94A40014DBED1AFFDC1499ED45B34FCB768DF8DFFCBD8C15016D1789CDF1B2B836377D40A0925BCE34BE2D58A14FE727D6B","version":"0.0.6-alpha","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocrift-0.0.6-alpha.jar?raw=true","requires":"^1.0.0"},{"date":"2023-04-17","sha512sum":"01180ECDDFFC742665A5C370A94C873AA4358A70B6D010F02F7860B0C841553A007CA2346A9495126A3470945DCD8E16C30FF1DF245B64FA9971D6CBFB643CDC","version":"0.0.7-alpha","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocrift-0.0.7-alpha.jar?raw=true","requires":"^1.0.0"}]}, {"projectUrl":"https://github.com/y-fletch/ocplugins","provider":"yfletch","name":"OC Sepulchre [alpha]","description":"One-click Hallowed Sepulchre","id":"ocsepulchrealpha-plugin","releases":[{"date":"2023-03-22","sha512sum":"F13CCAAD0B1FCCF6422232250308C130153A5299333C347E9B83AE140640D990DD148A482AE3B14C4A44D47B34EE1C8480E1159E5CC6DD35DAEB104BC7460D54","version":"0.0.1-alpha","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocsepulchre-0.0.1-alpha.jar?raw=true","requires":"^1.0.0"},{"date":"2023-03-30","sha512sum":"76896899F85623E1D48BEC9709F2D3FD74BB3ECE79F10674D657D1623A3134E7E38A0BB0C5D6022201B8129F6F31E18D4E5624C43EE1CF6BE7E5E32B642EAC25","version":"0.0.2-alpha","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocsepulchre-0.0.2-alpha.jar?raw=true","requires":"^1.0.0"},{"date":"2023-04-17","sha512sum":"1D743F5F2A946FC54C49E7D968DBE23F3B90D95644B86EFE63BD58A7A307C24D3C1BBDCC40CCA5AEBE61388D1095372E67C4B5FD05D52D05B8F987963DD43710","version":"0.0.3-alpha","url":"https://github.com/y-fletch/ocplugins/blob/main/release/ocsepulchre-0.0.3-alpha.jar?raw=true","requires":"^1.0.0"}]}]
+[
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Bank Skills",
+    "description": "One-click bank skills (Herblore, Fletching, Crafting)",
+    "id": "ocbankskills-plugin",
+    "releases": [
+      {
+        "date": "2023-04-17",
+        "sha512sum": "14A4AC0E162EB9A6BBE240E392C5A93FA8C41508793BF635696ACDFC2F4AAB663917E82EA65B33AA3522721F3D777939FF4D0576378F0DE50C0133B9EB096548",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "B154820F5B7B303EABF0C6E261729034E8D9CBDBE0CD6FED425A29CBA3DB6D53F97ECBC624F64722631B468D7D6F4DBFB6EBFAC535E68C5EDE5F0E85236E9450",
+        "version": "1.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-1.0.1.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Barbarian Fishing",
+    "description": "One-click Barbarian Fishing",
+    "id": "ocbarbarianfishing-plugin",
+    "releases": [
+      {
+        "date": "2023-03-22",
+        "sha512sum": "D8F92148D8A1A1562D55390AD55E4D18A5ADC7C5B6DD8490EC1E2A9A4432A674EBBA5D98A44BA22C2CDCFB66CBD026AD8148DAC63E7D407341BA2DDFC3700F31",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbarbfishing-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-03-30",
+        "sha512sum": "FC00E68FE737E1D0D096E743124EC967D968AE87FC2F54367B87D6DE56E5891D6FF8F153985847C840CCF58517514BD255F64CD559C8C6982AD903A2B3BB446C",
+        "version": "1.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbarbfishing-1.0.1.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "547EC5D5135B16A656931F23D8673D6A1902EEBC5676155C6A4D2E2464D113A9E0EF4139B4EFEE30E32A36DEA29C7C50629ABF798EDEDE6AD731DE0245A6E478",
+        "version": "1.0.2",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbarbfishing-1.0.2.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Blast Furnace [alpha]",
+    "description": "One-click Blast Furnace",
+    "id": "ocblastfurnacealpha-plugin",
+    "releases": [
+      {
+        "date": "2023-04-14",
+        "sha512sum": "C22CAA6B18E0170594D2F776C7C268473630B649ECF717D83DF3065BE851A95D838DB52A796651A0AB2D1CB945B00BFA2D2CCC506C43A3AC59ADBB77D05B2817",
+        "version": "0.0.1-alpha",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocblastfurnace-0.0.1-alpha.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "F1A1B1BF03996497D0E60B9BEB2384214BE204372A38F2B361E5457C02760F0EA0B669B4AA20E72007F1D932DFF6C9C22BC9A05EE4A95DC78526BF879038B56A",
+        "version": "0.0.2-alpha",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocblastfurnace-0.0.2-alpha.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Bloods",
+    "description": "One-click Blood Runecrafting",
+    "id": "ocbloods-plugin",
+    "releases": [
+      {
+        "date": "2023-03-22",
+        "sha512sum": "078F5130EE29CF0251492DB43871E9CD8414E271DCADE979E639BF28F2DB178CEC334765AD33583064D27AA338C2ABA3746BD55DDAC2431F717E9A2A018E985F",
+        "version": "0.0.4",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbloods-0.0.4.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-03-30",
+        "sha512sum": "4CF8F79C46C708EFD9998B5EBC56A6D4043EF292A1228A601C8D900964350DC44BA21B7D9B7D6BAB34876BBD21A3E1E835AC1D99B4311D5F24D3FB50FD44F0B9",
+        "version": "0.0.5",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbloods-0.0.5.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "5E5B05C518E27F03335D488B5155AC18A91FBB06F94C1A5461BCBBA175326B593152FE552AC1CED5E0C6F8658E77E2B2BA4D1860D24D7BE84313A1C8E4AF836C",
+        "version": "0.0.6",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbloods-0.0.6.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Bwans",
+    "description": "One-click one-tick Karambwans",
+    "id": "ocbwans-plugin",
+    "releases": [
+      {
+        "date": "2023-04-17",
+        "sha512sum": "6AAEA7B5E7C31B4827B38AA11811D9053EF17D32E2E8BDF9562AE13677F7413D98141FF4235B0C4E782E74D7D468B07476935DF3BD00E92311190FFA6E58F366",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbwans-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Clicker",
+    "description": "Auto-clicker for OC plugins",
+    "id": "occlicker-plugin",
+    "releases": [
+      {
+        "date": "2023-03-16",
+        "sha512sum": "F8C93382F252BCC2889E628CB60C28BE9C01D53DC636E0B37D939DC194A9EC8A7ECD88717CB30AC5EEDB81C5550452984DB98D23B54096771CDBB192FC605F1C",
+        "version": "0.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occlicker-0.0.1.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-03-22",
+        "sha512sum": "CA68D30C7484C3D51B07319A2E5A4ACAF99BAF836589709A4829EFAB1CA31316B56723DA04B160B1EEA2684EB7E7C792167E62FEF51056C31A15DF80B80A016A",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occlicker-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-03-30",
+        "sha512sum": "4509E8214D1977B7CF9B298D5C8F9ADBC85C1E526D15528E148553FC8E8D1F9D4D6891F82D76C875F5E29B30C247E454107603EC36B1B39C046B6C3E107024AA",
+        "version": "1.0.2",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occlicker-1.0.2.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "69C837D16F619D0C5BCD4380F86C7C71BF61E9978403C4D2BA7686ED7240C5A085478C45B5B8E6B53B1CB7E5F8164FCB13D2DF0F20705F987781F767B4A75441",
+        "version": "1.0.3",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occlicker-1.0.3.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Core",
+    "description": "Library package for OCPlugins",
+    "id": "occore-plugin",
+    "releases": [
+      {
+        "date": "2022-06-16",
+        "sha512sum": "A379EDBF1CA2B54E883D69F4A8231EFA405DD30065E3878279AFC8829D449973D2496E894A6BA92E5D7C4B19E55D904C533E4875F6E442B89828E3CD0A46E316",
+        "version": "0.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.1.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-03-30",
+        "sha512sum": "38891CE58C6A6A4B5065B24B4B35057868A50342A8949F39E86BE7243217F0EF8A58EE2E21814CB4069D7FA398C3CBEE3EAF4289CC7DE48F82882F2C0AE40B3D",
+        "version": "0.0.2",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.2.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-14",
+        "sha512sum": "0D4F67F11FDAF3147EF60E80A1D98101668792A89F5FD0F6EBDBB43F860117A9FC788D3C06A8D2D29CA5307E39E5ACFA94319EAF99DD3BD396D66268B0659D40",
+        "version": "0.0.3",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.3.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "3512E1F1B9DA29547E96EF14C4543430A500447857D1427CB057602DE26EF742BF85E283C477CBCF29FDE7978582AB29B0BE994A205F28677BCE376552E77E62",
+        "version": "0.0.4",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.4.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "E08835431D7A5359A57103493511DD42D8132F65D794B38AECD11B199FD4C5D6868434B8BF1E82788248D2F65B6ECF44E065BBA27CD4065A87D16F3B84CC5AE2",
+        "version": "0.0.5",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.5.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "269160B8FF438B25472119189B256159A68BCD5D9D70A8C7425DF98F3205617B219DA5C9CF8E3F6CF54BFF5A02FCA0F1FF48C309C3B4896552C2C896D211E258",
+        "version": "0.0.6",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.6.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Summer garden",
+    "description": "One-click summer garden",
+    "id": "ocsummergarden-plugin",
+    "releases": [
+      {
+        "date": "2022-05-22",
+        "sha512sum": "1CE6B4088BD778077E48CFC73C6A1086889022CBBA147B5F0D50B3E83345931E5C9C3CB3F0445C75CE536842B56FBB632A44BA50F77774A6A4A3E82490E609B3",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocgarden-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2022-05-22",
+        "sha512sum": "CB793BA013D13848F4C64264A06FF6AD86FCE7726BBCC54DFAC4933158B8D1EBEA3A0E7EFE18023C96AD94662D8FE3DFFA5A297351BA5E308A13C7CDB8687C93",
+        "version": "1.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocgarden-1.0.1.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-03-30",
+        "sha512sum": "91F45C150EDEB5CA3FAE823BFEDBDEC359A344BE8E26513550D519D6A73F09723348211B659614DED51AD17CFE01E4290798652DB7B7B51113EB8A1661B3B528",
+        "version": "1.0.2",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocgarden-1.0.2.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "85507F1D84941FFACB7E57259B99E45D9AD75FAD315EF55DDFB1A63723DE804E76CD1112C38D3504C3177C7C4002943BB9A5ADC8D6467CF750EBE5E599422762",
+        "version": "1.0.3",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocgarden-1.0.3.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Nightmare Zone",
+    "description": "One-click Nightmare Zone",
+    "id": "ocnightmarezone-plugin",
+    "releases": [
+      {
+        "date": "2023-04-25",
+        "sha512sum": "C36962E0BED0B2FE80CC3C4A641E9B2307640FC1F82EFEE2CE8904A07A80E7D93D2CD750BFFF515C178BE2D28FC9D66607025B2FF34EDB7C82F5A1AE97984360",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocnightmarezone-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-26",
+        "sha512sum": "CF80E3C1A787D5EAF41F60EC3926B1B75B634FC461CEB2C4CF2F9949A328ED4F9D232C2BB9240F56BA61D106FDF8EC771D61F16419EB846B76DDD527599DF2C5",
+        "version": "1.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocnightmarezone-1.0.1.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Rift [alpha]",
+    "description": "One-click Guardians of the Rift",
+    "id": "ocriftalpha-plugin",
+    "releases": [
+      {
+        "date": "2023-03-22",
+        "sha512sum": "04EC2919C52CDFB8B35A7371D421FE79CA65D76DBBDB116592E50DF9C8B2035E79C1EA3CB3BA91785E9A437400981FA6334390357F3A6E5E6BBEFE53E2D81745",
+        "version": "0.0.4-alpha",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocrift-0.0.4-alpha.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-03-30",
+        "sha512sum": "AE5C5890EA260F41D001F44D5C660C95E63ECE580076237D8CCF13821027AF7D6FEC25CDC88FB48C5786024605F4107E81F9BB0AF6D4ED4D2E917CD2E89C205D",
+        "version": "0.0.5-alpha",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocrift-0.0.5-alpha.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-03",
+        "sha512sum": "EEF13E5673ADDE170F626195BC5DC94A40014DBED1AFFDC1499ED45B34FCB768DF8DFFCBD8C15016D1789CDF1B2B836377D40A0925BCE34BE2D58A14FE727D6B",
+        "version": "0.0.6-alpha",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocrift-0.0.6-alpha.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "01180ECDDFFC742665A5C370A94C873AA4358A70B6D010F02F7860B0C841553A007CA2346A9495126A3470945DCD8E16C30FF1DF245B64FA9971D6CBFB643CDC",
+        "version": "0.0.7-alpha",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocrift-0.0.7-alpha.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Sepulchre [alpha]",
+    "description": "One-click Hallowed Sepulchre",
+    "id": "ocsepulchrealpha-plugin",
+    "releases": [
+      {
+        "date": "2023-03-22",
+        "sha512sum": "F13CCAAD0B1FCCF6422232250308C130153A5299333C347E9B83AE140640D990DD148A482AE3B14C4A44D47B34EE1C8480E1159E5CC6DD35DAEB104BC7460D54",
+        "version": "0.0.1-alpha",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocsepulchre-0.0.1-alpha.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-03-30",
+        "sha512sum": "76896899F85623E1D48BEC9709F2D3FD74BB3ECE79F10674D657D1623A3134E7E38A0BB0C5D6022201B8129F6F31E18D4E5624C43EE1CF6BE7E5E32B642EAC25",
+        "version": "0.0.2-alpha",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocsepulchre-0.0.2-alpha.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-17",
+        "sha512sum": "1D743F5F2A946FC54C49E7D968DBE23F3B90D95644B86EFE63BD58A7A307C24D3C1BBDCC40CCA5AEBE61388D1095372E67C4B5FD05D52D05B8F987963DD43710",
+        "version": "0.0.3-alpha",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocsepulchre-0.0.3-alpha.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  }
+]

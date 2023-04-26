@@ -5,13 +5,13 @@ import com.google.inject.Singleton;
 import com.yfletch.occore.ActionContext;
 import com.yfletch.occore.util.NpcHelper;
 import com.yfletch.occore.util.ObjectHelper;
+import it.enok.ocnightmarezone.config.ItemOption;
+import it.enok.ocnightmarezone.config.PotionOption;
 import lombok.Getter;
 import net.runelite.api.Client;
-import net.runelite.api.ItemID;
 import net.runelite.api.NpcID;
 import net.runelite.api.Varbits;
 import net.runelite.api.Skill;
-import net.unethicalite.api.game.Combat;
 
 @Singleton
 public class Context extends ActionContext
@@ -28,11 +28,28 @@ public class Context extends ActionContext
 	private static final int VIAL_OBJECT_ID = 26291;
 
 	/**
+	 * Returns `true` if using damageItem
+	 */
+	public boolean usingDamageItem()
+	{
+		return config.itemOption() == ItemOption.NONE;
+	}
+
+	/**
+	 * Returns `true` if using absorption potions.
+	 * default: `true`
+	 */
+	public boolean useAbsorptionPotion()
+	{
+		return config.useAbsorptionPotion();
+	}
+
+	/**
 	 * Returns `true` for Rock Cake
 	 */
 	public boolean usingRockCake()
 	{
-		return config.damageItem().getItemId() == ItemID.DWARVEN_ROCK_CAKE_7510;
+		return config.itemOption() == ItemOption.ROCK_CAKE;
 	}
 
 	/**
@@ -40,7 +57,7 @@ public class Context extends ActionContext
 	 */
 	public boolean usingLocatorOrb()
 	{
-		return config.damageItem().getItemId() == ItemID.LOCATOR_ORB;
+		return config.itemOption() == ItemOption.LOCATOR_ORB;
 	}
 
 	/**
@@ -48,7 +65,25 @@ public class Context extends ActionContext
 	 */
 	public int getDamageItemId()
 	{
-		return config.damageItem().getItemId();
+		return config.itemOption().getItemId();
+	}
+
+	/**
+	 * Returns an array of ItemIds associated with the users chosen potion
+	 */
+	public int[] getPotionOptionIds()
+	{
+		return config.potionOption().getItemIds();
+	}
+
+	public boolean usingPotionOption()
+	{
+		return config.potionOption() != PotionOption.NONE;
+	}
+
+	public String getPotionOptionLabel()
+	{
+		return config.potionOption().getLabel();
 	}
 
 	/**
@@ -95,8 +130,12 @@ public class Context extends ActionContext
 		final int attack = client.getBoostedSkillLevel(Skill.ATTACK) - client.getRealSkillLevel(Skill.ATTACK);
 		final int strength = client.getBoostedSkillLevel(Skill.STRENGTH) - client.getRealSkillLevel(Skill.STRENGTH);
 		final int defence = client.getBoostedSkillLevel(Skill.DEFENCE) - client.getRealSkillLevel(Skill.DEFENCE);
-		return attack < config.combatThreshold()
-				&& strength < config.combatThreshold()
-				&& defence < config.combatThreshold();
+		final int ranged = client.getBoostedSkillLevel(Skill.RANGED) - client.getRealSkillLevel(Skill.RANGED);
+		final int magic = client.getBoostedSkillLevel(Skill.MAGIC) - client.getRealSkillLevel(Skill.MAGIC);
+		return config.combatThreshold() > attack
+				&& config.combatThreshold() > strength
+				&& config.combatThreshold() > defence
+				&& config.combatThreshold() > ranged
+				&& config.combatThreshold() > magic;
 	}
 }
