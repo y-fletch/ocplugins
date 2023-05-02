@@ -293,6 +293,14 @@ public class ActionContext
 	}
 
 	/**
+	 * Check if player has item equipped
+	 */
+	public boolean hasEquipped(int... itemId)
+	{
+		return getEquipmentItemCount(itemId) > 0;
+	}
+
+	/**
 	 * Get amount of free slots in player inventory
 	 */
 	public int getFreeInventorySlots()

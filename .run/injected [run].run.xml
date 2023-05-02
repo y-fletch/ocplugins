@@ -3,7 +3,7 @@
     <ExternalSystemSettings>
       <option name="env">
         <map>
-          <entry key="PLUGIN_DEVELOPMENT_PATH" value="../osrs-plugins" />
+          <entry key="PLUGIN_DEVELOPMENT_PATH" value="../ocplugins" />
         </map>
       </option>
       <option name="executionName" />

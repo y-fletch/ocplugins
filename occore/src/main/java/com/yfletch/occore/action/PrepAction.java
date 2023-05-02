@@ -14,7 +14,7 @@ public class PrepAction<T extends ActionContext> extends Action<T>
 {
 	private Function<T, HashMap<String, Boolean>> getConditions;
 
-	public PrepAction<T> withConditions(Function<T, HashMap<String, Boolean>> getConditions)
+	public final PrepAction<T> withConditions(Function<T, HashMap<String, Boolean>> getConditions)
 	{
 		this.getConditions = getConditions;
 		return this;
@@ -33,7 +33,7 @@ public class PrepAction<T extends ActionContext> extends Action<T>
 	@Override
 	public boolean isReady(T ctx)
 	{
-		return getConditions(ctx).values().stream().anyMatch(b -> b);
+		return getConditions(ctx).values().stream().anyMatch(b -> !b);
 	}
 
 	@Override

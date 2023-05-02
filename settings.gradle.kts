@@ -8,6 +8,7 @@ include(":ocsepulchre")
 include(":ocbarbfishing")
 include(":occlicker")
 include(":ocbarbfishing")
+include(":ocgranite")
 
 for (project in rootProject.children) {
     project.apply {
