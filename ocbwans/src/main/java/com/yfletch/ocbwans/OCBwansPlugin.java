@@ -47,7 +47,7 @@ public class OCBwansPlugin extends OCPlugin
 					{
 						try
 						{
-							Thread.sleep(100);
+							Thread.sleep(50);
 							Keyboard.sendSpace();
 						}
 						catch (InterruptedException e)

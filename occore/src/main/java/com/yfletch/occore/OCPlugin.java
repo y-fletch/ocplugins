@@ -2,7 +2,10 @@ package com.yfletch.occore;
 
 import com.google.inject.Inject;
 import com.yfletch.occore.overlay.ActionOverlay;
+import com.yfletch.occore.overlay.DebugOverlay;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuOptionClicked;
@@ -15,6 +18,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
 
+@Slf4j
 public abstract class OCPlugin extends Plugin
 {
 	// injected
@@ -29,6 +33,7 @@ public abstract class OCPlugin extends Plugin
 	private ActionRunner<?> runner;
 	private OCConfig config;
 	private ActionOverlay actionOverlay;
+	private DebugOverlay debugOverlay;
 
 	/**
 	 * Required for quick toggle and refresh on config change to work
@@ -57,6 +62,7 @@ public abstract class OCPlugin extends Plugin
 		this.context = context;
 		this.runner = runner;
 		actionOverlay = new ActionOverlay(getName(), runner, config);
+		debugOverlay = new DebugOverlay(getName(), context);
 		this.config = config;
 	}
 
@@ -70,9 +76,14 @@ public abstract class OCPlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
-		if (actionOverlay != null)
+		if (actionOverlay != null && config.showActionOverlay())
 		{
 			overlayManager.add(actionOverlay);
+		}
+
+		if (debugOverlay != null && config.showDebugOverlay())
+		{
+			overlayManager.add(debugOverlay);
 		}
 
 		if (config.quickToggleKeybind() != null)
@@ -94,6 +105,11 @@ public abstract class OCPlugin extends Plugin
 			overlayManager.remove(actionOverlay);
 		}
 
+		if (debugOverlay != null)
+		{
+			overlayManager.remove(debugOverlay);
+		}
+
 		if (config.quickToggleKeybind() != null)
 		{
 			keyManager.unregisterKeyListener(hotkeyListener);
@@ -110,6 +126,23 @@ public abstract class OCPlugin extends Plugin
 	@Subscribe
 	public void onMenuOptionClicked(MenuOptionClicked event)
 	{
+		if (config.debugMenuEntries())
+		{
+			final var debug = "[OC] option=" + event.getMenuOption()
+				+ " target=" + event.getMenuTarget()
+				+ " id=" + event.getId()
+				+ " action=" + event.getMenuAction()
+				+ " p0=" + event.getParam0()
+				+ " p1=" + event.getParam1();
+			log.info(debug);
+			client.addChatMessage(
+				ChatMessageType.GAMEMESSAGE,
+				"Bob",
+				debug,
+				null
+			);
+		}
+
 		runner.tick();
 
 		if (config.ocEnabled())
@@ -121,10 +154,36 @@ public abstract class OCPlugin extends Plugin
 	@Subscribe
 	public void onConfigChanged(ConfigChanged event)
 	{
-		if (refreshOnConfigChange
-			&& event.getGroup().equals(configGroup))
+		if (event.getGroup().equals(configGroup))
 		{
-			clientThread.invokeLater(() -> runner.refresh());
+			if (refreshOnConfigChange)
+			{
+				clientThread.invokeLater(() -> runner.refresh());
+			}
+
+			if (event.getKey().equals("showActionOverlay"))
+			{
+				if (event.getNewValue().equals("true"))
+				{
+					overlayManager.add(actionOverlay);
+				}
+				else
+				{
+					overlayManager.remove(actionOverlay);
+				}
+			}
+
+			if (event.getKey().equals("showDebugOverlay"))
+			{
+				if (event.getNewValue().equals("true"))
+				{
+					overlayManager.add(debugOverlay);
+				}
+				else
+				{
+					overlayManager.remove(debugOverlay);
+				}
+			}
 		}
 	}
 }

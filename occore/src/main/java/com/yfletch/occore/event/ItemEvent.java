@@ -38,8 +38,13 @@ public class ItemEvent extends EventOverride
 
 	private Widget getItem(Collection<Integer> ids)
 	{
+		return getItem(ids, 0);
+	}
+
+	private Widget getItem(Collection<Integer> ids, int n)
+	{
 		List<Widget> matches = getItems(ids);
-		return matches.size() != 0 ? matches.get(0) : null;
+		return matches.size() > n ? matches.get(n) : null;
 	}
 
 	private ArrayList<Widget> getItems(Collection<Integer> ids)
@@ -103,7 +108,16 @@ public class ItemEvent extends EventOverride
 	 */
 	public ItemEvent setItems(Collection<Integer> itemIds)
 	{
-		Widget itemWidget = getItem(itemIds);
+		return setItems(itemIds, 0);
+	}
+
+	/**
+	 * Target the nth item in the inventory matching one of the
+	 * given IDs.
+	 */
+	public ItemEvent setItems(Collection<Integer> itemIds, int n)
+	{
+		Widget itemWidget = getItem(itemIds, n);
 		if (itemWidget == null)
 		{
 			throw new RuntimeException("Could not find items in inventory: " + itemIds);
@@ -121,6 +135,14 @@ public class ItemEvent extends EventOverride
 	public ItemEvent setItem(int itemId)
 	{
 		return setItems(List.of(itemId));
+	}
+
+	/**
+	 * Target the nth item in the inventory matching the given ID.
+	 */
+	public ItemEvent setItem(int itemId, int n)
+	{
+		return setItems(List.of(itemId), n);
 	}
 
 	/**
@@ -214,7 +236,7 @@ public class ItemEvent extends EventOverride
 	{
 		if (usedItemWidget != null)
 		{
-			setTarget(usedItemWidget + "<col=ffffff> -> " + getTarget());
+			setTarget(usedItemWidget.getName() + "<col=ffffff> -> " + getTarget());
 
 			client.setSelectedSpellWidget(WidgetInfo.INVENTORY.getId());
 			client.setSelectedSpellChildIndex(usedItemWidget.getIndex());
