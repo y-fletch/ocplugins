@@ -55,6 +55,31 @@ public class Runner extends ActionRunner<Context>
 				)
 		);
 
+		// drop all granite
+		for (final var entry : GRANITE.entrySet())
+		{
+			add(builder().item("Drop", entry.getKey())
+					.readyIf(ctx -> ctx.hasItem(entry.getValue())
+						&& ctx.getNextDropIndex(entry.getKey()) >= 0
+						&& (ctx.flag("mining-first-rock")
+						|| ctx.getFreeInventorySlots() == 0))
+					.onRun(
+						(ctx, event) -> {
+							var n = ctx.getNextDropIndex(entry.getKey());
+							event.builder().item()
+								.setOption("Drop", 7)
+								.setLowPriority()
+								.setItem(entry.getValue(), n)
+								.onClick(menuEntry -> {
+									ctx.flag("stopped-interacting", true, 2);
+									ctx.onDrop(entry.getKey(), n);
+								})
+								.override();
+						}
+					)
+			);
+		}
+
 		// pre-mine first rock, just in case we stopped interacting
 		// while dropping items
 		add(builder().object("Mine", "Granite rocks (1)")
@@ -74,30 +99,6 @@ public class Runner extends ActionRunner<Context>
 					}
 				)
 		);
-
-		// drop all granite
-		for (final var entry : GRANITE.entrySet())
-		{
-			add(builder().item("Drop", entry.getKey())
-					.readyIf(ctx -> ctx.hasItem(entry.getValue())
-						&& (ctx.flag("mining-first-rock")
-						|| ctx.getFreeInventorySlots() == 0))
-					.onRun(
-						(ctx, event) -> {
-							var n = ctx.getNextDropIndex(entry.getKey());
-							event.builder().item()
-								.setOption("Drop", 7)
-								.setLowPriority()
-								.setItem(entry.getValue(), n)
-								.onClick(menuEntry -> {
-									ctx.flag("stopped-interacting", true, 2);
-									ctx.onDrop(entry.getKey(), n);
-								})
-								.override();
-						}
-					)
-			);
-		}
 
 		// tick manip
 		for (final var entry : HERBS.entrySet())

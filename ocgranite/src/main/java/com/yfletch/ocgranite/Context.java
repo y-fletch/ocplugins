@@ -108,7 +108,7 @@ public class Context extends ActionContext
 	public int getNextDropIndex(String itemName)
 	{
 		final var inventory = client.getItemContainer(InventoryID.INVENTORY);
-		if (inventory == null) return 0;
+		if (inventory == null) return -1;
 
 		final var kg = itemName.split(" ", 2)[1];
 		var n = 0;
@@ -124,6 +124,6 @@ public class Context extends ActionContext
 			}
 		}
 
-		return 0;
+		return -1;
 	}
 }

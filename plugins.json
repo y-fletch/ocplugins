@@ -249,6 +249,22 @@
   {
     "projectUrl": "https://github.com/y-fletch/ocplugins",
     "provider": "yfletch",
+    "name": "OC Granite",
+    "description": "One-click 3t4g",
+    "id": "ocgranite-plugin",
+    "releases": [
+      {
+        "date": "2023-05-02",
+        "sha512sum": "9E8FDFB5CD2AC882A7A579B09277361DBD26076822A6DC75A9B95310BB4AFD11C041FC4CCB020ADB7A9B87B68D39DF7EC6F4ED1EBAA3ABD658CB62D7D6BD6955",
+        "version": "1.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocgranite-1.0.1.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
     "name": "OC Nightmare Zone",
     "description": "One-click Nightmare Zone",
     "id": "ocnightmarezone-plugin",
