@@ -55,6 +55,21 @@ public class ObjectHelper
 			.list;
 	}
 
+	public LocatableQueryResults<TileObject> queryWhere(Predicate<TileObject> predicate)
+	{
+		return new ObjectQuery()
+			.filter(predicate)
+			.result(client);
+	}
+
+	public LocatableQueryResults<TileObject> queryWhere(int id, Predicate<TileObject> predicate)
+	{
+		return new ObjectQuery()
+			.idEquals(id)
+			.filter(predicate)
+			.result(client);
+	}
+
 	/**
 	 * Get the nearest object containing the search term to the current player (case ignored)
 	 */

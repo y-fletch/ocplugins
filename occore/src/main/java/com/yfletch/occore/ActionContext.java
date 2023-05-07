@@ -3,6 +3,7 @@ package com.yfletch.occore;
 import com.google.inject.Inject;
 import com.yfletch.occore.util.ObjectHelper;
 import com.yfletch.occore.util.RegionPoint;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,7 +85,7 @@ public class ActionContext
 			return;
 		}
 
-		for (Map.Entry<String, Integer> entry : ephemeral.entrySet())
+		for (Map.Entry<String, Integer> entry : new ArrayList<>(ephemeral.entrySet()))
 		{
 			if (entry.getValue() < 1)
 			{
@@ -313,7 +314,7 @@ public class ActionContext
 	/**
 	 * Check if player has item equipped
 	 */
-	public boolean hasEquipped(int itemId)
+	public boolean hasEquipped(int... itemId)
 	{
 		return getEquipmentItemCount(itemId) > 0;
 	}

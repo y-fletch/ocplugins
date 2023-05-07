@@ -41,7 +41,7 @@ public interface OCConfig extends Config
 	@ConfigSection(
 		name = "Overlays",
 		description = "Configure overlays",
-		position = 99
+		position = 98
 	)
 	String overlays = "overlays";
 
@@ -57,14 +57,33 @@ public interface OCConfig extends Config
 		return true;
 	}
 
+	@ConfigSection(
+		name = "Debug",
+		description = "Configure overlays",
+		position = 99
+	)
+	String debug = "debug";
+
 	@ConfigItem(
 		keyName = "showDebugOverlay",
 		name = "Show debug overlay",
 		description = "Show debugging information on screen",
-		section = overlays,
-		position = 2
+		section = debug,
+		position = 0
 	)
 	default boolean showDebugOverlay()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "debugMenuEntries",
+		name = "Debug menu entries",
+		description = "Log menu entries to the game chatbox",
+		section = debug,
+		position = 1
+	)
+	default boolean debugMenuEntries()
 	{
 		return false;
 	}
