@@ -27,18 +27,13 @@ public class Context extends ActionContext
 
 	public boolean isAnimating()
 	{
-		if (flag("animating"))
-		{
-			return true;
-		}
-
 		if (getPlayer().isAnimating())
 		{
 			flag("animating", true, 5);
 			return true;
 		}
 
-		return false;
+		return flag("animating");
 	}
 
 	public boolean hasPrimary()

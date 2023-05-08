@@ -125,7 +125,8 @@ public class Runner extends ActionRunner<Context>
 				.readyIf(ctx -> !ctx.isBankOpen()
 					&& ctx.hasPrimary() && ctx.hasSecondary()
 					&& !ctx.isAnimating()
-					&& !ctx.isSkillInterfaceOpen())
+					&& !ctx.isSkillInterfaceOpen()
+					&& !ctx.flag("just-clicked-make"))
 				.doneIf(ctx -> ctx.isSkillInterfaceOpen()
 					|| ctx.isAnimating())
 				.onRun(
@@ -144,6 +145,7 @@ public class Runner extends ActionRunner<Context>
 					(ctx, event) -> event.builder().widget()
 						.setOption("Make", 1)
 						.setWidget(ctx.getMakeButton())
+						.onClick(menuEntry -> ctx.flag("just-clicked-make", true, 3))
 						.override()
 				)
 		);
