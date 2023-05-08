@@ -249,6 +249,45 @@
   {
     "projectUrl": "https://github.com/y-fletch/ocplugins",
     "provider": "yfletch",
+    "name": "OC Granite",
+    "description": "One-click 3t4g",
+    "id": "ocgranite-plugin",
+    "releases": [
+      {
+        "date": "2023-05-02",
+        "sha512sum": "9E8FDFB5CD2AC882A7A579B09277361DBD26076822A6DC75A9B95310BB4AFD11C041FC4CCB020ADB7A9B87B68D39DF7EC6F4ED1EBAA3ABD658CB62D7D6BD6955",
+        "version": "1.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocgranite-1.0.1.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Nightmare Zone",
+    "description": "One-click Nightmare Zone",
+    "id": "ocnightmarezone-plugin",
+    "releases": [
+      {
+        "date": "2023-04-25",
+        "sha512sum": "C36962E0BED0B2FE80CC3C4A641E9B2307640FC1F82EFEE2CE8904A07A80E7D93D2CD750BFFF515C178BE2D28FC9D66607025B2FF34EDB7C82F5A1AE97984360",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocnightmarezone-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-04-26",
+        "sha512sum": "CF80E3C1A787D5EAF41F60EC3926B1B75B634FC461CEB2C4CF2F9949A328ED4F9D232C2BB9240F56BA61D106FDF8EC771D61F16419EB846B76DDD527599DF2C5",
+        "version": "1.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocnightmarezone-1.0.1.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
     "name": "OC Rift [alpha]",
     "description": "One-click Guardians of the Rift",
     "id": "ocriftalpha-plugin",

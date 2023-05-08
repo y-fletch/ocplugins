@@ -11,6 +11,8 @@ include(":ocbarbfishing")
 include(":ocblastfurnace")
 include(":ocbankskills")
 include(":ocbwans")
+include(":ocnightmarezone")
+include(":ocgranite")
 include(":occonstruction")
 
 for (project in rootProject.children) {
