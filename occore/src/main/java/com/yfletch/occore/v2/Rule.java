@@ -1,7 +1,5 @@
 package com.yfletch.occore.v2;
 
-import java.util.function.Predicate;
-
 public interface Rule<TContext extends CoreContext>
 {
 	/**
