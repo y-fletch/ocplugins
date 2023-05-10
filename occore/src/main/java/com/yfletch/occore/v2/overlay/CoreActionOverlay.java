@@ -1,6 +1,7 @@
 package com.yfletch.occore.v2.overlay;
 
 import com.yfletch.occore.v2.RunnerPlugin;
+import com.yfletch.occore.v2.interaction.exceptions.InteractionException;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -56,10 +57,17 @@ public class CoreActionOverlay extends OverlayPanel
 			return super.render(graphics);
 		}
 
+		var text = "<col=ff0000>Errored getting action text";
+		try
+		{
+			text = "<col=ffffff>" + interaction.getOption() + " " + interaction.getTarget();
+		}
+		catch (InteractionException ignored)
+		{
+		}
+
 		panelComponent.getChildren().add(
-			MenuEntryComponent.builder()
-				.text("<col=ffffff>" + interaction.getOption() + " " + interaction.getTarget())
-				.build()
+			MenuEntryComponent.builder().text(text).build()
 		);
 		if (plugin.isConsuming())
 		{

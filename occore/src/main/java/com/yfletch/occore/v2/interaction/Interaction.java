@@ -1,7 +1,6 @@
 package com.yfletch.occore.v2.interaction;
 
 import com.google.common.primitives.Ints;
-import com.yfletch.occore.v2.interaction.exceptions.InvalidTargetException;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -385,7 +384,9 @@ public class Interaction
 			return on(item);
 		}
 
-		throw new InvalidTargetException(this, "Failed to find magic target");
+		// do nothing - error will be found and propagated
+		// later on when getTarget() is called
+		return this;
 	}
 
 	/**

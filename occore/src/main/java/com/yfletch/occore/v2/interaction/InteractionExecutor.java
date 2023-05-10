@@ -381,7 +381,7 @@ public class InteractionExecutor
 				return COL_SPELL + getSpellWidget().getName();
 			}
 
-			throw new InvalidTargetException(interaction, "Missing target");
+			throw new InvalidTargetException(interaction, "Target not found");
 		}
 
 		var target = "";

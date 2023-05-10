@@ -113,7 +113,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		return new Interaction();
 	}
 
-	private void updateInteraction(boolean isEdge)
+	private void revalidate()
 	{
 		if (currentRule == null)
 		{
@@ -122,22 +122,21 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 			return;
 		}
 
-		if (isEdge)
+		// if the current interaction is null (errored last tick), try to re-process it
+		if (nextInteraction == null)
 		{
-			context.setInteractionDelay(currentRule.maxDelay());
+			final var interaction = currentRule.run(context);
+			if (interaction == null)
+			{
+				messages = currentRule.messages(context);
+				return;
+			}
+
+			nextInteraction = interaction.getExecutor();
+			messages = null;
 		}
 
-		final var interaction = currentRule.run(context);
-		if (interaction == null)
-		{
-			nextInteraction = null;
-			messages = currentRule.messages(context);
-			return;
-		}
-
-		nextInteraction = interaction.getExecutor();
-		messages = null;
-
+		// if the current interaction is invalid, nullify it
 		try
 		{
 			nextInteraction.validate();
@@ -211,6 +210,8 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 		if (currentRule != null)
 		{
+			revalidate();
+
 			if (!currentRule.passes(context) || currentRule.continues(context))
 			{
 				currentRule = null;
@@ -222,13 +223,6 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 				isConsuming = true;
 				InteractionExecutor.consumeNext();
 			}
-
-			// TODO: does it need to refresh the interaction while
-			// it's still valid?
-//			if (currentRule != null)
-//			{
-//				updateInteraction(false);
-//			}
 		}
 
 		if (currentRule == null)
@@ -238,7 +232,11 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 				if (rule.passes(context))
 				{
 					currentRule = rule;
-					updateInteraction(true);
+
+					// set the interaction delay once, when
+					// the rule is first processed
+					context.setInteractionDelay(currentRule.maxDelay());
+					revalidate();
 
 					// immediately perform actions on rule change
 					// if we're using devious API
