@@ -23,7 +23,7 @@ public class TestContext extends CoreContext
 		if (isInHouse())
 		{
 			houseActive++;
-			if (houseActive > 11)
+			if (houseActive > 13)
 			{
 				houseActive = 0;
 			}

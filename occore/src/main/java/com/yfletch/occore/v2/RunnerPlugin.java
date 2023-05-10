@@ -9,13 +9,13 @@ import com.yfletch.occore.v2.overlay.CoreDebugOverlay;
 import com.yfletch.occore.v2.rule.DynamicRule;
 import com.yfletch.occore.v2.rule.RequirementRule;
 import com.yfletch.occore.v2.rule.Rule;
+import com.yfletch.occore.v2.util.RunnerUtil;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.ChatMessageType;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.client.config.ConfigManager;
@@ -314,19 +314,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	{
 		if (config.debugRawMenuEntries())
 		{
-			final var debug = "[RAW] option=" + event.getMenuOption()
-				+ " target=" + event.getMenuTarget()
-				+ " id=" + event.getId()
-				+ " action=" + event.getMenuAction()
-				+ " p0=" + event.getParam0()
-				+ " p1=" + event.getParam1();
-			log.info(debug);
-			Static.getClient().addChatMessage(
-				ChatMessageType.GAMEMESSAGE,
-				"Bob",
-				debug,
-				null
-			);
+			RunnerUtil.logDebug("RAW", event);
 		}
 
 		context.tick(false);
@@ -342,19 +330,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 			if (config.debugOCMenuEntries())
 			{
-				final var debug = "[OC] option=" + event.getMenuOption()
-					+ " target=" + event.getMenuTarget()
-					+ " id=" + event.getId()
-					+ " action=" + event.getMenuAction()
-					+ " p0=" + event.getParam0()
-					+ " p1=" + event.getParam1();
-				log.info(debug);
-				Static.getClient().addChatMessage(
-					ChatMessageType.GAMEMESSAGE,
-					"Bob",
-					debug,
-					null
-				);
+				RunnerUtil.logDebug("OC", event);
 			}
 		}
 	}

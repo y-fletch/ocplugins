@@ -108,6 +108,14 @@ public class TestPlugin extends RunnerPlugin<TestContext>
 			.when(c -> c.isInHouse() && c.getHouseActive() == 11)
 			.then(c -> interact().click("Use").on(WidgetInfo.MINIMAP_SPEC_CLICKBOX));
 
+		createRule()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 12)
+			.then(c -> interact().click("Lock").on("Portal"));
+
+		createRule()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 13)
+			.then(c -> interact().click("Pick-up").on("Pet rock"));
+
 		requirements()
 			.when(c -> Bank.isOpen())
 			.mustHaveBanked(ItemID.PURE_ESSENCE)

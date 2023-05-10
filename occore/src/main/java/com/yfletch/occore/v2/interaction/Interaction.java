@@ -1,6 +1,7 @@
 package com.yfletch.occore.v2.interaction;
 
 import com.google.common.primitives.Ints;
+import com.yfletch.occore.v2.interaction.exceptions.InvalidTargetException;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -353,6 +354,52 @@ public class Interaction
 	public Interaction on(WidgetInfo widgetInfo)
 	{
 		return on(Widgets.get(widgetInfo));
+	}
+
+	/**
+	 * Set the target to the first NPC, object, or item matching the predicate.
+	 * <p>
+	 * Does a lot of searching - may be slow. Consider other methods if target
+	 * is known before runtime.
+	 * <p>
+	 * e.g. `click("Use", "Bank").on(name -> name.contains("Bank"))`
+	 */
+	public Interaction on(Predicate<String> predicate)
+	{
+		// search NPCs
+		final var npc = NPCs.getNearest(o -> predicate.test(o.getName()));
+		if (npc != null)
+		{
+			return on(npc);
+		}
+
+		final var object = TileObjects.getNearest(o -> predicate.test(o.getName()));
+		if (object != null)
+		{
+			return on(object);
+		}
+
+		final var item = Inventory.getFirst(o -> predicate.test(o.getName()));
+		if (item != null)
+		{
+			return on(item);
+		}
+
+		throw new InvalidTargetException(this, "Failed to find magic target");
+	}
+
+	/**
+	 * Set the target to the first NPC, object, or item with a name matching
+	 * one of the given options.
+	 * <p>
+	 * Does a lot of searching - may be slow. Consider other methods if target
+	 * is known before runtime.
+	 * <p>
+	 * e.g. `click("Use").on("Bank chest")`
+	 */
+	public Interaction on(String... name)
+	{
+		return on(Predicates.texts(name));
 	}
 
 	/**
