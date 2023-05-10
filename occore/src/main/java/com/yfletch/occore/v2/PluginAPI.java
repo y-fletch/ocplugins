@@ -1,8 +1,7 @@
 package com.yfletch.occore.v2;
 
-public enum PluginMode
+public enum PluginAPI
 {
 	ONE_CLICK,
-	INVOKES,
-	PACKETS
+	DEVIOUS
 }

@@ -39,15 +39,17 @@ public interface CoreConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "pluginMode",
-		name = "Plugin mode",
-		description = "Set plugin mode of use",
+		keyName = "pluginApi",
+		name = "Plugin API",
+		description = "a.k.a. automation mode"
+			+ "<br/>One-click will forward mutated mouse events, requiring external input."
+			+ "<br/>Devious will use Devious client's automation API and does not require any external input.",
 		section = plugin,
 		position = 3
 	)
-	default PluginMode pluginMode()
+	default PluginAPI pluginApi()
 	{
-		return PluginMode.ONE_CLICK;
+		return PluginAPI.ONE_CLICK;
 	}
 
 	@ConfigSection(

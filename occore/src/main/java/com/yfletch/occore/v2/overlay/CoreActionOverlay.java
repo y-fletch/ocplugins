@@ -32,11 +32,26 @@ public class CoreActionOverlay extends OverlayPanel
 		final var interaction = plugin.getNextInteraction();
 		if (interaction == null)
 		{
-			panelComponent.getChildren().add(
-				LineComponent.builder()
-					.left("Nothing to do (" + plugin.getRules().size() + " rules checked)")
-					.build()
-			);
+			final var messages = plugin.getMessages();
+			if (messages == null)
+			{
+				panelComponent.getChildren().add(
+					LineComponent.builder()
+						.left("Nothing to do (" + plugin.getRules().size() + " rules checked)")
+						.build()
+				);
+
+				return super.render(graphics);
+			}
+
+			for (final var message : messages)
+			{
+				panelComponent.getChildren().add(
+					MenuEntryComponent.builder()
+						.text(message)
+						.build()
+				);
+			}
 
 			return super.render(graphics);
 		}

@@ -1,4 +1,4 @@
-package com.yfletch.occore.v2.util;
+package com.yfletch.occore.v2.interaction;
 
 import lombok.Getter;
 import net.runelite.api.Item;
@@ -9,73 +9,73 @@ import net.unethicalite.api.events.MenuAutomated;
 public class StaticItem implements Interactable
 {
 	@Getter
-	private final Item item;
+	private final Item wrapped;
 
 	@Getter
 	private final int widgetId;
 
-	public StaticItem(Item item)
+	public StaticItem(Item wrapped)
 	{
-		this.item = item;
-		widgetId = item.getWidgetId();
+		this.wrapped = wrapped;
+		widgetId = wrapped.getWidgetId();
 	}
 
 	public void use()
 	{
-		final var currentWidgetId = item.getWidgetId();
-		item.setWidgetId(widgetId);
-		item.use();
-		item.setWidgetId(currentWidgetId);
+		final var currentWidgetId = wrapped.getWidgetId();
+		wrapped.setWidgetId(widgetId);
+		wrapped.use();
+		wrapped.setWidgetId(currentWidgetId);
 	}
 
 	@Override
 	public Point getClickPoint()
 	{
-		return item.getClickPoint();
+		return wrapped.getClickPoint();
 	}
 
 	@Override
 	public String[] getActions()
 	{
-		item.setWidgetId(widgetId);
-		return item.getActions();
+		wrapped.setWidgetId(widgetId);
+		return wrapped.getActions();
 	}
 
 	@Override
 	public int getActionOpcode(int action)
 	{
-		return item.getActionOpcode(action);
+		return wrapped.getActionOpcode(action);
 	}
 
 	@Override
 	public MenuAutomated getMenu(int actionIndex)
 	{
-		item.setWidgetId(widgetId);
-		return item.getMenu(actionIndex);
+		wrapped.setWidgetId(widgetId);
+		return wrapped.getMenu(actionIndex);
 	}
 
 	@Override
 	public MenuAutomated getMenu(int actionIndex, int opcode)
 	{
-		item.setWidgetId(widgetId);
-		return item.getMenu(actionIndex, opcode);
+		wrapped.setWidgetId(widgetId);
+		return wrapped.getMenu(actionIndex, opcode);
 	}
 
 	@Override
 	public void interact(int index)
 	{
-		item.interact(index);
+		wrapped.interact(index);
 	}
 
 	@Override
 	public void interact(int index, int opcode)
 	{
-		item.interact(index, opcode);
+		wrapped.interact(index, opcode);
 	}
 
 	@Override
 	public void interact(int identifier, int opcode, int param0, int param1)
 	{
-		item.interact(identifier, opcode, param0, param1);
+		wrapped.interact(identifier, opcode, param0, param1);
 	}
 }

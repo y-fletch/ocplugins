@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ItemID;
 import net.runelite.api.NpcID;
 import net.runelite.api.ObjectID;
+import net.runelite.api.coords.WorldArea;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ConfigButtonClicked;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
@@ -40,6 +42,11 @@ public class TestPlugin extends RunnerPlugin<TestContext>
 	@Override
 	public void setup()
 	{
+		requirements()
+			.when(c -> !Bank.isOpen())
+			.mustHave(ItemID.FIRE_RUNE, ItemID.BUNNY_TOP, ItemID.TELEPORT_TO_HOUSE, ItemID.TEAK_LOGS)
+			.must(TestContext::isInHouse, "Must be in house");
+
 		createRule()
 			.when(c -> c.isInHouse() && c.getHouseActive() == 0)
 			.then(c -> interact().click("Drink").onObject(ObjectID.FANCY_POOL_OF_REJUVENATION));
@@ -90,7 +97,7 @@ public class TestPlugin extends RunnerPlugin<TestContext>
 		createRule()
 			.when(c -> c.isInHouse() && c.getHouseActive() == 10
 				&& Dialog.isOpen() && Dialog.hasOption("Something else..."))
-			.then(c -> interact().dialog(option -> option.contains("Fetch from bank:")));
+			.then(c -> interact().dialog(option -> option.contains("Something else...")));
 
 		createRule()
 			.when(c -> c.isInHouse() && c.getHouseActive() == 10
@@ -101,14 +108,27 @@ public class TestPlugin extends RunnerPlugin<TestContext>
 			.when(c -> c.isInHouse() && c.getHouseActive() == 11)
 			.then(c -> interact().click("Use").on(WidgetInfo.MINIMAP_SPEC_CLICKBOX));
 
+		requirements()
+			.when(c -> Bank.isOpen())
+			.mustHaveBanked(ItemID.PURE_ESSENCE)
+			.mustBeNear("Castle Wars bank", new WorldArea(
+				new WorldPoint(2438, 3083, 0), 6, 10
+			));
+
 		createRule()
 			.when(c -> Bank.isOpen() && c.getBankActive() == 0)
-			.then(c -> interact().click(WidgetInfo.BANK_DEPOSIT_INVENTORY));
+			.then(c -> interact().click(WidgetInfo.BANK_DEPOSIT_INVENTORY))
+			.maxDelay(10);
 
 		createRule()
 			.when(c -> Bank.isOpen() && c.getBankActive() == 1
 				&& Bank.contains(ItemID.PURE_ESSENCE))
-			.then(c -> interact().withdraw(1, ItemID.PURE_ESSENCE));
+			.then(c -> interact()
+				.withdraw(1, ItemID.PURE_ESSENCE)
+				.repeat(10)
+				.then(() -> log.info("Withdrew 1 pure essence"))
+				.after(() -> log.info("All done :)"))
+			);
 
 		createRule()
 			.when(c -> Bank.isOpen() && c.getBankActive() == 2

@@ -3,6 +3,8 @@ package com.yfletch.occore.v2;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 
 public class CoreContext
 {
@@ -11,6 +13,9 @@ public class CoreContext
 	private final Map<String, String> args = new HashMap<>();
 	private final Map<String, Integer> ephemeralArgs = new HashMap<>();
 
+	@Setter
+	@Getter
+	private int interactionDelay = 0;
 
 	/**
 	 * Persist a flag in context.
@@ -84,6 +89,11 @@ public class CoreContext
 			return;
 		}
 
+		if (interactionDelay > 0)
+		{
+			interactionDelay--;
+		}
+
 		for (Map.Entry<String, Integer> entry : new ArrayList<>(ephemeralFlags.entrySet()))
 		{
 			if (entry.getValue() < 1)
@@ -140,6 +150,8 @@ public class CoreContext
 	public Map<String, String> getDebugMap()
 	{
 		final var lines = new HashMap<String, String>();
+		lines.put("interact-delay", "" + interactionDelay);
+
 		for (Map.Entry<String, Boolean> entry : flags.entrySet())
 		{
 			var ticksLeft = "";
