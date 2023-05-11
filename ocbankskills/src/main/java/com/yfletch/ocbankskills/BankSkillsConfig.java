@@ -1,18 +1,18 @@
 package com.yfletch.ocbankskills;
 
-import com.yfletch.occore.OCConfig;
+import com.yfletch.occore.v2.CoreConfig;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
 
-@ConfigGroup(Config.GROUP_NAME)
-public interface Config extends OCConfig
+@ConfigGroup(BankSkillsConfig.GROUP_NAME)
+public interface BankSkillsConfig extends CoreConfig
 {
 	String GROUP_NAME = "oc-bankskills";
 
 	@ConfigSection(
-		name = "OC Bank Skills",
+		name = "Bank Skills",
 		description = "Plugin settings",
 		position = 2
 	)
