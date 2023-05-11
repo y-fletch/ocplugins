@@ -4,9 +4,8 @@ import java.util.function.Predicate;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Client;
-import net.runelite.api.Locatable;
-import net.runelite.api.NPC;
+import net.runelite.api.*;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.queries.NPCQuery;
 import net.unethicalite.client.Static;
 
@@ -65,5 +64,30 @@ public class NpcHelper
 	public NPC getNearest(Predicate<NPC> predicate)
 	{
 		return getNearest(predicate, client.getLocalPlayer());
+	}
+
+	/**
+	 * Determine whether a point (the player) is beside an object, taking
+	 * the object's size into account. Used to check if the player is pathing
+	 * to/already beside a game object.
+	 */
+	public boolean isBeside(WorldPoint player, NPC npc)
+	{
+//		Point minScene = object.getSceneMinLocation();
+//		Point maxScene = object.getSceneMaxLocation();
+//
+//		return WorldPoint.isInZone(
+//				WorldPoint.fromScene(client, minScene.getX() - 1, minScene.getY() - 1, object.getPlane()),
+//				WorldPoint.fromScene(client, maxScene.getX() + 1, maxScene.getY() + 1, object.getPlane()),
+//				player
+//		) && !WorldPoint.isInZone(
+//				WorldPoint.fromScene(client, minScene.getX(), minScene.getY(), object.getPlane()),
+//				WorldPoint.fromScene(client, maxScene.getX(), maxScene.getY(), object.getPlane()),
+//				player
+//		);
+		
+		Point x = npc.getWorldLocation().
+
+		return false;
 	}
 }

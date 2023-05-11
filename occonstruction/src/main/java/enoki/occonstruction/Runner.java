@@ -6,8 +6,11 @@ import com.yfletch.occore.ActionRunner;
 import com.yfletch.occore.event.EventBuilder;
 import enoki.occonstruction.config.Buildable;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Client;
-import net.runelite.api.ObjectID;
+import net.runelite.api.*;
+import net.runelite.api.widgets.WidgetID;
+import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.api.widgets.WidgetModelType;
+import net.runelite.api.widgets.WidgetType;
 import net.unethicalite.client.Static;
 
 import java.util.Map;
@@ -49,29 +52,47 @@ public class Runner extends ActionRunner<Context>
 		 * No butler route
 		 */
 
-//		add(builder().widget("Leave Home")
-//				.readyIf(ctx -> !ctx.useServant() && ctx.inHome() && !ctx.hasPlanks())
-//				.doneIf(ctx -> !ctx.inHome())
-//				.onRun(
-//						// TODO: Leave home
-//						(ctx, event) -> event.builder().widget().override()
-//				));
+		add(builder().object("Enter", "Portal")
+				.readyIf(ctx -> ctx.inHome() && !ctx.hasPlanks())
+				.doneIf(ctx -> !ctx.inHome())
+				.workingIf(ctx -> ctx.isPathingTo(ctx.getNearestPortal()))
+				.onRun(
+						(ctx, event) -> event.builder().object()
+									.setOption("Enter", 1)
+									.setObject(ctx.getNearestPortal())
+									.override()
+				));
 
-//		add(builder().widget("Talk to Phials")
-//				.readyIf(ctx -> !ctx.useServant() && !ctx.hasPlanks() && ctx.getPhials() != null)
-//				.doneIf(Context::hasPlanks)
-//				.onRun(
-//						// TODO: Unnote planks at phials
-//						(ctx, event) -> event.builder().widget().override()
-//				));
+		add(builder().npc("Use plank", "Phials")
+				.readyIf(ctx -> !ctx.hasPlanks() && ctx.getPhials() != null)
+				.doneIf(Context::isDialogOpen)
+				.workingIf(ctx -> ctx.isPathingTo())
+				.onRun(
+						(ctx, event) -> event.builder().npc()
+								.use(ItemID.OAK_PLANK + 1)
+								.on(NpcID.PHIALS)
+								.override()
+				));
 
-//		add(builder().widget("Enter Home")
-//				.readyIf(ctx -> !ctx.inHome())
-//				.doneIf(Context::inHome)
-//				.onRun(
-//						// TODO: Unnote planks at phials
-//						(ctx, event) -> event.builder().widget().override()
-//				));
+		add(builder().widget("Exchange All")
+				.readyIf(ctx -> !ctx.inHome() && ctx.isDialogOpen())
+				.doneIf(ctx -> !ctx.isDialogOpen())
+				.onRun((ctx, event) -> event.builder().widget()
+						.setDialogOption("Exchange All")
+						.override()
+				)
+		);
+
+		add(builder().object("Build mode", "Portal")
+				.readyIf(ctx -> !ctx.inHome())
+				.doneIf(Context::inHome)
+				.workingIf(ctx -> ctx.isPathingTo(ctx.getNearestPortal()))
+				.onRun(
+						(ctx, event) -> event.builder().object()
+								.setOption("Build", 3)
+								.setObject(ctx.getNearestPortal())
+								.override()
+				));
 
 		/*
 		 * Demon Butler
@@ -84,16 +105,16 @@ public class Runner extends ActionRunner<Context>
 		 *   4. Rinse and repeat
 		 */
 
-		add(builder().widget("Demon Butler: Open summon menu")
-				.readyIf(ctx -> ctx.useServant() && ctx.getServant() != null)
-				.doneIf(Context::isHouseOptionsOpen)
-				.onRun(
-						(ctx, event) -> event.builder().widget()
-								.setWidget(7602250)
-								.setOption("View House Options", 1)
-								.override()
-				)
-		);
+//		add(builder().widget("Demon Butler: Open summon menu")
+//				.readyIf(ctx -> ctx.useServant() && ctx.getServant() != null)
+//				.doneIf(Context::isHouseOptionsOpen)
+//				.onRun(
+//						(ctx, event) -> event.builder().widget()
+//								.setWidget(7602250)
+//								.setOption("View House Options", 1)
+//								.override()
+//				)
+//		);
 
 //		add(builder().widget("Demon Butler: Summon")
 //				.readyIf(ctx -> ctx.useServant()
@@ -158,8 +179,11 @@ public class Runner extends ActionRunner<Context>
 		 */
 
 		add(builder().object("Build", "Larder space")
-				.readyIf(ctx -> ctx.inBuildMode() && ctx.hasPlanks() && !ctx.isNextToRemovable())
+				.readyIf(ctx -> ctx.inBuildMode()
+						&& !ctx.isNextToRemovable()
+						&& ctx.getNearestBuildable() != null)
 				.doneIf(Context::isCreationWidgetOpen)
+				.workingIf(ctx -> ctx.isPathingTo(ctx.getNearestPortal()) || ctx.flag("building"))
 				.onRun(
 						(ctx, event) -> event.builder()
 								.object()
@@ -170,21 +194,24 @@ public class Runner extends ActionRunner<Context>
 
 		add(builder().widget("Select \"Oak Larder\"")
 				.readyIf(ctx -> ctx.inBuildMode() && ctx.isCreationWidgetOpen())
-				.doneIf(ctx -> !ctx.isCreationWidgetOpen() && !ctx.isAnimating())
+				.doneIf(ctx -> !ctx.isCreationWidgetOpen())
 				.onRun(
 						(ctx, event) -> event.builder().widget()
 								.setWidget(ctx.getMakeButton())
 								.setOption("Build", 1)
+								.onClick(e -> ctx.flag("building", true, 3))
 								.override()
 				));
 
 		add(builder().object("Remove", "Larder")
-				.readyIf(ctx -> ctx.inBuildMode() && ctx.isNextToRemovable() && !ctx.isDialogOpen())
+				.readyIf(ctx -> ctx.inBuildMode() && ctx.getNearestRemovable() != null && !ctx.isDialogOpen())
 				.doneIf(Context::isDialogOpen)
+				.workingIf(ctx -> ctx.isPathingTo(ObjectID.LARDER_13566) || ctx.flag("removing"))
 				.onRun(
 						(ctx, event) -> event.builder().object()
 								.setObject(ObjectID.LARDER_13566)
 								.setOption("Remove", 5)
+								.onClick(e -> ctx.flag("removing", true, 2))
 								.override()
 				));
 

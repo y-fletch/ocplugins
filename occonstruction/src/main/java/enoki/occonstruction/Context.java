@@ -90,6 +90,14 @@ public class Context extends ActionContext
 	}
 
 	/**
+	 * Returns the nearest TileObject named "Portal"
+	 */
+	public TileObject getNearestPortal()
+	{
+		return objectHelper.getNearest(obj -> obj.getName().equals("Portal"));
+	}
+
+	/**
 	 * Find the nearest buildable TileObject that contains a certain string
 	 */
 	public TileObject getNearestBuildable()
@@ -97,6 +105,7 @@ public class Context extends ActionContext
 		return objectHelper.getNearest(obj -> {
 			final String[] actions = obj.getActions();
 			return actions != null
+					&& obj.getId() == config.buildableType().getSpaceId()
 					&& ArrayUtils.contains(actions, "Build");
 		});
 	}
@@ -109,6 +118,7 @@ public class Context extends ActionContext
 		return objectHelper.getNearest(obj -> {
 			final String[] actions = obj.getActions();
 			return actions != null
+					&& obj.getId() == config.buildableType().getObjectId()
 					&& ArrayUtils.contains(actions, "Remove");
 		});
 	}
@@ -118,7 +128,8 @@ public class Context extends ActionContext
 	 */
 	public boolean isNextToRemovable()
 	{
-		return objectHelper.isBeside(getPlayerLocation(), getNearestRemovable());
+		final TileObject nearestRemovable = getNearestRemovable();
+		return nearestRemovable != null && objectHelper.isBeside(getPlayerLocation(), nearestRemovable);
 	}
 
 	/**
