@@ -1,11 +1,13 @@
 package com.yfletch.occore.v2.rule;
 
 import com.yfletch.occore.v2.CoreContext;
-import com.yfletch.occore.v2.interaction.Interaction;
+import com.yfletch.occore.v2.interaction.DeferredInteraction;
 import java.util.List;
 
 public interface Rule<TContext extends CoreContext>
 {
+	String name();
+
 	/**
 	 * Maximum time the runner can delay execution of
 	 * this rule's interaction after it passes (in ticks).
@@ -45,7 +47,7 @@ public interface Rule<TContext extends CoreContext>
 	 * Action to run when this rule is activated or
 	 * triggered
 	 */
-	default Interaction run(TContext ctx)
+	default DeferredInteraction<?> run(TContext ctx)
 	{
 		return null;
 	}
@@ -57,5 +59,23 @@ public interface Rule<TContext extends CoreContext>
 	default List<String> messages(TContext ctx)
 	{
 		return null;
+	}
+
+	/**
+	 * Reset internal rule flags. Only used for internal logic,
+	 * don't call this in a consumer.
+	 */
+	default void reset()
+	{
+	}
+
+	default boolean canExecute()
+	{
+		return true;
+	}
+
+	default void useRepeat()
+	{
+
 	}
 }

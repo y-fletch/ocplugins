@@ -17,6 +17,11 @@ import net.unethicalite.client.Static;
 
 public class RequirementRule<TContext extends CoreContext> implements Rule<TContext>
 {
+	@Setter
+	@Getter
+	@Accessors(fluent = true)
+	private String name;
+
 	// if any requirement evaluates to false,
 	// then the key (error) will be displayed
 	@Getter
@@ -55,7 +60,7 @@ public class RequirementRule<TContext extends CoreContext> implements Rule<TCont
 	}
 
 	/**
-	 * Require all item IDs to be in the player's inventory,
+	 * Require all item IDs to be in the player's inventory, bank
 	 * or equipped
 	 */
 	public RequirementRule<TContext> mustHave(int... ids)
@@ -65,7 +70,7 @@ public class RequirementRule<TContext extends CoreContext> implements Rule<TCont
 			final var name = getItemName(id);
 			requirements.put(
 				"<col=ffffff>Must have <col=ff9040>" + name,
-				c -> Inventory.contains(id) || Equipment.contains(id)
+				c -> Inventory.contains(id) || Bank.contains(id) || Equipment.contains(id)
 			);
 		}
 
@@ -149,6 +154,8 @@ public class RequirementRule<TContext extends CoreContext> implements Rule<TCont
 	@Override
 	public boolean passes(TContext ctx)
 	{
+		// if when isn't true, then we should _not_
+		// pass this rule
 		if (when != null && !when.test(ctx))
 		{
 			return false;

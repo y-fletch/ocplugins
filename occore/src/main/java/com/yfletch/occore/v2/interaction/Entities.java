@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Predicate;
 import net.runelite.api.Item;
+import net.runelite.api.NPC;
+import net.runelite.api.TileObject;
+import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import net.unethicalite.api.EntityNameable;
 import net.unethicalite.api.Interactable;
@@ -70,9 +73,9 @@ public class Entities
 	 * Wrap an interactable so execution of its actions can
 	 * be controlled by the plugin runner.
 	 */
-	public static DeferredInteractable of(Interactable interactable)
+	public static <T extends Interactable> DeferredInteractable<T> of(T interactable)
 	{
-		return new DeferredInteractable(interactable);
+		return new DeferredInteractable<>(interactable);
 	}
 
 	/**
@@ -96,7 +99,7 @@ public class Entities
 	/**
 	 * Get an NPC
 	 */
-	public static DeferredInteractable npc(Predicate<String> predicate)
+	public static DeferredInteractable<NPC> npc(Predicate<String> predicate)
 	{
 		return of(NPCs.getNearest(nameMatches(predicate)));
 	}
@@ -104,7 +107,7 @@ public class Entities
 	/**
 	 * Get an NPC
 	 */
-	public static DeferredInteractable npc(String... names)
+	public static DeferredInteractable<NPC> npc(String... names)
 	{
 		return npc(Predicates.texts(names));
 	}
@@ -112,7 +115,7 @@ public class Entities
 	/**
 	 * Get an NPC
 	 */
-	public static DeferredInteractable npc(int... ids)
+	public static DeferredInteractable<NPC> npc(int... ids)
 	{
 		return of(NPCs.getNearest(ids));
 	}
@@ -120,7 +123,7 @@ public class Entities
 	/**
 	 * Get a TileObject
 	 */
-	public static DeferredInteractable object(Predicate<String> predicate)
+	public static DeferredInteractable<TileObject> object(Predicate<String> predicate)
 	{
 		return of(TileObjects.getNearest(nameMatches(predicate)));
 	}
@@ -128,7 +131,7 @@ public class Entities
 	/**
 	 * Get a TileObject
 	 */
-	public static DeferredInteractable object(String... names)
+	public static DeferredInteractable<TileObject> object(String... names)
 	{
 		return object(Predicates.texts(names));
 	}
@@ -136,7 +139,7 @@ public class Entities
 	/**
 	 * Get a TileObject
 	 */
-	public static DeferredInteractable object(int... ids)
+	public static DeferredInteractable<TileObject> object(int... ids)
 	{
 		return of(TileObjects.getNearest(ids));
 	}
@@ -146,7 +149,7 @@ public class Entities
 	 * <p>
 	 * Note: this also tests widget actions for the predicate
 	 */
-	public static DeferredInteractable widget(Predicate<String> predicate)
+	public static DeferredInteractable<Widget> widget(Predicate<String> predicate)
 	{
 		return of(
 			Widgets.query()
@@ -166,7 +169,7 @@ public class Entities
 	 * <p>
 	 * Note: this also searches widget actions for the target strings
 	 */
-	public static DeferredInteractable widget(String... names)
+	public static DeferredInteractable<Widget> widget(String... names)
 	{
 		return widget(Predicates.texts(names));
 	}
@@ -174,7 +177,7 @@ public class Entities
 	/**
 	 * Get a widget
 	 */
-	public static DeferredInteractable widget(WidgetInfo widgetInfo)
+	public static DeferredInteractable<Widget> widget(WidgetInfo widgetInfo)
 	{
 		return of(Widgets.get(widgetInfo));
 	}
@@ -238,7 +241,7 @@ public class Entities
 	/**
 	 * Get an NPC or object
 	 */
-	public static DeferredInteractable entity(Predicate<String> predicate)
+	public static DeferredInteractable<?> entity(Predicate<String> predicate)
 	{
 		return of(
 			Optional

@@ -38,20 +38,6 @@ public interface CoreConfig extends Config
 		return null;
 	}
 
-	@ConfigItem(
-		keyName = "pluginApi",
-		name = "Plugin API",
-		description = "a.k.a. automation mode"
-			+ "<br/>One-click will forward mutated mouse events, requiring external input."
-			+ "<br/>Devious will use Devious client's automation API and does not require any external input.",
-		section = plugin,
-		position = 3
-	)
-	default PluginAPI pluginApi()
-	{
-		return PluginAPI.ONE_CLICK;
-	}
-
 	@ConfigSection(
 		name = "Overlays",
 		description = "Configure overlays",

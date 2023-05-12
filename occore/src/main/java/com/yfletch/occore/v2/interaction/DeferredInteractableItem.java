@@ -3,7 +3,7 @@ package com.yfletch.occore.v2.interaction;
 import net.runelite.api.Item;
 import net.unethicalite.api.Interactable;
 
-public class DeferredInteractableItem extends DeferredInteractable
+public class DeferredInteractableItem extends DeferredInteractable<Item>
 {
 	private final Item item;
 	private final Item.Type type;
@@ -22,10 +22,16 @@ public class DeferredInteractableItem extends DeferredInteractable
 		this.type = type;
 	}
 
+	@Override
+	public Item unwrap()
+	{
+		return item;
+	}
+
 	/**
 	 * Use the item on a target
 	 */
-	public DeferredItemInteraction useOn(DeferredInteractable target)
+	public DeferredItemInteraction useOn(DeferredInteractable<?> target)
 	{
 		return useOn(target.unwrap());
 	}

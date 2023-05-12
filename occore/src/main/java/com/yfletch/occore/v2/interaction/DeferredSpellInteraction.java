@@ -1,10 +1,11 @@
 package com.yfletch.occore.v2.interaction;
 
+import net.runelite.api.widgets.Widget;
 import net.unethicalite.api.Interactable;
 import net.unethicalite.api.magic.Spell;
 import net.unethicalite.api.widgets.Widgets;
 
-public class DeferredSpellInteraction extends DeferredInteraction
+public class DeferredSpellInteraction extends DeferredInteraction<Widget>
 {
 	private final Spell spell;
 	private final Interactable target;

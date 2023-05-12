@@ -43,39 +43,39 @@ public class OCBankSkillsPlugin extends RunnerPlugin<BankSkillsContext>
 			.must(c -> config.makeOption() > 0, "Make option must be valid");
 
 		// bank
-		createRule()
+		action()
 			.when(c -> !Bank.isOpen()
 				&& (!Inventory.contains(config.primary()) || !Inventory.contains(config.secondary())))
 			.then(c -> interact().click("Use", "Bank").on(name -> name.toLowerCase().contains("bank")));
 
 		// deposit any items other than primary/secondary
-		createRule()
+		action()
 			.when(c -> Bank.isOpen()
 				&& (Inventory.contains(item -> item.getId() != config.primary() && item.getId() != config.secondary())))
 			.then(c -> interact().click(WidgetInfo.BANK_DEPOSIT_INVENTORY));
 
 		// withdraw primary
-		createRule()
+		action()
 			.when(c -> !Inventory.contains(config.primary()))
 			.then(c -> interact().withdrawX(config.primary()));
 
 		// withdraw secondary
-		createRule()
+		action()
 			.when(c -> !Inventory.contains(config.secondary()))
 			.then(c -> interact().withdrawX(config.secondary()));
 
 		// close bank
-		createRule()
+		action()
 			.when(c -> Bank.isOpen())
 			.then(c -> interact().click(c.getBankCloseButton()));
 
 		// click make option
-		createRule()
+		action()
 			.when(c -> c.getMakeButton() != null)
 			.then(c -> interact().click(c.getMakeButton()));
 
 		// use primary on secondary
-		createRule()
+		action()
 			.when(c -> !c.isAnimating() && c.getMakeButton() == null)
 			.then(c -> interact().use(config.primary()).onItem(config.secondary()));
 	}

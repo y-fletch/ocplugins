@@ -1,17 +1,17 @@
 package com.yfletch.occore.v2;
 
 import com.google.inject.Inject;
-import com.yfletch.occore.v2.interaction.Interaction;
-import com.yfletch.occore.v2.interaction.InteractionExecutor;
-import com.yfletch.occore.v2.interaction.exceptions.InteractionException;
-import com.yfletch.occore.v2.overlay.CoreActionOverlay;
+import com.yfletch.occore.v2.interaction.DeferredInteraction;
 import com.yfletch.occore.v2.overlay.CoreDebugOverlay;
+import com.yfletch.occore.v2.overlay.InteractionOverlay;
 import com.yfletch.occore.v2.rule.DynamicRule;
 import com.yfletch.occore.v2.rule.RequirementRule;
 import com.yfletch.occore.v2.rule.Rule;
 import com.yfletch.occore.v2.util.RunnerUtil;
+import com.yfletch.occore.v2.util.TextColor;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -26,6 +26,8 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
 import net.unethicalite.api.commons.Rand;
 import net.unethicalite.client.Static;
+import net.unethicalite.client.config.UnethicaliteConfig;
+import net.unethicalite.client.managers.interaction.InteractMethod;
 
 @Slf4j
 public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
@@ -34,21 +36,19 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	@Inject private KeyManager keyManager;
 	@Inject private OverlayManager overlayManager;
 
+	@Inject private UnethicaliteConfig unethicaliteConfig;
+
 	@Getter
 	private final List<Rule<TContext>> rules = new ArrayList<>();
 	private Rule<TContext> currentRule = null;
 
 	@Getter
-	private InteractionExecutor nextInteraction = null;
+	private DeferredInteraction<?> nextInteraction = null;
 
 	@Getter
 	private List<String> messages = null;
 
-	@Getter
-	@Accessors(fluent = true)
-	private boolean isConsuming = false;
-
-	private CoreActionOverlay actionOverlay;
+	private InteractionOverlay interactionOverlay;
 	private CoreDebugOverlay debugOverlay;
 
 	@Setter
@@ -91,11 +91,11 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	/**
 	 * Create, add and return a new rule instance that can be customised similar to a builder
 	 */
-	protected final DynamicRule<TContext> createRule()
+	protected final DynamicRule<TContext> action()
 	{
 		final var rule = new DynamicRule<TContext>();
 		rules.add(rule);
-		return rule;
+		return rule.name("Unknown");
 	}
 
 	/**
@@ -105,65 +105,13 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	{
 		final var rule = new RequirementRule<TContext>();
 		rules.add(rule);
-		return rule;
+		return rule.name("Requirements");
 	}
 
-	protected final Interaction interact()
+	private void execute()
 	{
-		return new Interaction();
-	}
-
-	private void revalidate()
-	{
-		if (currentRule == null)
+		if (!config.enabled() || currentRule == null)
 		{
-			nextInteraction = null;
-			messages = null;
-			return;
-		}
-
-		// if the current interaction is null (errored last tick), try to re-process it
-		if (nextInteraction == null)
-		{
-			final var interaction = currentRule.run(context);
-			if (interaction == null)
-			{
-				messages = currentRule.messages(context);
-				return;
-			}
-
-			nextInteraction = interaction.getExecutor();
-			messages = null;
-		}
-
-		// if the current interaction is invalid, nullify it
-		try
-		{
-			nextInteraction.validate();
-		}
-		catch (InteractionException e)
-		{
-			nextInteraction = null;
-			messages = List.of(
-				"<col=ff0000>Interaction error:",
-				"<col=ff0000>-<col=ffffff> " + e.getMessage()
-			);
-		}
-	}
-
-	private void execute(MenuOptionClicked event)
-	{
-		if (!config.enabled()
-			|| currentRule == null
-			|| nextInteraction == null
-			|| nextInteraction.isComplete())
-		{
-			// consume erroneous / extra events in one-click mode
-			if (config.enabled() && event != null)
-			{
-				event.consume();
-			}
-
 			return;
 		}
 
@@ -180,25 +128,53 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		{
 			// just for debugging
 			context.setInteractionDelay(0);
+			final var interaction = getInteraction(currentRule);
+			if (interaction != null && currentRule.canExecute())
+			{
+				interaction.execute();
+				currentRule.useRepeat();
+			}
+		}
+	}
 
-			if (event == null)
-			{
-				nextInteraction.execute();
-			}
-			else
-			{
-				nextInteraction.execute(event);
-			}
-		}
-		else if (event != null)
+	@Nullable
+	private DeferredInteraction<?> getInteraction(Rule<TContext> rule)
+	{
+		nextInteraction = rule.run(context);
+		if (nextInteraction == null)
 		{
-			// consume events that were attempted during
-			// the delay
-			event.consume();
+			// fallback to rule message
+			messages = rule.messages(context);
+			if (messages == null)
+			{
+				messages = List.of(TextColor.DANGER + "Failed to generate interaction");
+			}
 		}
-		// process again, just in case we can do something
-		// else straight away
-		process();
+		else
+		{
+			messages = null;
+		}
+
+		return nextInteraction;
+	}
+
+	private boolean passes(Rule<TContext> rule)
+	{
+		return rule.passes(context) && !rule.continues(context);
+	}
+
+	private void enable(Rule<TContext> rule)
+	{
+		// reset rule status
+		rule.reset();
+
+		// update interaction display
+		getInteraction(rule);
+
+		// use new max delay
+		context.setInteractionDelay(rule.maxDelay());
+
+		currentRule = rule;
 	}
 
 	/**
@@ -206,45 +182,22 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	 */
 	private void process()
 	{
-		isConsuming = false;
-
-		if (currentRule != null)
+		// clear rule if it no longer passes
+		if (currentRule != null && !passes(currentRule))
 		{
-			revalidate();
-
-			if (!currentRule.passes(context) || currentRule.continues(context))
-			{
-				currentRule = null;
-				nextInteraction = null;
-			}
-			else if (config.pluginApi() == PluginAPI.ONE_CLICK
-				&& currentRule.consumes(context))
-			{
-				isConsuming = true;
-				InteractionExecutor.consumeNext();
-			}
+			currentRule = null;
+			nextInteraction = null;
+			messages = null;
 		}
 
+		// find new rule to apply
 		if (currentRule == null)
 		{
 			for (final var rule : rules)
 			{
-				if (rule.passes(context))
+				if (passes(rule))
 				{
-					currentRule = rule;
-
-					// set the interaction delay once, when
-					// the rule is first processed
-					context.setInteractionDelay(currentRule.maxDelay());
-					revalidate();
-
-					// immediately perform actions on rule change
-					// if we're using devious API
-//					if (config.pluginApi() == PluginAPI.DEVIOUS)
-//					{
-//						execute(null);
-//					}
-
+					enable(rule);
 					return;
 				}
 			}
@@ -253,7 +206,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 	private void createOverlays()
 	{
-		actionOverlay = new CoreActionOverlay(this);
+		interactionOverlay = new InteractionOverlay(this);
 		debugOverlay = new CoreDebugOverlay(this, context);
 	}
 
@@ -264,7 +217,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 		if (config.showActionOverlay())
 		{
-			overlayManager.add(actionOverlay);
+			overlayManager.add(interactionOverlay);
 		}
 
 		if (config.showDebugOverlay())
@@ -283,7 +236,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	@Override
 	protected void shutDown()
 	{
-		overlayManager.remove(actionOverlay);
+		overlayManager.remove(interactionOverlay);
 		overlayManager.remove(debugOverlay);
 		keyManager.unregisterKeyListener(hotkeyListener);
 	}
@@ -291,7 +244,6 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
-		InteractionExecutor.tick();
 		context.tick(true);
 
 		if (processOnGameTick)
@@ -299,11 +251,12 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 			process();
 		}
 
-		if (config.pluginApi() == PluginAPI.DEVIOUS)
+		execute();
+
+		final var queued = Static.getClient().getQueuedMenu();
+		if (queued != null)
 		{
-			// if the devious interaction hasn't been executed yet,
-			// attempt to run it again
-			execute(null);
+			RunnerUtil.logDebug("Q", queued.toEntry(Static.getClient()));
 		}
 	}
 
@@ -312,7 +265,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	{
 		if (config.debugRawMenuEntries())
 		{
-			RunnerUtil.logDebug("RAW", event);
+			RunnerUtil.logDebug("RAW", event.getMenuEntry());
 		}
 
 		context.tick(false);
@@ -322,13 +275,15 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 			process();
 		}
 
-		if (config.pluginApi() == PluginAPI.ONE_CLICK)
-		{
-			execute(event);
+		execute();
 
-			if (config.debugOCMenuEntries())
+		if (unethicaliteConfig.interactMethod() == InteractMethod.MOUSE_FORWARDING)
+		{
+			final var queued = Static.getClient().getQueuedMenu();
+			if (queued != null)
 			{
-				RunnerUtil.logDebug("OC", event);
+				event.setMenuEntry(queued.toEntry(Static.getClient()));
+				RunnerUtil.logDebug("OC", event.getMenuEntry());
 			}
 		}
 	}

@@ -7,7 +7,7 @@ import net.unethicalite.api.Interactable;
 import net.unethicalite.api.commons.Predicates;
 
 @AllArgsConstructor
-public class DeferredInteractable
+public class DeferredInteractable<T extends Interactable>
 {
 	/**
 	 * The interactable entity to act upon.
@@ -16,9 +16,9 @@ public class DeferredInteractable
 	 * and produce appropriate errors.
 	 */
 	@Nullable
-	private final Interactable interactable;
+	private final T interactable;
 
-	public Interactable unwrap()
+	public T unwrap()
 	{
 		return interactable;
 	}
@@ -26,7 +26,7 @@ public class DeferredInteractable
 	/**
 	 * Interact with the first action matching the predicate
 	 */
-	public DeferredInteraction interact(Predicate<String> predicate)
+	public DeferredInteraction<T> interact(Predicate<String> predicate)
 	{
 		if (interactable == null) return null;
 		final var actions = interactable.getActions();
@@ -46,7 +46,7 @@ public class DeferredInteractable
 	/**
 	 * Interact with the first action matching the given values
 	 */
-	public DeferredInteraction interact(String... actions)
+	public DeferredInteraction<T> interact(String... actions)
 	{
 		return interact(Predicates.texts(actions));
 	}
@@ -54,16 +54,16 @@ public class DeferredInteractable
 	/**
 	 * Interact with the nth action
 	 */
-	public DeferredInteraction interact(int index)
+	public DeferredInteraction<T> interact(int index)
 	{
 		if (interactable == null) return null;
-		return new DeferredInteraction(interactable, index);
+		return new DeferredInteraction<>(interactable, index);
 	}
 
 	/**
 	 * Interact with the first action
 	 */
-	public DeferredInteraction interact()
+	public DeferredInteraction<T> interact()
 	{
 		return interact(0);
 	}

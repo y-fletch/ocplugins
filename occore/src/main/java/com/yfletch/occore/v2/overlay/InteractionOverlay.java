@@ -1,7 +1,6 @@
 package com.yfletch.occore.v2.overlay;
 
 import com.yfletch.occore.v2.RunnerPlugin;
-import com.yfletch.occore.v2.interaction.exceptions.InteractionException;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -10,11 +9,11 @@ import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.components.LineComponent;
 
 @Slf4j
-public class CoreActionOverlay extends OverlayPanel
+public class InteractionOverlay extends OverlayPanel
 {
 	private final RunnerPlugin<?> plugin;
 
-	public CoreActionOverlay(RunnerPlugin<?> plugin)
+	public InteractionOverlay(RunnerPlugin<?> plugin)
 	{
 		this.plugin = plugin;
 	}
@@ -57,24 +56,9 @@ public class CoreActionOverlay extends OverlayPanel
 			return super.render(graphics);
 		}
 
-		var text = "<col=ff0000>Errored getting action text";
-		try
-		{
-			text = "<col=ffffff>" + interaction.getOption() + " " + interaction.getTarget();
-		}
-		catch (InteractionException ignored)
-		{
-		}
-
 		panelComponent.getChildren().add(
-			MenuEntryComponent.builder().text(text).build()
+			MenuEntryComponent.builder().text(interaction.getTooltip()).build()
 		);
-		if (plugin.isConsuming())
-		{
-			panelComponent.getChildren().add(
-				LineComponent.builder().left("Working...").build()
-			);
-		}
 
 		return super.render(graphics);
 	}

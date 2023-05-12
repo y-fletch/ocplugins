@@ -1,17 +1,39 @@
 package com.yfletch.occore.v2.interaction;
 
 import com.yfletch.occore.v2.util.TextColor;
-import lombok.AllArgsConstructor;
+import javax.annotation.Nonnull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.runelite.api.NPC;
 import net.runelite.api.TileObject;
 import net.runelite.api.widgets.Widget;
 import net.unethicalite.api.Interactable;
 
-@AllArgsConstructor
-public class DeferredInteraction
+@RequiredArgsConstructor
+public class DeferredInteraction<T extends Interactable>
 {
-	private final Interactable interactable;
+	@Nonnull
+	protected T interactable;
 	private final int actionIndex;
+
+	/**
+	 * Callback to run after _each_ execution
+	 * of this interaction
+	 */
+	@Setter
+	@Accessors(fluent = true,
+			   chain = true)
+	private Runnable then;
+
+	/**
+	 * Callback to run after this interaction
+	 * is complete
+	 */
+	@Setter
+	@Accessors(fluent = true,
+			   chain = true)
+	private Runnable after;
 
 	public void execute()
 	{
@@ -20,10 +42,10 @@ public class DeferredInteraction
 
 	public final String getTooltip()
 	{
-		return getAction() + " " + getTarget();
+		return getActionText() + " " + getTargetText();
 	}
 
-	public String getAction()
+	public String getActionText()
 	{
 		final var actions = interactable.getActions();
 		if (actions == null || actions.length <= actionIndex)
@@ -34,7 +56,12 @@ public class DeferredInteraction
 		return TextColor.WHITE + actions[actionIndex];
 	}
 
-	public String getTarget()
+	public String getTargetText()
+	{
+		return getTargetText(interactable);
+	}
+
+	protected String getTargetText(Interactable interactable)
 	{
 		if (interactable instanceof NPC)
 		{
