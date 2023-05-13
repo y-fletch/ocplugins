@@ -7,12 +7,15 @@ import static com.yfletch.occore.v2.interaction.Entities.*;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ItemID;
+import net.runelite.api.coords.WorldArea;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ConfigButtonClicked;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.unethicalite.api.items.Bank;
 import net.unethicalite.api.items.Inventory;
 import net.unethicalite.api.magic.SpellBook;
 import net.unethicalite.api.movement.Movement;
@@ -178,30 +181,32 @@ public class TestPlugin extends RunnerPlugin<TestContext>
 		action().name("Teleport to castle wars")
 			.when(c -> c.isHouseSuite() && c.getTestId() == 15)
 			.then(c -> widget(WidgetID.JEWELLERY_BOX_GROUP_ID, "Castle Wars").interact())
+			.delay(1)
 			.onClick(next);
-//
-//		requirements()
-//			.when(c -> Bank.isOpen())
-//			.mustHaveBanked(ItemID.PURE_ESSENCE)
-//			.mustBeNear("Castle Wars bank", new WorldArea(
-//				new WorldPoint(2438, 3083, 0), 6, 10
-//			));
-//
-//		action()
-//			.when(c -> Bank.isOpen() && c.getBankActive() == 0)
-//			.then(c -> interact().click(WidgetInfo.BANK_DEPOSIT_INVENTORY))
-//			.maxDelay(10);
-//
-//		action()
-//			.when(c -> Bank.isOpen() && c.getBankActive() == 1
-//				&& Bank.contains(ItemID.PURE_ESSENCE))
-//			.then(c -> interact()
-//				.withdraw(1, ItemID.PURE_ESSENCE)
-//				.repeat(10)
-//				.then(() -> log.info("Withdrew 1 pure essence"))
-//				.after(() -> log.info("All done :)"))
-//			);
-//
+
+		requirements()
+			.when(TestContext::isBankSuite)
+			.mustHaveBanked(ItemID.PURE_ESSENCE)
+			.mustBeNear("Castle Wars bank", new WorldArea(
+				new WorldPoint(2438, 3083, 0), 6, 10
+			));
+
+		action().name("Deposit inventory")
+			.when(c -> Bank.isOpen() && c.getTestId() == 0)
+			.then(c -> widget("Deposit inventory").interact());
+
+		action().name("Withdraw 7 pure essence")
+			.when(c -> Bank.isOpen() && c.getTestId() == 1
+				&& Bank.contains("Pure essence"))
+			.then(c -> banked("Pure essence").withdraw(1))
+			.repeat(7);
+
+		action().name("Drop 4 pure essence")
+			.when(c -> !Bank.isOpen() && c.getTestId() == 1
+				&& Inventory.contains("Pure essence"))
+			.then(c -> item("Pure essence").drop())
+			.repeat(4);
+
 //		action()
 //			.when(c -> Bank.isOpen() && c.getBankActive() == 2
 //				&& Inventory.contains(ItemID.PURE_ESSENCE))

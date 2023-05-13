@@ -83,13 +83,18 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		@Override
 		public void hotkeyPressed()
 		{
-			configManager.setConfiguration(configGroup, "enabled", !config.enabled());
+			configManager.setConfiguration(configGroup, "enabled", !enabled());
 		}
 	};
 
 	public boolean enabled()
 	{
 		return config.enabled();
+	}
+
+	public int getRuleRepeatsLeft()
+	{
+		return currentRule == null ? 1 : currentRule.repeatsLeft();
 	}
 
 	/**
@@ -145,7 +150,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 	private boolean canExecute()
 	{
-		if (!config.enabled() || currentRule == null || !currentRule.canExecute())
+		if (!enabled() || currentRule == null || !currentRule.canExecute())
 		{
 			return false;
 		}
@@ -217,8 +222,6 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		context.setMinDelayTimer(rule.minDelay());
 		// reset delay status
 		isDelaying = rule.maxDelay() > 0 || rule.minDelay() > 0;
-
-		log.info("min " + rule.minDelay() + " max " + rule.maxDelay());
 
 		currentRule = rule;
 	}
@@ -323,7 +326,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 		context.tick(false);
 
-		if (config.pluginApi() == PluginAPI.ONE_CLICK_CONSUME && !canExecute())
+		if (enabled() && config.pluginApi() == PluginAPI.ONE_CLICK_CONSUME && !canExecute())
 		{
 			event.consume();
 			if (config.debugOCMenuEntries())
@@ -341,6 +344,8 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 			currentRule.callback(context);
 			currentRule.useRepeat();
+
+			RunnerUtil.log("OC", event.getMenuEntry());
 		}
 
 		if (processOnMouseClick)

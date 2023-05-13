@@ -119,4 +119,10 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 			onClick.accept(context);
 		}
 	}
+
+	@Override
+	public int repeatsLeft()
+	{
+		return repeatsLeft;
+	}
 }

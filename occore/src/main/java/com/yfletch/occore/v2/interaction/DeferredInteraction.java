@@ -51,7 +51,11 @@ public class DeferredInteraction<T extends Interactable>
 
 		if (interactable instanceof Item)
 		{
-			Entities.markInteracted((Item) interactable);
+			final var item = (Item) interactable;
+			if (item.getType() != Item.Type.BANK)
+			{
+				Entities.markInteracted(item);
+			}
 		}
 	}
 
@@ -63,7 +67,11 @@ public class DeferredInteraction<T extends Interactable>
 	{
 		if (interactable instanceof Item)
 		{
-			Entities.markInteracted((Item) interactable);
+			final var item = (Item) interactable;
+			if (item.getType() != Item.Type.BANK)
+			{
+				Entities.markInteracted(item);
+			}
 		}
 	}
 

@@ -92,4 +92,9 @@ public interface Rule<TContext extends CoreContext>
 	default void useRepeat()
 	{
 	}
+
+	default int repeatsLeft()
+	{
+		return 1;
+	}
 }

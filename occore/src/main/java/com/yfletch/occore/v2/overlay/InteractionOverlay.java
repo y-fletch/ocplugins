@@ -57,8 +57,18 @@ public class InteractionOverlay extends OverlayPanel
 			return super.render(graphics);
 		}
 
+		var repeats = "";
+		if (plugin.getRuleRepeatsLeft() > 1)
+		{
+			repeats = TextColor.GRAY + " (" + plugin.getRuleRepeatsLeft() + "x)";
+		}
+		else if (plugin.getRuleRepeatsLeft() == 0)
+		{
+			repeats = TextColor.GRAY + " (complete)";
+		}
+
 		panelComponent.getChildren().add(
-			MenuEntryComponent.builder().text(interaction.getTooltip()).build()
+			MenuEntryComponent.builder().text(interaction.getTooltip() + repeats).build()
 		);
 		if (plugin.isDelaying())
 		{

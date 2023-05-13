@@ -13,9 +13,16 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	{
 		super(item);
 		this.item = item;
-		this.type = Bank.isOpen()
-			? Item.Type.BANK_INVENTORY
-			: Item.Type.INVENTORY;
+		if (item == null)
+		{
+			this.type = Item.Type.INVENTORY;
+		}
+		else
+		{
+			this.type = item.getType() == Item.Type.INVENTORY && Bank.isOpen()
+				? Item.Type.BANK_INVENTORY
+				: item.getType();
+		}
 	}
 
 	public DeferredInteractableItem(Item item, Item.Type type)
@@ -124,7 +131,7 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	 */
 	public DeferredItemInteraction useOn(Interactable target)
 	{
-		if (target == null)
+		if (item == null || target == null)
 		{
 			return null;
 		}
