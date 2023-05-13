@@ -5,11 +5,17 @@ import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.runelite.api.MenuAction;
+import net.runelite.api.MenuEntry;
 import net.runelite.api.NPC;
 import net.runelite.api.TileObject;
-import net.runelite.api.widgets.Widget;
 import net.unethicalite.api.Interactable;
+import net.unethicalite.client.Static;
 
+/**
+ * Represents a deferred interaction with an NPC, TileObject
+ * or Widget
+ */
 @RequiredArgsConstructor
 public class DeferredInteraction<T extends Interactable>
 {
@@ -35,50 +41,90 @@ public class DeferredInteraction<T extends Interactable>
 			   chain = true)
 	private Runnable after;
 
+	public final String getTooltip()
+	{
+		return getMenuOption() + " " + getMenuTarget();
+	}
+
 	public void execute()
 	{
 		interactable.interact(actionIndex);
 	}
 
-	public final String getTooltip()
+	/**
+	 * Run anything that needs to be done before the
+	 * menu entry is clicked
+	 */
+	public void prepare()
 	{
-		return getActionText() + " " + getTargetText();
+
 	}
 
-	public String getActionText()
+	public MenuEntry createMenuEntry()
 	{
+		return Static.getClient().createMenuEntry(-1)
+			.setOption(getMenuOption())
+			.setTarget(getMenuTarget())
+			.setType(getMenuType())
+			.setIdentifier(getMenuIdentifier())
+			.setParam0(getMenuParam0())
+			.setParam1(getMenuParam1());
+	}
+
+	public String getMenuOption()
+	{
+		if (MenuEntryUtil.isDialogOption(interactable))
+		{
+			return TextColor.WHITE + "Continue" + TextColor.END;
+		}
+
 		final var actions = interactable.getActions();
 		if (actions == null || actions.length <= actionIndex)
 		{
-			return TextColor.DANGER + "Unknown action";
+			return TextColor.DANGER + "Unknown option" + TextColor.END;
 		}
 
-		return TextColor.WHITE + actions[actionIndex];
+		return TextColor.WHITE + actions[actionIndex] + TextColor.END;
 	}
 
-	public String getTargetText()
+	public String getMenuTarget()
 	{
-		return getTargetText(interactable);
+		return MenuEntryUtil.getTarget(interactable);
 	}
 
-	protected String getTargetText(Interactable interactable)
+	protected MenuAction getMenuType()
 	{
 		if (interactable instanceof NPC)
 		{
-			return TextColor.NPC + ((NPC) interactable).getName();
+			return MenuAction.of(MenuAction.NPC_FIRST_OPTION.getId() + actionIndex);
 		}
 
 		if (interactable instanceof TileObject)
 		{
-			return TextColor.OBJECT + ((TileObject) interactable).getName();
+			return MenuAction.of(MenuAction.GAME_OBJECT_FIRST_OPTION.getId() + actionIndex);
 		}
 
-		if (interactable instanceof Widget)
+		if (MenuEntryUtil.isDialogOption(interactable))
 		{
-			return TextColor.WHITE + ((Widget) interactable).getName();
+			return MenuAction.WIDGET_CONTINUE;
 		}
 
-		// all other types of targets are handled by subclasses
-		return TextColor.DANGER + "Unknown target";
+		// widgets use CC_OP
+		return actionIndex > 5 ? MenuAction.CC_OP_LOW_PRIORITY : MenuAction.CC_OP;
+	}
+
+	protected int getMenuIdentifier()
+	{
+		return MenuEntryUtil.getIdentifier(interactable, actionIndex);
+	}
+
+	protected int getMenuParam0()
+	{
+		return MenuEntryUtil.getParam0(interactable);
+	}
+
+	protected int getMenuParam1()
+	{
+		return MenuEntryUtil.getParam1(interactable);
 	}
 }

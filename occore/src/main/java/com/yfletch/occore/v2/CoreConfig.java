@@ -38,6 +38,21 @@ public interface CoreConfig extends Config
 		return null;
 	}
 
+	@ConfigItem(
+		keyName = "pluginApi",
+		name = "Plugin API",
+		description = "Set the execution API/mode of the plugin."
+			+ "<br/>\"One-click\" is the original OC behaviour - each manual click within the game will be mutated to perform the correct action."
+			+ "<br/>\"One-click (consume)\" is identical to One-click, but any extra clicks are consumed (blocked)."
+			+ "<br/>\"Devious\" will use Devious client's interaction manager. This allows the plugin to work without manual input.",
+		section = plugin,
+		position = 3
+	)
+	default PluginAPI pluginApi()
+	{
+		return null;
+	}
+
 	@ConfigSection(
 		name = "Overlays",
 		description = "Configure overlays",

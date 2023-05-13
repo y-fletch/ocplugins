@@ -3,6 +3,7 @@ package com.yfletch.occore.v2.util;
 public class TextColor
 {
 	public final static String WHITE = "<col=ffffff>";
+	public final static String GRAY = "<col=aaaaaa>";
 	public final static String ITEM = "<col=ff9040>";
 	public final static String OBJECT = "<col=ffff>";
 	public final static String NPC = "<col=ffff00>";

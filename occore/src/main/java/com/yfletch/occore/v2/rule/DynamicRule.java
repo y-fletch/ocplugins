@@ -2,6 +2,7 @@ package com.yfletch.occore.v2.rule;
 
 import com.yfletch.occore.v2.CoreContext;
 import com.yfletch.occore.v2.interaction.DeferredInteraction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import lombok.AccessLevel;
@@ -28,6 +29,20 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	private int repeatsLeft = 1;
 
 	private int maxDelay = 0;
+
+	/**
+	 * Set to true to allow this
+	 */
+	@Setter(AccessLevel.MODULE)
+	private boolean many = false;
+
+	private Consumer<TContext> onClick;
+
+	public DynamicRule<TContext> many()
+	{
+		many = true;
+		return this;
+	}
 
 	@Override
 	public boolean passes(TContext ctx)
@@ -68,12 +83,24 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	@Override
 	public void useRepeat()
 	{
-		repeatsLeft--;
+		if (!many)
+		{
+			repeatsLeft--;
+		}
 	}
 
 	@Override
 	public boolean canExecute()
 	{
 		return repeatsLeft > 0;
+	}
+
+	@Override
+	public void callback(TContext context)
+	{
+		if (onClick != null)
+		{
+			onClick.accept(context);
+		}
 	}
 }

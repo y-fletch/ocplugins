@@ -18,6 +18,7 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuOptionClicked;
+import net.runelite.api.events.PostMenuSort;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.input.KeyManager;
@@ -27,7 +28,6 @@ import net.runelite.client.util.HotkeyListener;
 import net.unethicalite.api.commons.Rand;
 import net.unethicalite.client.Static;
 import net.unethicalite.client.config.UnethicaliteConfig;
-import net.unethicalite.client.managers.interaction.InteractMethod;
 
 @Slf4j
 public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
@@ -108,11 +108,11 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		return rule.name("Requirements");
 	}
 
-	private void execute()
+	private boolean canExecute()
 	{
-		if (!config.enabled() || currentRule == null)
+		if (!config.enabled() || currentRule == null || !currentRule.canExecute())
 		{
-			return;
+			return false;
 		}
 
 		var delay = 0;
@@ -124,21 +124,27 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 			delay = Rand.nextInt(0, context.getInteractionDelay() + 1);
 		}
 
-		if (delay == 0)
+		return delay == 0;
+	}
+
+	private void execute()
+	{
+		if (canExecute() && config.pluginApi() == PluginAPI.DEVIOUS)
 		{
 			// just for debugging
 			context.setInteractionDelay(0);
-			final var interaction = getInteraction(currentRule);
-			if (interaction != null && currentRule.canExecute())
+			final var interaction = updateInteraction(currentRule);
+			if (interaction != null)
 			{
 				interaction.execute();
+				currentRule.callback(context);
 				currentRule.useRepeat();
 			}
 		}
 	}
 
 	@Nullable
-	private DeferredInteraction<?> getInteraction(Rule<TContext> rule)
+	private DeferredInteraction<?> updateInteraction(Rule<TContext> rule)
 	{
 		nextInteraction = rule.run(context);
 		if (nextInteraction == null)
@@ -147,8 +153,12 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 			messages = rule.messages(context);
 			if (messages == null)
 			{
-				messages = List.of(TextColor.DANGER + "Failed to generate interaction");
+				messages = List.of(TextColor.WHITE + "Nothing to do (no interaction)");
 			}
+
+			// reset rule, so it can run from the start
+			// next time it passes
+			rule.reset();
 		}
 		else
 		{
@@ -169,7 +179,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		rule.reset();
 
 		// update interaction display
-		getInteraction(rule);
+		updateInteraction(rule);
 
 		// use new max delay
 		context.setInteractionDelay(rule.maxDelay());
@@ -182,12 +192,20 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	 */
 	private void process()
 	{
-		// clear rule if it no longer passes
-		if (currentRule != null && !passes(currentRule))
+		if (currentRule != null)
 		{
-			currentRule = null;
-			nextInteraction = null;
-			messages = null;
+			// clear rule if it no longer passes
+			if (!passes(currentRule))
+			{
+				currentRule = null;
+				nextInteraction = null;
+				messages = null;
+			}
+
+			if (currentRule != null)
+			{
+				updateInteraction(currentRule);
+			}
 		}
 
 		// find new rule to apply
@@ -252,12 +270,6 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		}
 
 		execute();
-
-		final var queued = Static.getClient().getQueuedMenu();
-		if (queued != null)
-		{
-			RunnerUtil.logDebug("Q", queued.toEntry(Static.getClient()));
-		}
 	}
 
 	@Subscribe
@@ -265,10 +277,30 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	{
 		if (config.debugRawMenuEntries())
 		{
-			RunnerUtil.logDebug("RAW", event.getMenuEntry());
+			RunnerUtil.log("RAW", event.getMenuEntry());
 		}
 
 		context.tick(false);
+
+		if (config.pluginApi() == PluginAPI.ONE_CLICK_CONSUME && !canExecute())
+		{
+			event.consume();
+			if (config.debugOCMenuEntries())
+			{
+				RunnerUtil.log("OC", "Consumed");
+			}
+		}
+
+		if (currentRule != null && event.getMenuOption().startsWith("* "))
+		{
+			if (nextInteraction != null)
+			{
+				nextInteraction.prepare();
+			}
+
+			currentRule.callback(context);
+			currentRule.useRepeat();
+		}
 
 		if (processOnMouseClick)
 		{
@@ -276,14 +308,18 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		}
 
 		execute();
+	}
 
-		if (unethicaliteConfig.interactMethod() == InteractMethod.MOUSE_FORWARDING)
+	@Subscribe
+	public void onPostMenuSort(PostMenuSort event)
+	{
+		if (config.enabled() && config.pluginApi().isOneClick() && canExecute())
 		{
-			final var queued = Static.getClient().getQueuedMenu();
-			if (queued != null)
+			if (nextInteraction != null)
 			{
-				event.setMenuEntry(queued.toEntry(Static.getClient()));
-				RunnerUtil.logDebug("OC", event.getMenuEntry());
+				// add the one-click entry to the top
+				final var entry = nextInteraction.createMenuEntry();
+				entry.setOption("* " + entry.getOption());
 			}
 		}
 	}

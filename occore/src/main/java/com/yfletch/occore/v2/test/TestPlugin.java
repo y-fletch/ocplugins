@@ -3,16 +3,20 @@ package com.yfletch.occore.v2.test;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.yfletch.occore.v2.RunnerPlugin;
-import static com.yfletch.occore.v2.interaction.Entities.containing;
-import static com.yfletch.occore.v2.interaction.Entities.item;
-import static com.yfletch.occore.v2.interaction.Entities.object;
+import static com.yfletch.occore.v2.interaction.Entities.*;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ItemID;
 import net.runelite.api.events.ConfigButtonClicked;
+import net.runelite.api.widgets.WidgetID;
+import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.unethicalite.api.items.Bank;
+import net.unethicalite.api.items.Inventory;
+import net.unethicalite.api.magic.SpellBook;
+import net.unethicalite.api.widgets.Dialog;
+import net.unethicalite.api.widgets.Widgets;
 import org.pf4j.Extension;
 
 @Slf4j
@@ -38,77 +42,124 @@ public class TestPlugin extends RunnerPlugin<TestContext>
 	{
 		requirements().name("House requirements")
 			.when(c -> !Bank.isOpen())
-			.mustHaveInInventory(ItemID.FIRE_RUNE, ItemID.BUNNY_TOP, ItemID.TELEPORT_TO_HOUSE, ItemID.TEAK_LOGS)
+			.mustHaveOnPerson(ItemID.FIRE_RUNE, ItemID.BUNNY_TOP, ItemID.TELEPORT_TO_HOUSE, ItemID.TEAK_LOGS)
 			.must(TestContext::isInHouse, "Must be in house");
 
 		action()
 			.when(c -> c.isInHouse() && c.getHouseActive() == 0)
-			.then(c -> object(containing("pool of")).interact("Drink"));
+			.then(c -> object(containing("pool of")).interact("Drink"))
+			.onClick(TestContext::next);
 
 		action()
 			.when(c -> c.isInHouse() && c.getHouseActive() == 1)
-			.then(c -> item("Fire rune").useOn(object("Door")));
-//
-//		action()
-//			.when(c -> c.isInHouse() && c.getHouseActive() == 2 && Inventory.contains(ItemID.BUNNY_TOP))
-//			.then(c -> interact().equip(ItemID.BUNNY_TOP));
-//
-//		action()
-//			.when(c -> c.isInHouse() && c.getHouseActive() == 3)
-//			.then(c -> interact().remove(ItemID.BUNNY_TOP));
-//
-//		action()
-//			.when(c -> c.isInHouse() && c.getHouseActive() == 4
-//				&& NPCs.getNearest(NpcID.DEMON_BUTLER) != null)
-//			.then(c -> interact().use(ItemID.FIRE_RUNE).onNPC(NpcID.DEMON_BUTLER));
-//
-//		action()
-//			.when(c -> c.isInHouse() && c.getHouseActive() == 5)
-//			.then(c -> interact().click("Teleport Menu").onObject(ObjectID.PORTAL_NEXUS_33373));
-//
-//		action()
-//			.when(c -> c.isInHouse() && c.getHouseActive() == 6)
-//			.then(c -> interact().click("Break").onItem(ItemID.TELEPORT_TO_HOUSE));
-//
-//		action()
-//			.when(c -> c.isInHouse() && c.getHouseActive() == 7)
-//			.then(c -> interact().drop(ItemID.TEAK_LOGS));
-//
-//		action()
-//			.when(c -> c.isInHouse() && c.getHouseActive() == 8)
-//			.then(c -> interact().cast(SpellBook.Lunar.HUMIDIFY));
-//
-//		action()
-//			.when(c -> c.isInHouse() && c.getHouseActive() == 9
-//				&& NPCs.getNearest(NpcID.DEMON_BUTLER) != null)
-//			.then(c -> interact().cast(SpellBook.Lunar.MONSTER_EXAMINE).onNPC(NpcID.DEMON_BUTLER));
-//
-//		action()
-//			.when(c -> c.isInHouse() && c.getHouseActive() == 10
-//				&& !Dialog.isOpen() && NPCs.getNearest(NpcID.DEMON_BUTLER) != null)
-//			.then(c -> interact().click("Talk-to").onNPC(NpcID.DEMON_BUTLER));
-//
-//		action()
-//			.when(c -> c.isInHouse() && c.getHouseActive() == 10
-//				&& Dialog.isOpen() && Dialog.hasOption("Something else..."))
-//			.then(c -> interact().dialog(option -> option.contains("Something else...")));
-//
-//		action()
-//			.when(c -> c.isInHouse() && c.getHouseActive() == 10
-//				&& Dialog.isOpen() && Dialog.hasOption("Go to the bank..."))
-//			.then(c -> interact().dialog("Go to the bank..."));
-//
-//		action()
-//			.when(c -> c.isInHouse() && c.getHouseActive() == 11)
-//			.then(c -> interact().click("Use").on(WidgetInfo.MINIMAP_SPEC_CLICKBOX));
-//
-//		action()
-//			.when(c -> c.isInHouse() && c.getHouseActive() == 12)
-//			.then(c -> interact().click("Lock").on("Portal"));
-//
-//		action()
-//			.when(c -> c.isInHouse() && c.getHouseActive() == 13)
-//			.then(c -> interact().click("Pick-up").on("Pet rock"));
+			.then(c -> item("Fire rune").useOn(object("Door")))
+			.onClick(TestContext::next);
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 2 && Inventory.contains(ItemID.BUNNY_TOP))
+			.then(c -> item("Bunny top").equip())
+			.onClick(TestContext::next);
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 3)
+			.then(c -> equipment("Bunny top").remove())
+			.onClick(TestContext::next);
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 4)
+			.then(c -> item("Fire rune").useOn(npc(containing("butler"))))
+			.onClick(TestContext::next);
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 5)
+			.then(c -> object(containing("nexus")).interact("Teleport Menu"))
+			.onClick(TestContext::next);
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 6)
+			.then(c -> item("Teleport to house").interact("Break"))
+			.onClick(TestContext::next);
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 7)
+			.then(c -> item("Teak logs").drop())
+			.onClick(TestContext::next);
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 8)
+			.then(c -> spell(SpellBook.Standard.ARDOUGNE_TELEPORT).cast())
+			.onClick(TestContext::next);
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 9)
+			.then(c -> spell(SpellBook.Standard.MAGIC_DART).castOn(npc(containing("butler"))))
+			.onClick(TestContext::next);
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 10 && !Dialog.isOpen())
+			.then(c -> npc(containing("butler")).interact("Talk-to"));
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 10 && Dialog.isOpen()
+				&& Dialog.hasOption("Something else..."))
+			.then(c -> dialog("Something else...").interact());
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 10
+				&& Dialog.isOpen() && Dialog.hasOption("Go to the bank..."))
+			.then(c -> dialog(containing("bank")).interact())
+			.onClick(TestContext::next);
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 11)
+			.then(c -> widget("Toggle Run").interact())
+			.onClick(TestContext::next);
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 12)
+			.then(c -> object("Portal").interact("Lock"))
+			.onClick(TestContext::next);
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 13)
+			.until(c -> Inventory.contains(ItemID.PET_ROCK))
+			.then(c -> entity("Pet rock").interact("Pick-up"));
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 13
+				&& Inventory.contains(ItemID.PET_ROCK))
+			.until(c -> Dialog.isOpen())
+			.then(c -> item("Pet rock").interact("Interact"));
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 13
+				&& Inventory.contains(ItemID.PET_ROCK)
+				&& Dialog.isOpen() && Dialog.hasOption("Talk"))
+			.then(c -> dialog("Talk").interact());
+
+		action()
+			.many()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 13
+				&& Inventory.contains(ItemID.PET_ROCK)
+				&& Dialog.isOpen() && Dialog.canContinue())
+			.then(c -> continueDialog().interact())
+			.onClick(TestContext::next);
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 14
+				&& Inventory.contains(ItemID.PET_ROCK))
+			.then(c -> item("Pet rock").useOn(object("Mahogany house")))
+			.onClick(TestContext::next);
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 15)
+			.until(c -> Widgets.get(WidgetInfo.JEWELLERY_BOX_DUEL_RING) != null)
+			.then(c -> object(containing("jewellery box")).interact("Teleport Menu"));
+
+		action()
+			.when(c -> c.isInHouse() && c.getHouseActive() == 15)
+			.then(c -> widget(WidgetID.JEWELLERY_BOX_GROUP_ID, "Castle Wars").interact())
+			.onClick(TestContext::next);
 //
 //		requirements()
 //			.when(c -> Bank.isOpen())

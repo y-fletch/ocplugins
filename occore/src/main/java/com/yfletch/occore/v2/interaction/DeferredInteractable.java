@@ -1,11 +1,13 @@
 package com.yfletch.occore.v2.interaction;
 
+import static com.yfletch.occore.v2.interaction.Entities.matches;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.unethicalite.api.Interactable;
-import net.unethicalite.api.commons.Predicates;
 
+@Slf4j
 @AllArgsConstructor
 public class DeferredInteractable<T extends Interactable>
 {
@@ -28,9 +30,16 @@ public class DeferredInteractable<T extends Interactable>
 	 */
 	public DeferredInteraction<T> interact(Predicate<String> predicate)
 	{
-		if (interactable == null) return null;
+		if (interactable == null)
+		{
+			return null;
+		}
+
 		final var actions = interactable.getActions();
-		if (actions == null) return null;
+		if (actions == null)
+		{
+			return null;
+		}
 
 		for (var i = 0; i < actions.length; i++)
 		{
@@ -48,7 +57,7 @@ public class DeferredInteractable<T extends Interactable>
 	 */
 	public DeferredInteraction<T> interact(String... actions)
 	{
-		return interact(Predicates.texts(actions));
+		return interact(matches(actions));
 	}
 
 	/**
@@ -56,7 +65,12 @@ public class DeferredInteractable<T extends Interactable>
 	 */
 	public DeferredInteraction<T> interact(int index)
 	{
-		if (interactable == null) return null;
+		if (interactable == null)
+		{
+			log.info("Interactable was null");
+			return null;
+		}
+
 		return new DeferredInteraction<>(interactable, index);
 	}
 

@@ -1,23 +1,30 @@
 package com.yfletch.occore.v2.interaction;
 
+import com.google.common.base.Strings;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import net.runelite.api.Item;
 import net.runelite.api.NPC;
 import net.runelite.api.TileObject;
+import net.runelite.api.util.Text;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import net.unethicalite.api.EntityNameable;
 import net.unethicalite.api.Interactable;
-import net.unethicalite.api.commons.Predicates;
 import net.unethicalite.api.entities.NPCs;
 import net.unethicalite.api.entities.TileObjects;
 import net.unethicalite.api.items.Bank;
 import net.unethicalite.api.items.Equipment;
 import net.unethicalite.api.items.Inventory;
 import net.unethicalite.api.magic.Spell;
+import net.unethicalite.api.widgets.Dialog;
 import net.unethicalite.api.widgets.Widgets;
+import net.unethicalite.client.Static;
 
 /**
  *
@@ -66,7 +73,36 @@ public class Entities
 	 */
 	public static Predicate<String> containing(String text)
 	{
-		return s -> s.toLowerCase().contains(text);
+		return s -> !Strings.isNullOrEmpty(s)
+			&& Text.removeTags(s).toLowerCase().contains(text);
+	}
+
+	public static Predicate<String> matches(String... texts)
+	{
+		return s -> !Strings.
+			isNullOrEmpty(s) && Arrays.stream(texts).anyMatch(t -> Text.removeTags(s).equals(t));
+	}
+
+	private static List<Widget> getAllWidgets(int groupId)
+	{
+		return Widgets.get(groupId).stream().flatMap(w -> getFlatChildren(w).stream())
+			.collect(Collectors.toList());
+	}
+
+	private static List<Widget> getFlatChildren(Widget widget)
+	{
+		final var list = new ArrayList<Widget>();
+		list.add(widget);
+		if (widget.getChildren() != null)
+		{
+			list.addAll(
+				Arrays.stream(widget.getChildren())
+					.flatMap(w -> getFlatChildren(w).stream())
+					.collect(Collectors.toList())
+			);
+		}
+
+		return list;
 	}
 
 	/**
@@ -109,7 +145,7 @@ public class Entities
 	 */
 	public static DeferredInteractable<NPC> npc(String... names)
 	{
-		return npc(Predicates.texts(names));
+		return npc(matches(names));
 	}
 
 	/**
@@ -133,7 +169,7 @@ public class Entities
 	 */
 	public static DeferredInteractable<TileObject> object(String... names)
 	{
-		return object(Predicates.texts(names));
+		return object(matches(names));
 	}
 
 	/**
@@ -152,15 +188,16 @@ public class Entities
 	public static DeferredInteractable<Widget> widget(Predicate<String> predicate)
 	{
 		return of(
-			Widgets.query()
+			Arrays.stream(Static.getClient().getWidgets())
+				.filter(Objects::nonNull)
+				.flatMap(Arrays::stream)
 				.filter(
 					w -> predicate.test(w.getName())
 						|| predicate.test(w.getText())
 						|| w.getActions() != null
 						&& Arrays.stream(w.getActions()).anyMatch(predicate)
 				)
-				.results()
-				.first()
+				.findFirst().orElse(null)
 		);
 	}
 
@@ -171,7 +208,36 @@ public class Entities
 	 */
 	public static DeferredInteractable<Widget> widget(String... names)
 	{
-		return widget(Predicates.texts(names));
+		return widget(matches(names));
+	}
+
+	/**
+	 * Get a widget
+	 * <p>
+	 * Note: this also tests widget actions for the predicate
+	 */
+	public static DeferredInteractable<Widget> widget(int groupId, Predicate<String> predicate)
+	{
+		return of(
+			getAllWidgets(groupId).stream()
+				.filter(
+					w -> predicate.test(w.getName())
+						|| predicate.test(w.getText())
+						|| w.getActions() != null
+						&& Arrays.stream(w.getActions()).anyMatch(predicate)
+				)
+				.findFirst().orElse(null)
+		);
+	}
+
+	/**
+	 * Get a widget
+	 * <p>
+	 * Note: this also searches widget actions for the target strings
+	 */
+	public static DeferredInteractable<Widget> widget(int groupId, String... names)
+	{
+		return widget(groupId, matches(names));
 	}
 
 	/**
@@ -180,6 +246,33 @@ public class Entities
 	public static DeferredInteractable<Widget> widget(WidgetInfo widgetInfo)
 	{
 		return of(Widgets.get(widgetInfo));
+	}
+
+	/**
+	 * Get a dialog option
+	 */
+	public static DeferredInteractable<Widget> dialog(Predicate<String> predicate)
+	{
+		final var widget = Dialog.getOptions().stream()
+			.filter(w -> predicate.test(w.getText()))
+			.findFirst().orElse(null);
+		return of(widget);
+	}
+
+	/**
+	 * Get a dialog option
+	 */
+	public static DeferredInteractable<Widget> dialog(String... names)
+	{
+		return dialog(matches(names));
+	}
+
+	/**
+	 * Get a dialog option
+	 */
+	public static DeferredInteractable<Widget> continueDialog()
+	{
+		return widget("Click here to continue");
 	}
 
 	/**
@@ -211,7 +304,7 @@ public class Entities
 	 */
 	public static DeferredInteractableItem item(Item.Type type, String... names)
 	{
-		return item(type, Predicates.texts(names));
+		return item(type, matches(names));
 	}
 
 	/**
@@ -239,6 +332,54 @@ public class Entities
 	}
 
 	/**
+	 * Get an equipped item
+	 */
+	public static DeferredInteractableItem equipment(Predicate<String> predicate)
+	{
+		return item(Item.Type.EQUIPMENT, predicate);
+	}
+
+	/**
+	 * Get an equipped item
+	 */
+	public static DeferredInteractableItem equipment(String... names)
+	{
+		return item(Item.Type.EQUIPMENT, names);
+	}
+
+	/**
+	 * Get an equipped item
+	 */
+	public static DeferredInteractableItem equipment(int... ids)
+	{
+		return item(Item.Type.EQUIPMENT, ids);
+	}
+
+	/**
+	 * Get a banked item
+	 */
+	public static DeferredInteractableItem banked(Predicate<String> predicate)
+	{
+		return item(Item.Type.BANK, predicate);
+	}
+
+	/**
+	 * Get a banked item
+	 */
+	public static DeferredInteractableItem banked(String... names)
+	{
+		return item(Item.Type.BANK, names);
+	}
+
+	/**
+	 * Get a banked item
+	 */
+	public static DeferredInteractableItem banked(int... ids)
+	{
+		return item(Item.Type.BANK, ids);
+	}
+
+	/**
 	 * Get an NPC or object
 	 */
 	public static DeferredInteractable<?> entity(Predicate<String> predicate)
@@ -248,5 +389,13 @@ public class Entities
 				.<Interactable>ofNullable(NPCs.getNearest(nameMatches(predicate)))
 				.orElse(TileObjects.getNearest(nameMatches(predicate)))
 		);
+	}
+
+	/**
+	 * Get an NPC or object
+	 */
+	public static DeferredInteractable<?> entity(String... names)
+	{
+		return entity(matches(names));
 	}
 }

@@ -1,9 +1,9 @@
 package com.yfletch.occore.v2.interaction;
 
+import static com.yfletch.occore.v2.interaction.Entities.matches;
 import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
 import net.unethicalite.api.Interactable;
-import net.unethicalite.api.commons.Predicates;
 import net.unethicalite.api.magic.Spell;
 import net.unethicalite.api.widgets.Widgets;
 
@@ -19,15 +19,27 @@ public class DeferredInteractableSpell
 
 	public DeferredSpellInteraction cast(int index)
 	{
+		if (Widgets.get(spell.getWidget()) == null)
+		{
+			return null;
+		}
+
 		return new DeferredSpellInteraction(spell, index);
 	}
 
 	public DeferredSpellInteraction cast(Predicate<String> predicate)
 	{
 		final var widget = Widgets.get(spell.getWidget());
-		if (widget == null) return null;
+		if (widget == null)
+		{
+			return null;
+		}
+
 		final var actions = widget.getActions();
-		if (actions == null) return null;
+		if (actions == null)
+		{
+			return null;
+		}
 
 		for (var i = 0; i < actions.length; i++)
 		{
@@ -42,15 +54,20 @@ public class DeferredInteractableSpell
 
 	public DeferredSpellInteraction cast(String... actions)
 	{
-		return cast(Predicates.texts(actions));
+		return cast(matches(actions));
 	}
 
 	public DeferredSpellInteraction castOn(Interactable target)
 	{
+		if (target == null)
+		{
+			return null;
+		}
+
 		return new DeferredSpellInteraction(spell, target);
 	}
 
-	public DeferredSpellInteraction castOn(DeferredInteractable target)
+	public DeferredSpellInteraction castOn(DeferredInteractable<?> target)
 	{
 		return castOn(target.unwrap());
 	}

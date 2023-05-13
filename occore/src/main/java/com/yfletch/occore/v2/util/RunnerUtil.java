@@ -11,19 +11,24 @@ public class RunnerUtil
 	/**
 	 * Log event/menu entry to game chat and output log
 	 */
-	public static void logDebug(String prefix, MenuEntry event)
+	public static void log(String prefix, MenuEntry event)
 	{
-		final var debug = "[" + prefix + "] option=" + event.getOption()
+		final var debug = "option=" + event.getOption()
 			+ " target=" + event.getTarget()
 			+ " id=" + event.getIdentifier()
 			+ " action=" + event.getMenuAction()
 			+ " p0=" + event.getParam0()
 			+ " p1=" + event.getParam1();
-		log.info(debug);
+		log(prefix, debug);
+	}
+
+	public static void log(String prefix, String text)
+	{
+		log.info("[" + prefix + "] " + text);
 		Static.getClient().addChatMessage(
 			ChatMessageType.GAMEMESSAGE,
 			"Bob",
-			debug,
+			"[" + prefix + "] " + text,
 			null
 		);
 	}

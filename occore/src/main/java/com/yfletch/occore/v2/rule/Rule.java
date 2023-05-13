@@ -61,6 +61,10 @@ public interface Rule<TContext extends CoreContext>
 		return null;
 	}
 
+	default void callback(TContext context)
+	{
+	}
+
 	/**
 	 * Reset internal rule flags. Only used for internal logic,
 	 * don't call this in a consumer.
@@ -76,6 +80,5 @@ public interface Rule<TContext extends CoreContext>
 
 	default void useRepeat()
 	{
-
 	}
 }

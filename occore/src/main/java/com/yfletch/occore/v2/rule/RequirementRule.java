@@ -112,6 +112,23 @@ public class RequirementRule<TContext extends CoreContext> implements Rule<TCont
 	}
 
 	/**
+	 * Require all item IDs to be in the player's inventory or equipment
+	 */
+	public RequirementRule<TContext> mustHaveOnPerson(int... ids)
+	{
+		for (final var id : ids)
+		{
+			final var name = getItemName(id);
+			requirements.put(
+				"<col=ffffff>Must have <col=ff9040>" + name + " <col=ffffff>equipped",
+				c -> Inventory.contains(id) || Equipment.contains(id)
+			);
+		}
+
+		return this;
+	}
+
+	/**
 	 * Require all item IDs to be in the player's bank
 	 */
 	public RequirementRule<TContext> mustHaveBanked(int... ids)
