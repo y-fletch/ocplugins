@@ -29,6 +29,7 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	private int repeatsLeft = 1;
 
 	private int maxDelay = 0;
+	private int minDelay = 0;
 
 	/**
 	 * Set to true to allow this
@@ -40,8 +41,17 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 
 	public DynamicRule<TContext> many()
 	{
-		many = true;
-		return this;
+		return many(true);
+	}
+
+	public DynamicRule<TContext> delay(int min, int max)
+	{
+		return minDelay(min).maxDelay(max);
+	}
+
+	public DynamicRule<TContext> delay(int delay)
+	{
+		return minDelay(delay).maxDelay(delay);
 	}
 
 	@Override
@@ -72,6 +82,12 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	public int maxDelay()
 	{
 		return maxDelay > 1 ? maxDelay : Rule.super.maxDelay();
+	}
+
+	@Override
+	public int minDelay()
+	{
+		return minDelay > 1 ? minDelay : Rule.super.minDelay();
 	}
 
 	@Override

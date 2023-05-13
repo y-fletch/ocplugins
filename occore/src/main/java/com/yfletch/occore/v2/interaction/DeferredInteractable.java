@@ -1,6 +1,6 @@
 package com.yfletch.occore.v2.interaction;
 
-import static com.yfletch.occore.v2.interaction.Entities.matches;
+import static com.yfletch.occore.v2.interaction.Entities.matching;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
@@ -57,7 +57,7 @@ public class DeferredInteractable<T extends Interactable>
 	 */
 	public DeferredInteraction<T> interact(String... actions)
 	{
-		return interact(matches(actions));
+		return interact(matching(actions));
 	}
 
 	/**

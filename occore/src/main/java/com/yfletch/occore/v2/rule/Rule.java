@@ -9,12 +9,23 @@ public interface Rule<TContext extends CoreContext>
 	String name();
 
 	/**
-	 * Maximum time the runner can delay execution of
-	 * this rule's interaction after it passes (in ticks).
+	 * Maximum amount of ticks the runner can delay execution
+	 * of this rule's interaction after it passes.
 	 * <p>
 	 * Set >= 1 to make actions much less suspicious
 	 */
 	default int maxDelay()
+	{
+		return 0;
+	}
+
+	/**
+	 * Minimum amount of ticks the runner can delay execution
+	 * of this rule's interaction after it passes.
+	 * <p>
+	 * Must be smaller than `maxDelay`
+	 */
+	default int minDelay()
 	{
 		return 0;
 	}

@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.yfletch.occore.v2.RunnerPlugin;
 import static com.yfletch.occore.v2.interaction.Entities.*;
+import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ItemID;
 import net.runelite.api.events.ConfigButtonClicked;
@@ -12,9 +13,9 @@ import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.unethicalite.api.items.Bank;
 import net.unethicalite.api.items.Inventory;
 import net.unethicalite.api.magic.SpellBook;
+import net.unethicalite.api.movement.Movement;
 import net.unethicalite.api.widgets.Dialog;
 import net.unethicalite.api.widgets.Widgets;
 import org.pf4j.Extension;
@@ -41,125 +42,143 @@ public class TestPlugin extends RunnerPlugin<TestContext>
 	public void setup()
 	{
 		requirements().name("House requirements")
-			.when(c -> !Bank.isOpen())
-			.mustHaveOnPerson(ItemID.FIRE_RUNE, ItemID.BUNNY_TOP, ItemID.TELEPORT_TO_HOUSE, ItemID.TEAK_LOGS)
+			.when(TestContext::isHouseSuite)
+			.mustHaveOnPerson(ItemID.FIRE_RUNE, ItemID.BUNNY_TOP, ItemID.TELEPORT_TO_HOUSE)
 			.must(TestContext::isInHouse, "Must be in house");
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 0)
+		final Consumer<TestContext> next = c -> {
+			if (c.nextOnClick()) c.next();
+		};
+
+		action().name("Drink from pool")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 0)
 			.then(c -> object(containing("pool of")).interact("Drink"))
-			.onClick(TestContext::next);
+			.delay(5, 10)
+			.onClick(next);
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 1)
+		action().name("Use rune on door")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 1)
 			.then(c -> item("Fire rune").useOn(object("Door")))
-			.onClick(TestContext::next);
+			.onClick(next);
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 2 && Inventory.contains(ItemID.BUNNY_TOP))
+		action().name("Equip bunny top")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 2 && Inventory.contains(ItemID.BUNNY_TOP))
 			.then(c -> item("Bunny top").equip())
-			.onClick(TestContext::next);
+			.onClick(next);
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 3)
+		action().name("Unequip bunny top")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 3)
 			.then(c -> equipment("Bunny top").remove())
-			.onClick(TestContext::next);
+			.onClick(next);
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 4)
+		action().name("Rune on butler")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 4)
 			.then(c -> item("Fire rune").useOn(npc(containing("butler"))))
-			.onClick(TestContext::next);
+			.onClick(next);
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 5)
+		action().name("Teleport nexus")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 5)
 			.then(c -> object(containing("nexus")).interact("Teleport Menu"))
-			.onClick(TestContext::next);
+			.onClick(next);
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 6)
+		action().name("Break tab")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 6)
 			.then(c -> item("Teleport to house").interact("Break"))
-			.onClick(TestContext::next);
+			.onClick(next);
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 7)
+		action().name("Drop all logs")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 7)
 			.then(c -> item("Teak logs").drop())
-			.onClick(TestContext::next);
+			.until(c -> !Inventory.contains("Teak logs"))
+			.many();
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 8)
+		action().name("Pick up logs")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 7)
+			.then(c -> tileItem("Teak logs").interact("Take"))
+			.many()
+			.maxDelay(5)
+			.onClick(next);
+
+		action().name("Cast Ardy tele")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 8)
 			.then(c -> spell(SpellBook.Standard.ARDOUGNE_TELEPORT).cast())
-			.onClick(TestContext::next);
+			.onClick(next);
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 9)
+		action().name("Cast magic dart on butler")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 9)
 			.then(c -> spell(SpellBook.Standard.MAGIC_DART).castOn(npc(containing("butler"))))
-			.onClick(TestContext::next);
+			.onClick(next);
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 10 && !Dialog.isOpen())
+		action().name("Talk to butler")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 10 && !Dialog.isOpen())
 			.then(c -> npc(containing("butler")).interact("Talk-to"));
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 10 && Dialog.isOpen()
+		action().name("Click something else")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 10 && Dialog.isOpen()
 				&& Dialog.hasOption("Something else..."))
 			.then(c -> dialog("Something else...").interact());
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 10
+		action().name("Click go to bank")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 10
 				&& Dialog.isOpen() && Dialog.hasOption("Go to the bank..."))
 			.then(c -> dialog(containing("bank")).interact())
-			.onClick(TestContext::next);
+			.onClick(next);
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 11)
+		action().name("Turn run off")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 11 && Movement.isRunEnabled())
+			.then(c -> widget("Toggle Run").interact());
+
+		action().name("Turn run on")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 11 && !Movement.isRunEnabled())
 			.then(c -> widget("Toggle Run").interact())
-			.onClick(TestContext::next);
+			.maxDelay(5)
+			.onClick(next);
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 12)
+		action().name("Lock portal")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 12)
 			.then(c -> object("Portal").interact("Lock"))
-			.onClick(TestContext::next);
+			.onClick(next);
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 13)
-			.until(c -> Inventory.contains(ItemID.PET_ROCK))
+		action().name("Pick up pet rock")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 13)
+			.until(c -> Inventory.contains("Pet rock"))
 			.then(c -> entity("Pet rock").interact("Pick-up"));
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 13
-				&& Inventory.contains(ItemID.PET_ROCK))
+		action().name("Interact with pet rock")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 13
+				&& Inventory.contains("Pet rock"))
 			.until(c -> Dialog.isOpen())
 			.then(c -> item("Pet rock").interact("Interact"));
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 13
-				&& Inventory.contains(ItemID.PET_ROCK)
+		action().name("Talk to pet rock")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 13
+				&& Inventory.contains("Pet rock")
 				&& Dialog.isOpen() && Dialog.hasOption("Talk"))
 			.then(c -> dialog("Talk").interact());
 
-		action()
+		action().name("Keep talking")
 			.many()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 13
-				&& Inventory.contains(ItemID.PET_ROCK)
+			.when(c -> c.isHouseSuite() && c.getTestId() == 13
+				&& Inventory.contains("Pet rock")
 				&& Dialog.isOpen() && Dialog.canContinue())
 			.then(c -> continueDialog().interact())
-			.onClick(TestContext::next);
+			.onClick(next);
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 14
-				&& Inventory.contains(ItemID.PET_ROCK))
+		action().name("Put pet rock back")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 14
+				&& Inventory.contains("Pet rock"))
 			.then(c -> item("Pet rock").useOn(object("Mahogany house")))
-			.onClick(TestContext::next);
+			.onClick(next);
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 15)
+		action().name("Use jewellery box")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 15)
 			.until(c -> Widgets.get(WidgetInfo.JEWELLERY_BOX_DUEL_RING) != null)
 			.then(c -> object(containing("jewellery box")).interact("Teleport Menu"));
 
-		action()
-			.when(c -> c.isInHouse() && c.getHouseActive() == 15)
+		action().name("Teleport to castle wars")
+			.when(c -> c.isHouseSuite() && c.getTestId() == 15)
 			.then(c -> widget(WidgetID.JEWELLERY_BOX_GROUP_ID, "Castle Wars").interact())
-			.onClick(TestContext::next);
+			.onClick(next);
 //
 //		requirements()
 //			.when(c -> Bank.isOpen())
@@ -203,9 +222,17 @@ public class TestPlugin extends RunnerPlugin<TestContext>
 	public void onConfigButtonClicked(ConfigButtonClicked event)
 	{
 		if (event.getGroup().equals(TestConfig.GROUP_NAME)
-			&& event.getKey().equals("next"))
+		)
 		{
-			context.next();
+			if (event.getKey().equals("next"))
+			{
+				context.next();
+			}
+
+			if (event.getKey().equals("previous"))
+			{
+				context.previous();
+			}
 		}
 	}
 

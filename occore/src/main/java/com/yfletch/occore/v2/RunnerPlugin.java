@@ -2,6 +2,7 @@ package com.yfletch.occore.v2;
 
 import com.google.inject.Inject;
 import com.yfletch.occore.v2.interaction.DeferredInteraction;
+import com.yfletch.occore.v2.interaction.Entities;
 import com.yfletch.occore.v2.overlay.CoreDebugOverlay;
 import com.yfletch.occore.v2.overlay.InteractionOverlay;
 import com.yfletch.occore.v2.rule.DynamicRule;
@@ -32,6 +33,12 @@ import net.unethicalite.client.config.UnethicaliteConfig;
 @Slf4j
 public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 {
+	/**
+	 * Amount of times we will try to execute with the devious
+	 * API per tick. Used for quick-dropping etc.
+	 */
+	private final static int MAX_ACTIONS_PER_TICK = 8;
+
 	@Inject private ConfigManager configManager;
 	@Inject private KeyManager keyManager;
 	@Inject private OverlayManager overlayManager;
@@ -44,6 +51,9 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 	@Getter
 	private DeferredInteraction<?> nextInteraction = null;
+
+	@Getter
+	private boolean isDelaying = false;
 
 	@Getter
 	private List<String> messages = null;
@@ -108,6 +118,31 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		return rule.name("Requirements");
 	}
 
+	private void updateDelay()
+	{
+		if (context.getMinDelayTimer() > 0)
+		{
+			return;
+		}
+
+		var delay = 0;
+		if (context.getDelayTimer() > 0)
+		{
+			// [0, 2)
+			// the lower the interaction delay is, the more likely
+			// it will execute. 4t => 1/4, 3t => 1/3, etc
+			delay = Rand.nextInt(0, context.getDelayTimer() + 1);
+		}
+
+		if (delay == 0)
+		{
+			isDelaying = false;
+
+			// just for debugging
+			context.setDelayTimer(0);
+		}
+	}
+
 	private boolean canExecute()
 	{
 		if (!config.enabled() || currentRule == null || !currentRule.canExecute())
@@ -115,24 +150,13 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 			return false;
 		}
 
-		var delay = 0;
-		if (context.getInteractionDelay() > 0)
-		{
-			// [0, 2)
-			// the lower the interaction delay is, the more likely
-			// it will execute. 4t => 1/4, 3t => 1/3, etc
-			delay = Rand.nextInt(0, context.getInteractionDelay() + 1);
-		}
-
-		return delay == 0;
+		return !isDelaying;
 	}
 
-	private void execute()
+	private void executeWithDeviousAPI()
 	{
 		if (canExecute() && config.pluginApi() == PluginAPI.DEVIOUS)
 		{
-			// just for debugging
-			context.setInteractionDelay(0);
 			final var interaction = updateInteraction(currentRule);
 			if (interaction != null)
 			{
@@ -153,7 +177,14 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 			messages = rule.messages(context);
 			if (messages == null)
 			{
-				messages = List.of(TextColor.WHITE + "Nothing to do (no interaction)");
+				final var ruleName = rule.name() != null
+					? "\"" + rule.name() + "\""
+					: "unknown rule";
+
+				messages = List.of(
+					TextColor.WHITE + "Nothing to do (no interaction)",
+					TextColor.GRAY + "For " + ruleName
+				);
 			}
 
 			// reset rule, so it can run from the start
@@ -182,7 +213,12 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		updateInteraction(rule);
 
 		// use new max delay
-		context.setInteractionDelay(rule.maxDelay());
+		context.setDelayTimer(rule.maxDelay());
+		context.setMinDelayTimer(rule.minDelay());
+		// reset delay status
+		isDelaying = rule.maxDelay() > 0 || rule.minDelay() > 0;
+
+		log.info("min " + rule.minDelay() + " max " + rule.maxDelay());
 
 		currentRule = rule;
 	}
@@ -209,15 +245,15 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		}
 
 		// find new rule to apply
-		if (currentRule == null)
+		for (final var rule : rules)
 		{
-			for (final var rule : rules)
+			if (passes(rule))
 			{
-				if (passes(rule))
+				if (rule != currentRule)
 				{
 					enable(rule);
-					return;
 				}
+				return;
 			}
 		}
 	}
@@ -263,13 +299,18 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	public void onGameTick(GameTick event)
 	{
 		context.tick(true);
+		Entities.clearInteracted();
 
 		if (processOnGameTick)
 		{
 			process();
 		}
 
-		execute();
+		updateDelay();
+		for (int i = 0; i < MAX_ACTIONS_PER_TICK; i++)
+		{
+			executeWithDeviousAPI();
+		}
 	}
 
 	@Subscribe
@@ -307,13 +348,13 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 			process();
 		}
 
-		execute();
+		executeWithDeviousAPI();
 	}
 
 	@Subscribe
 	public void onPostMenuSort(PostMenuSort event)
 	{
-		if (config.enabled() && config.pluginApi().isOneClick() && canExecute())
+		if (config.pluginApi().isOneClick() && canExecute())
 		{
 			if (nextInteraction != null)
 			{

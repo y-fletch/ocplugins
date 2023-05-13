@@ -120,7 +120,7 @@ public class RequirementRule<TContext extends CoreContext> implements Rule<TCont
 		{
 			final var name = getItemName(id);
 			requirements.put(
-				"<col=ffffff>Must have <col=ff9040>" + name + " <col=ffffff>equipped",
+				"<col=ffffff>Must have <col=ff9040>" + name,
 				c -> Inventory.contains(id) || Equipment.contains(id)
 			);
 		}

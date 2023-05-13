@@ -5,10 +5,9 @@ import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.runelite.api.Item;
 import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
-import net.runelite.api.NPC;
-import net.runelite.api.TileObject;
 import net.unethicalite.api.Interactable;
 import net.unethicalite.client.Static;
 
@@ -49,15 +48,23 @@ public class DeferredInteraction<T extends Interactable>
 	public void execute()
 	{
 		interactable.interact(actionIndex);
+
+		if (interactable instanceof Item)
+		{
+			Entities.markInteracted((Item) interactable);
+		}
 	}
 
 	/**
 	 * Run anything that needs to be done before the
-	 * menu entry is clicked
+	 * menu entry is clicked (OC only)
 	 */
 	public void prepare()
 	{
-
+		if (interactable instanceof Item)
+		{
+			Entities.markInteracted((Item) interactable);
+		}
 	}
 
 	public MenuEntry createMenuEntry()
@@ -94,23 +101,7 @@ public class DeferredInteraction<T extends Interactable>
 
 	protected MenuAction getMenuType()
 	{
-		if (interactable instanceof NPC)
-		{
-			return MenuAction.of(MenuAction.NPC_FIRST_OPTION.getId() + actionIndex);
-		}
-
-		if (interactable instanceof TileObject)
-		{
-			return MenuAction.of(MenuAction.GAME_OBJECT_FIRST_OPTION.getId() + actionIndex);
-		}
-
-		if (MenuEntryUtil.isDialogOption(interactable))
-		{
-			return MenuAction.WIDGET_CONTINUE;
-		}
-
-		// widgets use CC_OP
-		return actionIndex > 5 ? MenuAction.CC_OP_LOW_PRIORITY : MenuAction.CC_OP;
+		return MenuEntryUtil.getType(interactable, actionIndex);
 	}
 
 	protected int getMenuIdentifier()

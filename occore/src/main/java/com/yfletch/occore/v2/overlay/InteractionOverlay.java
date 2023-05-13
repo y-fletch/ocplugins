@@ -1,6 +1,7 @@
 package com.yfletch.occore.v2.overlay;
 
 import com.yfletch.occore.v2.RunnerPlugin;
+import com.yfletch.occore.v2.util.TextColor;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -59,6 +60,12 @@ public class InteractionOverlay extends OverlayPanel
 		panelComponent.getChildren().add(
 			MenuEntryComponent.builder().text(interaction.getTooltip()).build()
 		);
+		if (plugin.isDelaying())
+		{
+			panelComponent.getChildren().add(
+				MenuEntryComponent.builder().text(TextColor.GRAY + "Delaying...").build()
+			);
+		}
 
 		return super.render(graphics);
 	}

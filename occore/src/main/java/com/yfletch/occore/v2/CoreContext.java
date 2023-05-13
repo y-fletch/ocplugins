@@ -1,8 +1,10 @@
 package com.yfletch.occore.v2;
 
+import com.yfletch.occore.v2.interaction.Entities;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +17,11 @@ public class CoreContext
 
 	@Setter
 	@Getter
-	private int interactionDelay = 0;
+	private int delayTimer = 0;
+
+	@Setter
+	@Getter
+	private int minDelayTimer = 0;
 
 	/**
 	 * Persist a flag in context.
@@ -89,9 +95,14 @@ public class CoreContext
 			return;
 		}
 
-		if (interactionDelay > 0)
+		if (delayTimer > 0)
 		{
-			interactionDelay--;
+			delayTimer--;
+		}
+
+		if (minDelayTimer > 0)
+		{
+			minDelayTimer--;
 		}
 
 		for (Map.Entry<String, Integer> entry : new ArrayList<>(ephemeralFlags.entrySet()))
@@ -150,7 +161,25 @@ public class CoreContext
 	public Map<String, String> getDebugMap()
 	{
 		final var lines = new HashMap<String, String>();
-		lines.put("interact-delay", "" + interactionDelay);
+		if (delayTimer > 0)
+		{
+			lines.put("delay-timer", "" + delayTimer);
+		}
+
+		if (minDelayTimer > 0)
+		{
+			lines.put("min-delay-timer", "" + minDelayTimer);
+		}
+
+		if (Entities.getInteractedItems().size() > 0)
+		{
+			lines.put(
+				"interacted-slots",
+				Entities.getInteractedItems().stream()
+					.map(item -> item.getSlot() + "")
+					.collect(Collectors.joining(","))
+			);
+		}
 
 		for (Map.Entry<String, Boolean> entry : flags.entrySet())
 		{

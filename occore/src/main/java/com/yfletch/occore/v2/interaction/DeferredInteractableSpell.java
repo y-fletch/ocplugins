@@ -1,6 +1,6 @@
 package com.yfletch.occore.v2.interaction;
 
-import static com.yfletch.occore.v2.interaction.Entities.matches;
+import static com.yfletch.occore.v2.interaction.Entities.matching;
 import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
 import net.unethicalite.api.Interactable;
@@ -54,7 +54,7 @@ public class DeferredInteractableSpell
 
 	public DeferredSpellInteraction cast(String... actions)
 	{
-		return cast(matches(actions));
+		return cast(matching(actions));
 	}
 
 	public DeferredSpellInteraction castOn(Interactable target)

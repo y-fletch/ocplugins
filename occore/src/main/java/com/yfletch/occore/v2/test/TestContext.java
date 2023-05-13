@@ -1,41 +1,38 @@
 package com.yfletch.occore.v2.test;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.yfletch.occore.v2.CoreContext;
 import java.util.Map;
 import lombok.Getter;
-import net.runelite.api.ItemID;
 import net.unethicalite.api.items.Bank;
-import net.unethicalite.api.items.Inventory;
 import net.unethicalite.client.Static;
 
 @Singleton
 public class TestContext extends CoreContext
 {
-	@Getter
-	private int houseActive = 0;
+	@Inject TestConfig config;
 
 	@Getter
-	private int bankActive = 0;
+	private int testId = 0;
 
 	public void next()
 	{
-		if (isInHouse())
-		{
-			houseActive++;
-			if (houseActive > 15)
-			{
-				houseActive = 0;
-			}
-		}
+		testId++;
 
-		if (Bank.isOpen())
+		if (testId >= config.testSuite().getRules())
 		{
-			bankActive++;
-			if (bankActive > 8)
-			{
-				bankActive = 0;
-			}
+			testId = 0;
+		}
+	}
+
+	public void previous()
+	{
+		testId--;
+
+		if (testId < 0)
+		{
+			testId = config.testSuite().getRules() - 1;
 		}
 	}
 
@@ -50,10 +47,24 @@ public class TestContext extends CoreContext
 		final var map = super.getDebugMap();
 		map.put("is-in-house", "" + isInHouse());
 		map.put("bank-is-open", "" + Bank.isOpen());
-		map.put("house-active", "" + houseActive);
-		map.put("bank-active", "" + bankActive);
-		map.put("has-pure-essence", "" + Inventory.contains(ItemID.PURE_ESSENCE));
+		map.put("suite", config.testSuite().name().toLowerCase());
+		map.put("test-id", "" + testId);
 
 		return map;
+	}
+
+	public boolean nextOnClick()
+	{
+		return config.nextOnClick();
+	}
+
+	public boolean isHouseSuite()
+	{
+		return config.testSuite() == TestSuite.HOUSE;
+	}
+
+	public boolean isBankSuite()
+	{
+		return config.testSuite() == TestSuite.BANK;
 	}
 }

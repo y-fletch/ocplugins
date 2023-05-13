@@ -3,11 +3,14 @@ package com.yfletch.occore.v2.interaction;
 import com.yfletch.occore.v2.util.TextColor;
 import net.runelite.api.GameObject;
 import net.runelite.api.Item;
+import net.runelite.api.MenuAction;
 import net.runelite.api.NPC;
 import net.runelite.api.Point;
+import net.runelite.api.TileItem;
 import net.runelite.api.TileObject;
 import net.runelite.api.widgets.Widget;
 import net.unethicalite.api.Interactable;
+import net.unethicalite.api.SceneEntity;
 import net.unethicalite.api.widgets.Dialog;
 
 public class MenuEntryUtil
@@ -22,6 +25,11 @@ public class MenuEntryUtil
 		if (interactable instanceof TileObject)
 		{
 			return TextColor.OBJECT + ((TileObject) interactable).getName() + TextColor.END;
+		}
+
+		if (interactable instanceof TileItem)
+		{
+			return TextColor.ITEM + ((TileItem) interactable).getName() + TextColor.END;
 		}
 
 		if (interactable instanceof Widget)
@@ -43,6 +51,35 @@ public class MenuEntryUtil
 		return TextColor.DANGER + "Unknown target" + TextColor.END;
 	}
 
+	/**
+	 * Does not include menu actions for widget target events
+	 */
+	public static MenuAction getType(Interactable interactable, int index)
+	{
+		if (interactable instanceof NPC)
+		{
+			return MenuAction.of(MenuAction.NPC_FIRST_OPTION.getId() + index);
+		}
+
+		if (interactable instanceof TileObject)
+		{
+			return MenuAction.of(MenuAction.GAME_OBJECT_FIRST_OPTION.getId() + index);
+		}
+
+		if (interactable instanceof TileItem)
+		{
+			return MenuAction.of(MenuAction.GROUND_ITEM_FIRST_OPTION.getId() + index);
+		}
+
+		if (MenuEntryUtil.isDialogOption(interactable))
+		{
+			return MenuAction.WIDGET_CONTINUE;
+		}
+
+		// widgets use CC_OP
+		return MenuAction.CC_OP;
+	}
+
 	public static int getIdentifier(Interactable interactable)
 	{
 		return getIdentifier(interactable, -1);
@@ -58,6 +95,11 @@ public class MenuEntryUtil
 		if (interactable instanceof TileObject)
 		{
 			return ((TileObject) interactable).getId();
+		}
+
+		if (interactable instanceof TileItem)
+		{
+			return ((TileItem) interactable).getId();
 		}
 
 		if (isDialogOption(interactable))
@@ -76,9 +118,10 @@ public class MenuEntryUtil
 			return 0;
 		}
 
-		if (interactable instanceof TileObject)
+		if (interactable instanceof TileObject
+			|| interactable instanceof TileItem)
 		{
-			return getSceneLocation((TileObject) interactable).getX();
+			return getSceneLocation((SceneEntity) interactable).getX();
 		}
 
 		if (interactable instanceof Widget)
@@ -106,9 +149,10 @@ public class MenuEntryUtil
 			return 0;
 		}
 
-		if (interactable instanceof TileObject)
+		if (interactable instanceof TileObject
+			|| interactable instanceof TileItem)
 		{
-			return getSceneLocation((TileObject) interactable).getY();
+			return getSceneLocation((SceneEntity) interactable).getY();
 		}
 
 		if (interactable instanceof Widget)
@@ -131,7 +175,7 @@ public class MenuEntryUtil
 			|| ((Widget) interactable).getText().equals("Click here to continue"));
 	}
 
-	private static Point getSceneLocation(TileObject object)
+	private static Point getSceneLocation(SceneEntity object)
 	{
 		if (object instanceof GameObject)
 		{

@@ -19,10 +19,47 @@ public interface TestConfig extends CoreConfig
 	String ocTest = "ocTest";
 
 	@ConfigItem(
+		name = "Test suite",
+		keyName = "testSuite",
+		description = "Set of tests to run",
+		section = ocTest,
+		position = 0
+	)
+	default TestSuite testSuite()
+	{
+		return TestSuite.HOUSE;
+	}
+
+	@ConfigItem(
+		name = "Next on click",
+		keyName = "nextOnClick",
+		description = "Move to the next test rule on click",
+		section = ocTest,
+		position = 1
+	)
+	default boolean nextOnClick()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "previous",
+		name = "Previous",
+		description = "Move to previous rule",
+		section = ocTest,
+		position = 2
+	)
+	default Button previousButton()
+	{
+		return new Button();
+	}
+
+	@ConfigItem(
 		keyName = "next",
 		name = "Next",
 		description = "Move to next rule",
-		section = ocTest
+		section = ocTest,
+		position = 3
 	)
 	default Button nextButton()
 	{

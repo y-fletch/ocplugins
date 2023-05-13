@@ -3,20 +3,26 @@ package com.yfletch.occore.v2.interaction;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import net.runelite.api.Item;
 import net.runelite.api.NPC;
+import net.runelite.api.TileItem;
 import net.runelite.api.TileObject;
 import net.runelite.api.util.Text;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import net.unethicalite.api.EntityNameable;
 import net.unethicalite.api.Interactable;
+import net.unethicalite.api.commons.Predicates;
 import net.unethicalite.api.entities.NPCs;
+import net.unethicalite.api.entities.TileItems;
 import net.unethicalite.api.entities.TileObjects;
 import net.unethicalite.api.items.Bank;
 import net.unethicalite.api.items.Equipment;
@@ -31,6 +37,19 @@ import net.unethicalite.client.Static;
  */
 public class Entities
 {
+	@Getter
+	private final static Set<Item> interactedItems = new HashSet<>();
+
+	public static void clearInteracted()
+	{
+		interactedItems.clear();
+	}
+
+	public static void markInteracted(Item item)
+	{
+		interactedItems.add(item);
+	}
+
 	private static <T extends EntityNameable> Predicate<T> nameMatches(Predicate<String> predicate)
 	{
 		return e -> predicate.test(e.getName());
@@ -38,33 +57,39 @@ public class Entities
 
 	private static Item getNextItem(Item.Type type, int... ids)
 	{
+		final Predicate<Item> filter = (item -> Predicates.ids(ids).test(item)
+			&& !interactedItems.contains(item));
+
 		switch (type)
 		{
 			case EQUIPMENT:
-				return Equipment.getFirst(ids);
+				return Equipment.getFirst(filter);
 			case BANK:
-				return Bank.getFirst(ids);
+				return Bank.getFirst(filter);
 			case BANK_INVENTORY:
-				return Bank.Inventory.getFirst(ids);
+				return Bank.Inventory.getFirst(filter);
 			case INVENTORY:
 			default:
-				return Inventory.getFirst(ids);
+				return Inventory.getFirst(filter);
 		}
 	}
 
 	private static Item getNextItem(Item.Type type, Predicate<String> predicate)
 	{
+		final Predicate<Item> filter = (item -> nameMatches(predicate).test(item)
+			&& !interactedItems.contains(item));
+
 		switch (type)
 		{
 			case EQUIPMENT:
-				return Equipment.getFirst(nameMatches(predicate));
+				return Equipment.getFirst(filter);
 			case BANK:
-				return Bank.getFirst(nameMatches(predicate));
+				return Bank.getFirst(filter);
 			case BANK_INVENTORY:
-				return Bank.Inventory.getFirst(nameMatches(predicate));
+				return Bank.Inventory.getFirst(filter);
 			case INVENTORY:
 			default:
-				return Inventory.getFirst(nameMatches(predicate));
+				return Inventory.getFirst(filter);
 		}
 	}
 
@@ -77,7 +102,7 @@ public class Entities
 			&& Text.removeTags(s).toLowerCase().contains(text);
 	}
 
-	public static Predicate<String> matches(String... texts)
+	public static Predicate<String> matching(String... texts)
 	{
 		return s -> !Strings.
 			isNullOrEmpty(s) && Arrays.stream(texts).anyMatch(t -> Text.removeTags(s).equals(t));
@@ -145,7 +170,7 @@ public class Entities
 	 */
 	public static DeferredInteractable<NPC> npc(String... names)
 	{
-		return npc(matches(names));
+		return npc(matching(names));
 	}
 
 	/**
@@ -169,7 +194,7 @@ public class Entities
 	 */
 	public static DeferredInteractable<TileObject> object(String... names)
 	{
-		return object(matches(names));
+		return object(matching(names));
 	}
 
 	/**
@@ -178,6 +203,30 @@ public class Entities
 	public static DeferredInteractable<TileObject> object(int... ids)
 	{
 		return of(TileObjects.getNearest(ids));
+	}
+
+	/**
+	 * Get a TileItem
+	 */
+	public static DeferredInteractable<TileItem> tileItem(Predicate<String> predicate)
+	{
+		return of(TileItems.getNearest(nameMatches(predicate)));
+	}
+
+	/**
+	 * Get a TileItem
+	 */
+	public static DeferredInteractable<TileItem> tileItem(String... names)
+	{
+		return tileItem(matching(names));
+	}
+
+	/**
+	 * Get a TileItem
+	 */
+	public static DeferredInteractable<TileItem> tileItem(int... ids)
+	{
+		return of(TileItems.getNearest(ids));
 	}
 
 	/**
@@ -208,7 +257,7 @@ public class Entities
 	 */
 	public static DeferredInteractable<Widget> widget(String... names)
 	{
-		return widget(matches(names));
+		return widget(matching(names));
 	}
 
 	/**
@@ -237,7 +286,7 @@ public class Entities
 	 */
 	public static DeferredInteractable<Widget> widget(int groupId, String... names)
 	{
-		return widget(groupId, matches(names));
+		return widget(groupId, matching(names));
 	}
 
 	/**
@@ -264,7 +313,7 @@ public class Entities
 	 */
 	public static DeferredInteractable<Widget> dialog(String... names)
 	{
-		return dialog(matches(names));
+		return dialog(matching(names));
 	}
 
 	/**
@@ -304,7 +353,7 @@ public class Entities
 	 */
 	public static DeferredInteractableItem item(Item.Type type, String... names)
 	{
-		return item(type, matches(names));
+		return item(type, matching(names));
 	}
 
 	/**
@@ -396,6 +445,6 @@ public class Entities
 	 */
 	public static DeferredInteractable<?> entity(String... names)
 	{
-		return entity(matches(names));
+		return entity(matching(names));
 	}
 }
