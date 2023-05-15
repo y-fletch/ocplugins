@@ -22,6 +22,7 @@ import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.PostMenuSort;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -78,6 +79,10 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	@Accessors(fluent = true)
 	private boolean processOnMouseClick = true;
 
+	@Setter
+	@Accessors(fluent = true)
+	private boolean refreshOnConfigChange = true;
+
 	private final HotkeyListener hotkeyListener = new HotkeyListener(() -> config.quickToggleKeybind())
 	{
 		@Override
@@ -95,6 +100,15 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	public int getRuleRepeatsLeft()
 	{
 		return currentRule == null ? 1 : currentRule.repeatsLeft();
+	}
+
+	/**
+	 * Clear all current rules and run setup again
+	 */
+	public void refresh()
+	{
+		rules.clear();
+		setup();
 	}
 
 	/**
@@ -120,7 +134,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	{
 		final var rule = new RequirementRule<TContext>();
 		rules.add(rule);
-		return rule;
+		return rule.name("Requirements");
 	}
 
 	private void updateDelay()
@@ -315,18 +329,6 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		{
 			executeWithDeviousAPI();
 		}
-
-//		if (enabled())
-//		{
-//			var actions = Bank.getFirst(ItemID.PURE_ESSENCE).getActions();
-//			for (var action : actions)
-//			{
-//				log.info(Arrays.asList(actions).indexOf(action) + " " + action);
-//			}
-//			Bank.getFirst(ItemID.PURE_ESSENCE).interact(
-//				Arrays.asList(actions).indexOf("Withdraw-1") + 1
-//			);
-//		}
 	}
 
 	@Subscribe
@@ -404,6 +406,42 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 				final var entry = nextInteraction.createMenuEntry();
 				entry.setOption("* " + entry.getOption());
 				entry.setForceLeftClick(true);
+			}
+		}
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if (event.getGroup().equals(configGroup))
+		{
+			if (refreshOnConfigChange)
+			{
+				Static.getClientThread().invokeLater(this::refresh);
+			}
+
+			if (event.getKey().equals("showActionOverlay"))
+			{
+				if (event.getNewValue().equals("true"))
+				{
+					overlayManager.add(interactionOverlay);
+				}
+				else
+				{
+					overlayManager.remove(interactionOverlay);
+				}
+			}
+
+			if (event.getKey().equals("showDebugOverlay"))
+			{
+				if (event.getNewValue().equals("true"))
+				{
+					overlayManager.add(debugOverlay);
+				}
+				else
+				{
+					overlayManager.remove(debugOverlay);
+				}
 			}
 		}
 	}

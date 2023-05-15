@@ -60,6 +60,11 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	 */
 	public DeferredInteraction<Item> withdraw(int n)
 	{
+		if (item == null)
+		{
+			return null;
+		}
+
 		assert item.getType() == Item.Type.BANK;
 		return interact("Withdraw-" + n);
 	}
@@ -69,6 +74,11 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	 */
 	public DeferredInteraction<Item> withdrawX()
 	{
+		if (item == null)
+		{
+			return null;
+		}
+
 		assert item.getType() == Item.Type.BANK;
 		return interact(4);
 	}
@@ -78,6 +88,11 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	 */
 	public DeferredInteraction<Item> withdrawAll()
 	{
+		if (item == null)
+		{
+			return null;
+		}
+
 		assert item.getType() == Item.Type.BANK;
 		return interact("Withdraw-All");
 	}
@@ -87,6 +102,11 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	 */
 	public DeferredInteraction<Item> deposit(int n)
 	{
+		if (item == null)
+		{
+			return null;
+		}
+
 		assert item.getType() == Item.Type.BANK_INVENTORY;
 		return interact("Deposit-" + n);
 	}
@@ -96,6 +116,11 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	 */
 	public DeferredInteraction<Item> depositX()
 	{
+		if (item == null)
+		{
+			return null;
+		}
+
 		assert item.getType() == Item.Type.BANK_INVENTORY;
 		return interact(5);
 	}
@@ -105,6 +130,11 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	 */
 	public DeferredInteraction<Item> depositAll()
 	{
+		if (item == null)
+		{
+			return null;
+		}
+
 		assert item.getType() == Item.Type.BANK_INVENTORY;
 		return interact("Deposit-All");
 	}

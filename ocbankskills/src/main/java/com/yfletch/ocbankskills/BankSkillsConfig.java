@@ -20,39 +20,39 @@ public interface BankSkillsConfig extends CoreConfig
 
 	@ConfigItem(
 		keyName = "primary",
-		name = "Primary item ID",
-		description = "Primary item ID",
+		name = "Primary item names",
+		description = "Primary item names, comma separated",
 		section = bankSkills,
 		position = 1
 	)
 	@Range(min = -1)
-	default int primary()
+	default String primary()
 	{
-		return -1;
+		return null;
 	}
 
 	@ConfigItem(
 		keyName = "secondary",
-		name = "Secondary item ID",
-		description = "Secondary item ID",
+		name = "Secondary item names",
+		description = "Secondary item names, comma separated",
 		section = bankSkills,
 		position = 2
 	)
 	@Range(min = -1)
-	default int secondary()
+	default String secondary()
 	{
-		return -1;
+		return null;
 	}
 
 	@ConfigItem(
-		keyName = "makeOption",
-		name = "Make option",
-		description = "Option to click in the skill interface (starting at 1)",
+		keyName = "product",
+		name = "Product item name",
+		description = "Option to click in the skill interface",
 		section = bankSkills,
 		position = 3
 	)
-	default int makeOption()
+	default String product()
 	{
-		return 1;
+		return null;
 	}
 }

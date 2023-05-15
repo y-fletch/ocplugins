@@ -1,6 +1,6 @@
 package com.yfletch.occore.v2.interaction;
 
-import static com.yfletch.occore.v2.interaction.Entities.matching;
+import static com.yfletch.occore.v2.util.Util.matching;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
@@ -19,6 +19,11 @@ public class DeferredInteractable<T extends Interactable>
 	 */
 	@Nullable
 	private final T interactable;
+
+	public boolean exists()
+	{
+		return interactable != null;
+	}
 
 	public T unwrap()
 	{

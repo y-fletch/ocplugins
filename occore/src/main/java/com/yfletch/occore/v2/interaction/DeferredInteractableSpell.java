@@ -1,6 +1,6 @@
 package com.yfletch.occore.v2.interaction;
 
-import static com.yfletch.occore.v2.interaction.Entities.matching;
+import static com.yfletch.occore.v2.util.Util.matching;
 import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
 import net.unethicalite.api.Interactable;

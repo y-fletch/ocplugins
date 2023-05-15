@@ -16,7 +16,7 @@ public class RunnerUtil
 		final var debug = "option=" + event.getOption()
 			+ " target=" + event.getTarget()
 			+ " id=" + event.getIdentifier()
-			+ " action=" + event.getMenuAction()
+			+ " type=" + event.getType()
 			+ " p0=" + event.getParam0()
 			+ " p1=" + event.getParam1();
 		log(prefix, debug);

@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.yfletch.occore.v2.RunnerPlugin;
 import static com.yfletch.occore.v2.interaction.Entities.*;
+import static com.yfletch.occore.v2.util.Util.containing;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ItemID;
@@ -187,9 +188,9 @@ public class TestPlugin extends RunnerPlugin<TestContext>
 		requirements()
 			.when(TestContext::isBankSuite)
 			.mustHaveBanked(ItemID.PURE_ESSENCE)
-			.mustBeNear("Castle Wars bank", new WorldArea(
+			.mustBeNear(new WorldArea(
 				new WorldPoint(2438, 3083, 0), 6, 10
-			));
+			), "Castle Wars bank");
 
 		action().name("Deposit inventory")
 			.when(c -> Bank.isOpen() && c.getTestId() == 0)

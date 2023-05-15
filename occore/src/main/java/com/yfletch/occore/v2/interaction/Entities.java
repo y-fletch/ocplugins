@@ -1,6 +1,6 @@
 package com.yfletch.occore.v2.interaction;
 
-import com.google.common.base.Strings;
+import static com.yfletch.occore.v2.util.Util.matching;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -15,7 +15,6 @@ import net.runelite.api.Item;
 import net.runelite.api.NPC;
 import net.runelite.api.TileItem;
 import net.runelite.api.TileObject;
-import net.runelite.api.util.Text;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import net.unethicalite.api.EntityNameable;
@@ -101,21 +100,6 @@ public class Entities
 			default:
 				return Inventory.getFirst(filter);
 		}
-	}
-
-	/**
-	 * Shortcut for lowercase contains
-	 */
-	public static Predicate<String> containing(String text)
-	{
-		return s -> !Strings.isNullOrEmpty(s)
-			&& Text.removeTags(s).toLowerCase().contains(text);
-	}
-
-	public static Predicate<String> matching(String... texts)
-	{
-		return s -> !Strings.
-			isNullOrEmpty(s) && Arrays.stream(texts).anyMatch(t -> Text.removeTags(s).equals(t));
 	}
 
 	private static List<Widget> getAllWidgets(int groupId)
@@ -242,6 +226,9 @@ public class Entities
 	/**
 	 * Get a widget
 	 * <p>
+	 * If this fails to find a widget, a groupId is probably also required
+	 * with Entities.widget(groupId, predicate)
+	 * <p>
 	 * Note: this also tests widget actions for the predicate
 	 */
 	public static DeferredInteractable<Widget> widget(Predicate<String> predicate)
@@ -262,6 +249,9 @@ public class Entities
 
 	/**
 	 * Get a widget
+	 * <p>
+	 * If this fails to find a widget, a groupId is probably also required
+	 * with Entities.widget(groupId, predicate)
 	 * <p>
 	 * Note: this also searches widget actions for the target strings
 	 */
