@@ -50,7 +50,7 @@ public interface CoreConfig extends Config
 	)
 	default PluginAPI pluginApi()
 	{
-		return null;
+		return PluginAPI.ONE_CLICK_CONSUME;
 	}
 
 	@ConfigSection(

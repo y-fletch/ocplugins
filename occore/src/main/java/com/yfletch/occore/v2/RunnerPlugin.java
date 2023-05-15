@@ -34,12 +34,6 @@ import net.unethicalite.client.config.UnethicaliteConfig;
 @Slf4j
 public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 {
-	/**
-	 * Amount of times we will try to execute with the devious
-	 * API per tick. Used for quick-dropping etc.
-	 */
-	private final static int MAX_ACTIONS_PER_TICK = 8;
-
 	@Inject private ConfigManager configManager;
 	@Inject private KeyManager keyManager;
 	@Inject private OverlayManager overlayManager;
@@ -58,6 +52,8 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 	@Getter
 	private List<String> messages = null;
+
+	private int actionsThisTick = 0;
 
 	private InteractionOverlay interactionOverlay;
 	private CoreDebugOverlay debugOverlay;
@@ -79,9 +75,17 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	@Accessors(fluent = true)
 	private boolean processOnMouseClick = true;
 
+	/**
+	 * Maximum amount of actions to execute in a single
+	 * tick.
+	 */
 	@Setter
 	@Accessors(fluent = true)
-	private boolean refreshOnConfigChange = true;
+	private int actionsPerTick = 1;
+
+	@Setter
+	@Accessors(fluent = true)
+	private boolean refreshOnConfigChange = false;
 
 	private final HotkeyListener hotkeyListener = new HotkeyListener(() -> config.quickToggleKeybind())
 	{
@@ -139,6 +143,8 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 	private void updateDelay()
 	{
+		context.tickDelays();
+
 		if (context.getMinDelayTimer() > 0)
 		{
 			return;
@@ -177,9 +183,10 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		if (canExecute() && config.pluginApi() == PluginAPI.DEVIOUS)
 		{
 			final var interaction = updateInteraction(currentRule);
-			if (interaction != null)
+			if (interaction != null && actionsThisTick < actionsPerTick)
 			{
 				interaction.execute();
+				actionsThisTick++;
 				currentRule.callback(context);
 				currentRule.useRepeat();
 
@@ -187,6 +194,14 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 				{
 					currentRule.completeCallback(context);
 				}
+			}
+
+			// in case there's something we should move to straight
+			// away, process and execute again
+			if (!passes(currentRule))
+			{
+				process();
+				executeWithDeviousAPI();
 			}
 		}
 	}
@@ -235,6 +250,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		// use new max delay
 		context.setDelayTimer(rule.maxDelay());
 		context.setMinDelayTimer(rule.minDelay());
+		log.info("Delays: " + rule.minDelay() + "/" + rule.maxDelay());
 		// reset delay status
 		isDelaying = rule.maxDelay() > 0 || rule.minDelay() > 0;
 
@@ -246,11 +262,38 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	 */
 	private void process()
 	{
+		// find new rule to apply
+		for (final var rule : rules)
+		{
+			if (passes(rule))
+			{
+				if (rule == currentRule)
+				{
+					// current rule is still active -
+					// continue to below
+					break;
+				}
+
+				// reset previous rule
+				// if the previous rule should only be reset on tick,
+				// then skip it
+				if (currentRule != null
+					&& !(currentRule instanceof DynamicRule && ((DynamicRule<TContext>) currentRule).resetsOnTick()))
+				{
+					currentRule.reset();
+				}
+
+				enable(rule);
+				return;
+			}
+		}
+
 		if (currentRule != null)
 		{
 			// clear rule if it no longer passes
 			if (!passes(currentRule))
 			{
+				currentRule.reset();
 				currentRule = null;
 				nextInteraction = null;
 				messages = null;
@@ -259,19 +302,6 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 			if (currentRule != null)
 			{
 				updateInteraction(currentRule);
-			}
-		}
-
-		// find new rule to apply
-		for (final var rule : rules)
-		{
-			if (passes(rule))
-			{
-				if (rule != currentRule)
-				{
-					enable(rule);
-				}
-				return;
 			}
 		}
 	}
@@ -318,17 +348,25 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	{
 		context.tick(true);
 		Entities.clearInteracted();
+		actionsThisTick = 0;
+
+		// reset all "once-per-tick" rules
+		for (final var rule : rules)
+		{
+			if (rule instanceof DynamicRule && ((DynamicRule<TContext>) rule).resetsOnTick())
+			{
+				rule.reset();
+			}
+		}
 
 		if (processOnGameTick)
 		{
 			process();
 		}
 
+		executeWithDeviousAPI();
+
 		updateDelay();
-		for (int i = 0; i < MAX_ACTIONS_PER_TICK; i++)
-		{
-			executeWithDeviousAPI();
-		}
 	}
 
 	@Subscribe
@@ -376,6 +414,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 				nextInteraction.prepare();
 			}
 
+			actionsThisTick++;
 			currentRule.callback(context);
 			currentRule.useRepeat();
 

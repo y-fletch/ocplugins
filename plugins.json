@@ -33,6 +33,13 @@
         "version": "2.0.0",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-2.0.0.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-05-15",
+        "sha512sum": "A320E47A1C0D7C37EC58DE440DB0F6D509F5BE4B13464CB061B9188DFF59E8CADE9EB913BC63DDE71DD74C8FBED6F312DF8AB94E71597FC879C490B85682054E",
+        "version": "2.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-2.0.1.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
@@ -132,6 +139,13 @@
         "version": "1.0.0",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbwans-1.0.0.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-05-15",
+        "sha512sum": "55C430D0215C2925677790ECA8EF8896E9423F5EE62537B6B4E4B36C3A482F4ED09CC1DFA792EA969931AF88060061A282A4924636B26C594F3CA37CA811BDA1",
+        "version": "2.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbwans-2.0.0.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
@@ -219,6 +233,13 @@
         "sha512sum": "269160B8FF438B25472119189B256159A68BCD5D9D70A8C7425DF98F3205617B219DA5C9CF8E3F6CF54BFF5A02FCA0F1FF48C309C3B4896552C2C896D211E258",
         "version": "0.0.6",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.6.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-05-15",
+        "sha512sum": "F6E6E1A8B6FEB6C85791B8EE992B75CD1C7B6D0628627B554471F0E91452D51C7CCB17C79EE2775D512C81A51406EA109CDB22ACDB650030295C5135AFAC6B58",
+        "version": "2.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-2.0.0.jar?raw=true",
         "requires": "^1.0.0"
       }
     ]

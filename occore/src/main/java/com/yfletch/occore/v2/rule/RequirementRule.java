@@ -336,12 +336,12 @@ public class RequirementRule<TContext extends CoreContext> implements Rule<TCont
 	public List<String> messages(TContext ctx)
 	{
 		final var messages = new ArrayList<String>();
-		messages.add("<col=ff0000>Failed requirements:");
+		messages.add(TextColor.DANGER + "Failed requirements:");
 		for (final var entry : requirements.entrySet())
 		{
 			if (!entry.getValue().test(ctx))
 			{
-				messages.add("<col=ff0000>- " + entry.getKey());
+				messages.add(TextColor.DANGER + "- " + entry.getKey());
 			}
 		}
 

@@ -102,6 +102,18 @@ public class Entities
 		}
 	}
 
+	private static Item getLastItem(Predicate<String> predicate)
+	{
+		final var all = Inventory.getAll(nameMatches(predicate));
+		return all.get(all.size() - 1);
+	}
+
+	private static Item getLastItem(int... ids)
+	{
+		final var all = Inventory.getAll(ids);
+		return all.get(all.size() - 1);
+	}
+
 	private static List<Widget> getAllWidgets(int groupId)
 	{
 		return Widgets.get(groupId).stream().flatMap(w -> getFlatChildren(w).stream())
@@ -378,6 +390,30 @@ public class Entities
 	public static DeferredInteractableItem item(int... ids)
 	{
 		return item(Item.Type.INVENTORY, ids);
+	}
+
+	/**
+	 * Get the last of this item in the inventory
+	 */
+	public static DeferredInteractableItem lastItem(Predicate<String> predicate)
+	{
+		return of(getLastItem(predicate));
+	}
+
+	/**
+	 * Get the last of this item in the inventory
+	 */
+	public static DeferredInteractableItem lastItem(String... names)
+	{
+		return lastItem(matching(names));
+	}
+
+	/**
+	 * Get the last of this item in the inventory
+	 */
+	public static DeferredInteractableItem lastItem(int... ids)
+	{
+		return of(getLastItem(ids));
 	}
 
 	/**

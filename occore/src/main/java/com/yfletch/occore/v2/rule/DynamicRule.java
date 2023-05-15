@@ -31,15 +31,44 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	private int maxDelay = 0;
 	private int minDelay = 0;
 
-	/**
-	 * Set to true to allow this
-	 */
 	@Setter(AccessLevel.MODULE)
 	private boolean many = false;
+	private boolean once = false;
+
+	@Getter
+	private boolean resetsOnTick = false;
 
 	private Consumer<TContext> onClick;
 	private Consumer<TContext> onComplete;
 
+	/**
+	 * Only execute this rule once, before immediately
+	 * moving control to the next rule.
+	 * <p>
+	 * This rule becomes eligible again as soon as the
+	 * next rule executes. To chain rules together,
+	 * use oncePerTick instead.
+	 */
+	public DynamicRule<TContext> once()
+	{
+		return once(true);
+	}
+
+	/**
+	 * Only execute this rule once per tick, before immediately
+	 * moving control to the next rule. This rule will not
+	 * be eligible again until the next tick, where the rule
+	 * is completely reset (including repeats).
+	 */
+	public DynamicRule<TContext> oncePerTick()
+	{
+		return once(true).resetsOnTick(true);
+	}
+
+	/**
+	 * Allow this action to be performed multiple times
+	 * per tick
+	 */
 	public DynamicRule<TContext> many()
 	{
 		return many(true);
@@ -50,14 +79,24 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 		return minDelay(min).maxDelay(max);
 	}
 
+	/**
+	 * Forcibly delay this rule's action
+	 */
 	public DynamicRule<TContext> delay(int delay)
 	{
-		return minDelay(delay).maxDelay(delay);
+		minDelay(delay).maxDelay(delay);
+		System.out.println("Delays: " + minDelay() + "/" + maxDelay());
+		return this;
 	}
 
 	@Override
 	public boolean passes(TContext ctx)
 	{
+		if ((once || resetsOnTick) && repeatsLeft == 0)
+		{
+			return false;
+		}
+
 		return when != null && when.test(ctx);
 	}
 
@@ -82,13 +121,13 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	@Override
 	public int maxDelay()
 	{
-		return maxDelay > 1 ? maxDelay : Rule.super.maxDelay();
+		return maxDelay > 0 ? maxDelay : Rule.super.maxDelay();
 	}
 
 	@Override
 	public int minDelay()
 	{
-		return minDelay > 1 ? minDelay : Rule.super.minDelay();
+		return minDelay > 0 ? minDelay : Rule.super.minDelay();
 	}
 
 	@Override

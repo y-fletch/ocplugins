@@ -9,7 +9,7 @@ import static com.yfletch.occore.v2.interaction.Entities.item;
 import static com.yfletch.occore.v2.interaction.Entities.widget;
 import static com.yfletch.occore.v2.util.Util.containing;
 import static com.yfletch.occore.v2.util.Util.join;
-import static com.yfletch.occore.v2.util.Util.notContaining;
+import static com.yfletch.occore.v2.util.Util.nameNotMatching;
 import static com.yfletch.occore.v2.util.Util.parseList;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.widgets.WidgetID;
@@ -36,6 +36,7 @@ public class OCBankSkillsPlugin extends RunnerPlugin<BankSkillsContext>
 		setContext(context);
 		setConfigGroup(BankSkillsConfig.GROUP_NAME);
 		refreshOnConfigChange(true);
+		actionsPerTick(4);
 	}
 
 	@Override
@@ -51,43 +52,42 @@ public class OCBankSkillsPlugin extends RunnerPlugin<BankSkillsContext>
 			.when(c -> primary().length > 0 && secondary().length > 0)
 			.mustHave(join(primary(), secondary()));
 
-		// bank
 		action().name("Open bank")
-			.when(c -> !Bank.isOpen()
-				&& (!Inventory.contains(primary()) || !Inventory.contains(secondary())))
+			.when(c -> !Inventory.contains(primary()) || !Inventory.contains(secondary()))
+			.until(c -> Bank.isOpen())
 			.then(c -> entity(containing("bank")).interact("Use", "Bank"));
 
-		// deposit any items other than primary/secondary
-		action().name("Deposit inventory")
-			.when(c -> Bank.isOpen() && (Inventory.contains(
-				item -> notContaining(join(primary(), secondary())).test(item.getName())))
-			)
+		action().name("Deposit other items")
+			.oncePerTick()
+			.when(c -> Inventory.contains(nameNotMatching(join(primary(), secondary()))))
 			.then(c -> widget("Deposit inventory").interact());
 
-		// withdraw primary
-		action()
-			.when(c -> !Inventory.contains(primary()))
+		action().name("Withdraw primary")
+			.oncePerTick()
+			.when(c -> Bank.isOpen())
+			.until(c -> Inventory.contains(primary()))
 			.then(c -> banked(primary()).withdrawX());
 
-		// withdraw secondary
-		action()
-			.when(c -> !Inventory.contains(secondary()))
+		action().name("Withdraw secondary")
+			.oncePerTick()
+			.when(c -> Bank.isOpen())
+			.until(c -> Inventory.contains(secondary()))
 			.then(c -> banked(secondary()).withdrawX());
 
-		// close bank
-		action()
+		action().name("Close bank")
 			.when(c -> Bank.isOpen())
-			.then(c -> widget(WidgetID.BANK_GROUP_ID, "Close").interact());
+			.then(c -> widget(WidgetID.BANK_GROUP_ID, "Close").interact())
+			.delay(1);
 
-		// click make option
-		action()
+		action().name("Click make")
 			.when(c -> widget(product()).exists())
 			.then(c -> widget(product()).interact("Make"));
 
-		// use primary on secondary
-		action()
-			.when(c -> !c.isAnimating() && !widget(product()).exists())
-			.then(c -> item(primary()).useOn(item(secondary())));
+		action().name("Use items")
+			.when(c -> !c.isAnimating())
+			.then(c -> item(primary()).useOn(item(secondary())))
+			// doesn't work on the same tick the bank was opened
+			.delay(1);
 	}
 
 	private String[] primary()

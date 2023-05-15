@@ -95,16 +95,6 @@ public class CoreContext
 			return;
 		}
 
-		if (delayTimer > 0)
-		{
-			delayTimer--;
-		}
-
-		if (minDelayTimer > 0)
-		{
-			minDelayTimer--;
-		}
-
 		for (Map.Entry<String, Integer> entry : new ArrayList<>(ephemeralFlags.entrySet()))
 		{
 			if (entry.getValue() < 1)
@@ -129,6 +119,19 @@ public class CoreContext
 			{
 				ephemeralArgs.put(entry.getKey(), entry.getValue() - 1);
 			}
+		}
+	}
+
+	public void tickDelays()
+	{
+		if (delayTimer > 0)
+		{
+			delayTimer--;
+		}
+
+		if (minDelayTimer > 0)
+		{
+			minDelayTimer--;
 		}
 	}
 
