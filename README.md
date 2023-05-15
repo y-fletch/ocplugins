@@ -2,7 +2,18 @@
 
 OpenOSRS OC plugins. Use at your own risk.
 
-Plugins in `alpha` versions may get stuck occasionally.
+Plugins in `alpha` aren't fully tested and may not work correctly.
+
+## OC Bank Skills
+
+Auto train Crafting/Fletching/Herblore
+
+### Setup
+
+* Set the primary and secondary ingredients in the config, as well as the product item (all are case-sensitive)
+  * e.g. `Willow longbow (u)` + `Bow string` = `Willow longbow`
+  * or `Dwarf weed potion (unf)` + `Wine of Zamorak` = `Ranging potion(3)`
+* Run the plugin near any bank
 
 ## OC Barbarian Fishing
 
@@ -43,9 +54,17 @@ Auto blood Runecrafting
 * Equip Dramen/Lunar staff if required
 * Use more than one click per tick for fastest trips (not required)
 
+## OC Bwans
+
+Perfect 1-tick Karambwan cooking, ~1m xp/hr
+
+### Setup
+
+* Run the plugin near any range/fire with a bank nearby
+
 ## OC Clicker
 
-Auto-clicker that doesn't need mouse inputs
+Auto-clicker that doesn't need mouse focus.
 
 ### Features
 
@@ -60,7 +79,7 @@ Auto-clicker that doesn't need mouse inputs
 
 ## OC Core
 
-Core library for one-click plugins. See example implementations in OC Bloods or OC Barb Fishing
+Core library for one-click plugins. See example implementations in [TestPlugin](https://github.com/y-fletch/ocplugins/blob/main/occore/src/main/java/com/yfletch/occore/v2/test/TestPlugin.java), [OCBankSkillsPlugin](https://github.com/y-fletch/ocplugins/blob/main/ocbankskills/src/main/java/com/yfletch/ocbankskills/OCBankSkillsPlugin.java) or [OCBwansPlugin](https://github.com/y-fletch/ocplugins/blob/main/ocbwans/src/main/java/com/yfletch/ocbwans/OCBwansPlugin.java).
 
 **Does not need to be installed for other plugins to work**
 
@@ -74,6 +93,10 @@ maintained and can be a buggy
 * Uses POH tabs to bank in Al-Kharid
 * Aligns Elementals automatically (through trial and error)
 * Drinks Stamina (and drinks an extra dose if energy is too low)
+
+## OC Nightmare Zone
+
+Auto stat boosting and absorption for Nightmare Zone
 
 ## OC Rift [alpha]
 
