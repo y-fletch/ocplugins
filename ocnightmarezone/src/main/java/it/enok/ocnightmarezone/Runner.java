@@ -25,6 +25,8 @@ public class Runner extends ActionRunner<Context>
 	private static final int TICK_POTION_ABSORB = 3;
 	private static final int TICK_POTION_COMBAT = 9;
 
+	private static final int TICK_OVERLOAD_POTION = 12;
+
 	@Inject
 	public Runner(Context context, EventBuilder eventBuilder)
 	{
@@ -55,12 +57,20 @@ public class Runner extends ActionRunner<Context>
 						&& ctx.hasItem(ctx.getPotionOptionIds()))
 				.doneIf(ctx -> !ctx.drinkCombatPotion())
 				.onRun(
-						(ctx, event) -> event.builder().item()
-								.setOption("Drink", 2)
-								.setItems(Ints.asList(ctx.getPotionOptionIds()))
-								.setType(MenuAction.CC_OP)
-								.onClick(e -> ctx.flag("combatPotion", true, TICK_POTION_COMBAT))
-								.override()
+						(ctx, event) -> {
+							// Overload potions do 50 damage over 7 seconds and
+							// any damage during that time will kill the player
+							if (ctx.usingOverloadPotion())
+							{
+								ctx.flag("overloadPotion", true, TICK_OVERLOAD_POTION);
+							}
+							event.builder().item()
+									.setOption("Drink", 2)
+									.setItems(Ints.asList(ctx.getPotionOptionIds()))
+									.setType(MenuAction.CC_OP)
+									.onClick(e -> ctx.flag("combatPotion", true, TICK_POTION_COMBAT))
+									.override();
+						}
 				)
 		);
 
@@ -90,7 +100,8 @@ public class Runner extends ActionRunner<Context>
 
 		add(builder().item("Guzzle", ItemOption.ROCK_CAKE.getLabel())
 				.readyIf(ctx -> ctx.usingRockCake()
-						&& ctx.getCurrentPlayerHealth() >= 2)
+						&& ctx.getCurrentPlayerHealth() >= 2
+						&& !ctx.flag("overloadPotion"))
 				.doneIf(ctx -> ctx.getCurrentPlayerHealth() == 1)
 				.onRun(
 						(ctx, event) -> event.builder().item()
@@ -105,7 +116,8 @@ public class Runner extends ActionRunner<Context>
 		add(builder().item("Feel", ItemOption.LOCATOR_ORB.getLabel())
 				.readyIf(ctx -> ctx.inInstancedRegion()
 						&& ctx.usingLocatorOrb()
-						&& ctx.getCurrentPlayerHealth() >= 2)
+						&& ctx.getCurrentPlayerHealth() >= 2
+						&& !ctx.flag("overloadPotion"))
 				.doneIf(ctx -> ctx.getCurrentPlayerHealth() == 1)
 				.onRun(
 						(ctx, event) -> event.builder().item()

@@ -81,6 +81,11 @@ public class Context extends ActionContext
 		return config.potionOption() != PotionOption.NONE;
 	}
 
+	public boolean usingOverloadPotion()
+	{
+		return config.potionOption() == PotionOption.OVERLOAD_POTION;
+	}
+
 	public String getPotionOptionLabel()
 	{
 		return config.potionOption().getLabel();
