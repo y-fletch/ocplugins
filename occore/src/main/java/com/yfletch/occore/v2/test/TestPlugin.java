@@ -193,34 +193,64 @@ public class TestPlugin extends RunnerPlugin<TestContext>
 
 		action().name("Deposit inventory")
 			.when(c -> Bank.isOpen() && c.getTestId() == 0)
-			.then(c -> widget("Deposit inventory").interact());
+			.then(c -> widget("Deposit inventory").interact())
+			.onComplete(next);
 
 		action().name("Withdraw 7 pure essence")
 			.when(c -> Bank.isOpen() && c.getTestId() == 1
 				&& Bank.contains("Pure essence"))
 			.then(c -> banked("Pure essence").withdraw(1))
-			.repeat(7);
+			.repeat(7)
+			.onComplete(next);
 
 		action().name("Drop 4 pure essence")
 			.when(c -> !Bank.isOpen() && c.getTestId() == 1
 				&& Inventory.contains("Pure essence"))
 			.then(c -> item("Pure essence").drop())
-			.repeat(4);
+			.repeat(4)
+			.onComplete(next);
 
-//		action()
-//			.when(c -> Bank.isOpen() && c.getBankActive() == 2
-//				&& Inventory.contains(ItemID.PURE_ESSENCE))
-//			.then(c -> interact().deposit(1, ItemID.PURE_ESSENCE));
-//
-//		action()
-//			.when(c -> Bank.isOpen() && c.getBankActive() == 3
-//				&& Bank.contains(ItemID.WATER_RUNE))
-//			.then(c -> interact().withdrawX(ItemID.WATER_RUNE));
-//
-//		action()
-//			.when(c -> Bank.isOpen() && c.getBankActive() == 4
-//				&& Inventory.contains(ItemID.WATER_RUNE))
-//			.then(c -> interact().depositAll(ItemID.WATER_RUNE));
+		action().name("Deposit 7 pure essence")
+			.when(c -> Bank.isOpen() && c.getTestId() == 2
+				&& Inventory.contains("Pure essence"))
+			.then(c -> item("Pure essence").deposit(1))
+			.repeat(7)
+			.onComplete(next);
+
+		action().name("Withdraw x water runes")
+			.when(c -> Bank.isOpen() && c.getTestId() == 3
+				&& !Inventory.contains("Water rune"))
+			.then(c -> banked("Water rune").withdrawX());
+
+		action().name("Deposit x water runes")
+			.when(c -> Bank.isOpen() && c.getTestId() == 3
+				&& Inventory.contains("Water rune"))
+			.then(c -> item("Water rune").depositX())
+			.delay(1, 4)
+			.onComplete(next);
+
+		action().name("Withdraw all monkfish")
+			.when(c -> Bank.isOpen() && c.getTestId() == 4
+				&& !Inventory.contains("Monkfish"))
+			.then(c -> banked("Monkfish").withdrawAll());
+
+		action().name("Deposit all monkfish")
+			.when(c -> Bank.isOpen() && c.getTestId() == 4
+				&& Inventory.contains("Monkfish"))
+			.then(c -> item("Monkfish").depositAll())
+			.delay(1, 4)
+			.onComplete(next);
+
+		action().name("Withdraw barrows gloves")
+			.when(c -> Bank.isOpen() && c.getTestId() == 5
+				&& !Inventory.contains("Barrows gloves"))
+			.then(c -> banked("Barrows gloves").withdraw(1));
+
+		action().name("Equip barrows gloves from bank")
+			.when(c -> Bank.isOpen() && c.getTestId() == 5
+				&& Inventory.contains("Barrows gloves"))
+			.then(c -> item("Barrows gloves").equip())
+			.onComplete(next);
 	}
 
 	@Subscribe

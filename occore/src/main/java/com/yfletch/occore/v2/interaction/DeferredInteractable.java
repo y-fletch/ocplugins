@@ -32,12 +32,14 @@ public class DeferredInteractable<T extends Interactable>
 	{
 		if (interactable == null)
 		{
+			log.info("Null interactable");
 			return null;
 		}
 
 		final var actions = interactable.getActions();
 		if (actions == null)
 		{
+			log.info("Null actions");
 			return null;
 		}
 
@@ -49,6 +51,7 @@ public class DeferredInteractable<T extends Interactable>
 			}
 		}
 
+		log.info("No matching actions");
 		return null;
 	}
 

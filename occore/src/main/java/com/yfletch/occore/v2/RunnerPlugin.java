@@ -110,7 +110,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	{
 		final var rule = new DynamicRule<TContext>();
 		rules.add(rule);
-		return rule.name("Unknown");
+		return rule;
 	}
 
 	/**
@@ -120,7 +120,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	{
 		final var rule = new RequirementRule<TContext>();
 		rules.add(rule);
-		return rule.name("Requirements");
+		return rule;
 	}
 
 	private void updateDelay()
@@ -168,6 +168,11 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 				interaction.execute();
 				currentRule.callback(context);
 				currentRule.useRepeat();
+
+				if (!currentRule.canExecute())
+				{
+					currentRule.completeCallback(context);
+				}
 			}
 		}
 	}
@@ -191,10 +196,6 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 					TextColor.GRAY + "For " + ruleName
 				);
 			}
-
-			// reset rule, so it can run from the start
-			// next time it passes
-			rule.reset();
 		}
 		else
 		{
@@ -314,6 +315,18 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		{
 			executeWithDeviousAPI();
 		}
+
+//		if (enabled())
+//		{
+//			var actions = Bank.getFirst(ItemID.PURE_ESSENCE).getActions();
+//			for (var action : actions)
+//			{
+//				log.info(Arrays.asList(actions).indexOf(action) + " " + action);
+//			}
+//			Bank.getFirst(ItemID.PURE_ESSENCE).interact(
+//				Arrays.asList(actions).indexOf("Withdraw-1") + 1
+//			);
+//		}
 	}
 
 	@Subscribe
@@ -321,7 +334,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	{
 		if (config.debugRawMenuEntries())
 		{
-			RunnerUtil.log("RAW", event.getMenuEntry());
+			RunnerUtil.log("raw", event.getMenuEntry());
 		}
 
 		context.tick(false);
@@ -335,6 +348,25 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 			}
 		}
 
+		if (canExecute() && config.pluginApi().isOneClick()
+			&& !event.getMenuOption().startsWith("* ")
+			&& nextInteraction != null)
+		{
+			RunnerUtil.log(
+				"OC",
+				TextColor.DANGER + "Failed to override menu click."
+			);
+			RunnerUtil.chat(
+				"OC",
+				TextColor.DANGER + "Please make sure the mouse cursor" +
+					" is not over an item slot, or"
+			);
+			RunnerUtil.chat(
+				"OC",
+				TextColor.DANGER + "another plugin's interface."
+			);
+		}
+
 		if (currentRule != null && event.getMenuOption().startsWith("* "))
 		{
 			if (nextInteraction != null)
@@ -344,6 +376,11 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 			currentRule.callback(context);
 			currentRule.useRepeat();
+
+			if (!currentRule.canExecute())
+			{
+				currentRule.completeCallback(context);
+			}
 
 			RunnerUtil.log("OC", event.getMenuEntry());
 		}
@@ -366,6 +403,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 				// add the one-click entry to the top
 				final var entry = nextInteraction.createMenuEntry();
 				entry.setOption("* " + entry.getOption());
+				entry.setForceLeftClick(true);
 			}
 		}
 	}

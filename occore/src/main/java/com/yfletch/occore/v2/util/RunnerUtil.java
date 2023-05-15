@@ -25,10 +25,15 @@ public class RunnerUtil
 	public static void log(String prefix, String text)
 	{
 		log.info("[" + prefix + "] " + text);
+		chat(prefix, text);
+	}
+
+	public static void chat(String prefix, String text)
+	{
 		Static.getClient().addChatMessage(
 			ChatMessageType.GAMEMESSAGE,
 			"Bob",
-			"[" + prefix + "] " + text,
+			TextColor.ITEM + "[" + prefix + "] " + TextColor.END + text,
 			null
 		);
 	}

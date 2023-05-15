@@ -38,6 +38,7 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	private boolean many = false;
 
 	private Consumer<TContext> onClick;
+	private Consumer<TContext> onComplete;
 
 	public DynamicRule<TContext> many()
 	{
@@ -117,6 +118,15 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 		if (onClick != null)
 		{
 			onClick.accept(context);
+		}
+	}
+
+	@Override
+	public void completeCallback(TContext context)
+	{
+		if (onComplete != null)
+		{
+			onComplete.accept(context);
 		}
 	}
 

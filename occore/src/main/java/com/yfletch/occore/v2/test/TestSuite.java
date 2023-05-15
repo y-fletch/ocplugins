@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum TestSuite
 {
-	HOUSE(16), BANK(10);
+	HOUSE(16), BANK(6);
 
 	private final int rules;
 }

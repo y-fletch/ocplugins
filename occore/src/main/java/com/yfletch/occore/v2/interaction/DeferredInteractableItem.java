@@ -2,42 +2,33 @@ package com.yfletch.occore.v2.interaction;
 
 import net.runelite.api.Item;
 import net.unethicalite.api.Interactable;
-import net.unethicalite.api.items.Bank;
 
 public class DeferredInteractableItem extends DeferredInteractable<Item>
 {
 	private final Item item;
-	private final Item.Type type;
 
 	public DeferredInteractableItem(Item item)
 	{
 		super(item);
 		this.item = item;
-		if (item == null)
-		{
-			this.type = Item.Type.INVENTORY;
-		}
-		else
-		{
-			this.type = item.getType() == Item.Type.INVENTORY && Bank.isOpen()
-				? Item.Type.BANK_INVENTORY
-				: item.getType();
-		}
 	}
 
 	public DeferredInteractableItem(Item item, Item.Type type)
 	{
 		super(item);
 		this.item = item;
-		this.type = type == Item.Type.INVENTORY && Bank.isOpen()
-			? Item.Type.BANK_INVENTORY
-			: type;
 	}
 
 	@Override
 	public Item unwrap()
 	{
 		return item;
+	}
+
+	@Override
+	public DeferredInteraction<Item> interact(int index)
+	{
+		return super.interact(index);
 	}
 
 	/**
@@ -69,7 +60,7 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	 */
 	public DeferredInteraction<Item> withdraw(int n)
 	{
-		assert type == Item.Type.BANK;
+		assert item.getType() == Item.Type.BANK;
 		return interact("Withdraw-" + n);
 	}
 
@@ -78,8 +69,8 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	 */
 	public DeferredInteraction<Item> withdrawX()
 	{
-		assert type == Item.Type.BANK;
-		return interact(5);
+		assert item.getType() == Item.Type.BANK;
+		return interact(4);
 	}
 
 	/**
@@ -87,7 +78,7 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	 */
 	public DeferredInteraction<Item> withdrawAll()
 	{
-		assert type == Item.Type.BANK;
+		assert item.getType() == Item.Type.BANK;
 		return interact("Withdraw-All");
 	}
 
@@ -96,7 +87,7 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	 */
 	public DeferredInteraction<Item> deposit(int n)
 	{
-		assert type == Item.Type.BANK_INVENTORY;
+		assert item.getType() == Item.Type.BANK_INVENTORY;
 		return interact("Deposit-" + n);
 	}
 
@@ -105,7 +96,7 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	 */
 	public DeferredInteraction<Item> depositX()
 	{
-		assert type == Item.Type.BANK;
+		assert item.getType() == Item.Type.BANK_INVENTORY;
 		return interact(5);
 	}
 
@@ -114,8 +105,8 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	 */
 	public DeferredInteraction<Item> depositAll()
 	{
-		assert type == Item.Type.BANK;
-		return interact("Withdraw-All");
+		assert item.getType() == Item.Type.BANK_INVENTORY;
+		return interact("Deposit-All");
 	}
 
 	/**

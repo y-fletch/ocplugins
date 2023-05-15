@@ -8,7 +8,9 @@ import lombok.experimental.Accessors;
 import net.runelite.api.Item;
 import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
+import net.runelite.api.widgets.WidgetInfo;
 import net.unethicalite.api.Interactable;
+import net.unethicalite.api.items.Bank;
 import net.unethicalite.client.Static;
 
 /**
@@ -19,7 +21,7 @@ import net.unethicalite.client.Static;
 public class DeferredInteraction<T extends Interactable>
 {
 	@Nonnull
-	protected T interactable;
+	protected final T interactable;
 	private final int actionIndex;
 
 	/**
@@ -40,6 +42,12 @@ public class DeferredInteraction<T extends Interactable>
 			   chain = true)
 	private Runnable after;
 
+//	public DeferredInteraction(@Nonnull T interactable, int actionIndex)
+//	{
+//		this.interactable = interactable;
+//		this.actionIndex = actionIndex;
+//	}
+
 	public final String getTooltip()
 	{
 		return getMenuOption() + " " + getMenuTarget();
@@ -47,15 +55,23 @@ public class DeferredInteraction<T extends Interactable>
 
 	public void execute()
 	{
-		interactable.interact(actionIndex);
-
 		if (interactable instanceof Item)
 		{
 			final var item = (Item) interactable;
-			if (item.getType() != Item.Type.BANK)
+			final var offset = item.getType() == Item.Type.BANK
+				|| item.getType() == Item.Type.BANK_INVENTORY
+				? 1 : 0;
+
+			interactable.interact(actionIndex + offset);
+
+			if (item.getType() != Item.Type.BANK && !item.isStackable())
 			{
 				Entities.markInteracted(item);
 			}
+		}
+		else
+		{
+			interactable.interact(actionIndex);
 		}
 	}
 
@@ -77,6 +93,17 @@ public class DeferredInteraction<T extends Interactable>
 
 	public MenuEntry createMenuEntry()
 	{
+		// force the widget ID of the item, just in case
+		// it has been changed by & to another inventory type
+		if (interactable instanceof Item)
+		{
+			final var item = (Item) interactable;
+			if (Bank.isOpen() && item.getType() == Item.Type.INVENTORY)
+			{
+				item.setWidgetId(WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER.getPackedId());
+			}
+		}
+
 		return Static.getClient().createMenuEntry(-1)
 			.setOption(getMenuOption())
 			.setTarget(getMenuTarget())

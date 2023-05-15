@@ -76,6 +76,10 @@ public interface Rule<TContext extends CoreContext>
 	{
 	}
 
+	default void completeCallback(TContext context)
+	{
+	}
+
 	/**
 	 * Reset internal rule flags. Only used for internal logic,
 	 * don't call this in a consumer.

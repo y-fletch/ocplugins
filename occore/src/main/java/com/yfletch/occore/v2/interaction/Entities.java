@@ -57,6 +57,11 @@ public class Entities
 
 	private static Item getNextItem(Item.Type type, int... ids)
 	{
+		if (Bank.isOpen() && type == Item.Type.INVENTORY)
+		{
+			type = Item.Type.BANK_INVENTORY;
+		}
+
 		final Predicate<Item> filter = (item -> Predicates.ids(ids).test(item)
 			&& !interactedItems.contains(item));
 
@@ -76,6 +81,11 @@ public class Entities
 
 	private static Item getNextItem(Item.Type type, Predicate<String> predicate)
 	{
+		if (Bank.isOpen() && type == Item.Type.INVENTORY)
+		{
+			type = Item.Type.BANK_INVENTORY;
+		}
+
 		final Predicate<Item> filter = (item -> nameMatches(predicate).test(item)
 			&& !interactedItems.contains(item));
 
