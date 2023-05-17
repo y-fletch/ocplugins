@@ -13,7 +13,7 @@ import net.unethicalite.api.Interactable;
  * Represents a deferred interaction of using an item
  * on an entity
  */
-public class DeferredItemInteraction extends DeferredInteraction<Item>
+public class DeferredItemInteraction extends DeferredEntityInteraction<Item>
 {
 	private final Interactable target;
 

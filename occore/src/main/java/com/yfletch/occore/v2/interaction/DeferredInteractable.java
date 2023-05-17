@@ -33,7 +33,7 @@ public class DeferredInteractable<T extends Interactable>
 	/**
 	 * Interact with the first action matching the predicate
 	 */
-	public DeferredInteraction<T> interact(Predicate<String> predicate)
+	public DeferredEntityInteraction<T> interact(Predicate<String> predicate)
 	{
 		if (interactable == null)
 		{
@@ -63,7 +63,7 @@ public class DeferredInteractable<T extends Interactable>
 	/**
 	 * Interact with the first action matching the given values
 	 */
-	public DeferredInteraction<T> interact(String... actions)
+	public DeferredEntityInteraction<T> interact(String... actions)
 	{
 		return interact(matching(actions));
 	}
@@ -71,7 +71,7 @@ public class DeferredInteractable<T extends Interactable>
 	/**
 	 * Interact with the nth action
 	 */
-	public DeferredInteraction<T> interact(int index)
+	public DeferredEntityInteraction<T> interact(int index)
 	{
 		if (interactable == null)
 		{
@@ -79,13 +79,13 @@ public class DeferredInteractable<T extends Interactable>
 			return null;
 		}
 
-		return new DeferredInteraction<>(interactable, index);
+		return new DeferredEntityInteraction<>(interactable, index);
 	}
 
 	/**
 	 * Interact with the first action
 	 */
-	public DeferredInteraction<T> interact()
+	public DeferredEntityInteraction<T> interact()
 	{
 		return interact(0);
 	}

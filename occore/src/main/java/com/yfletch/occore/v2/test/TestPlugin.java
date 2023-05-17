@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.yfletch.occore.v2.RunnerPlugin;
 import static com.yfletch.occore.v2.interaction.Entities.*;
+import static com.yfletch.occore.v2.interaction.Walking.walk;
 import static com.yfletch.occore.v2.util.Util.containing;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
@@ -252,6 +253,10 @@ public class TestPlugin extends RunnerPlugin<TestContext>
 				&& Inventory.contains("Barrows gloves"))
 			.then(c -> item("Barrows gloves").equip())
 			.onComplete(next);
+
+		action().name("Random walk")
+			.when(TestContext::isWalkSuite)
+			.then(c -> walk(c.getNextLocation()));
 	}
 
 	@Subscribe

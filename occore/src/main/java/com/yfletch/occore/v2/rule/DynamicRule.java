@@ -18,12 +18,16 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	@Getter
 	private String name;
 
+	@Getter
 	private Predicate<TContext> when;
 	private Predicate<TContext> consumeWhile;
 	private Predicate<TContext> until;
-	private Function<TContext, DeferredInteraction<?>> then;
+	private Function<TContext, DeferredInteraction> then;
 
 	private int repeat = 1;
+
+	@Setter(AccessLevel.MODULE)
+	private Function<TContext, Integer> repeatProvider;
 
 	@Setter(AccessLevel.MODULE)
 	private int repeatsLeft = 1;
@@ -84,8 +88,17 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	 */
 	public DynamicRule<TContext> delay(int delay)
 	{
-		minDelay(delay).maxDelay(delay);
-		System.out.println("Delays: " + minDelay() + "/" + maxDelay());
+		return minDelay(delay).maxDelay(delay);
+	}
+
+	public DynamicRule<TContext> repeat(Function<TContext, Integer> provider)
+	{
+		return repeatProvider(provider);
+	}
+
+	public DynamicRule<TContext> repeat(int repeat)
+	{
+		this.repeat = repeat;
 		return this;
 	}
 
@@ -97,7 +110,7 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 			return false;
 		}
 
-		return when != null && when.test(ctx);
+		return when == null || when.test(ctx);
 	}
 
 	@Override
@@ -113,7 +126,7 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	}
 
 	@Override
-	public DeferredInteraction<?> run(TContext ctx)
+	public DeferredInteraction run(TContext ctx)
 	{
 		return then == null ? null : then.apply(ctx);
 	}
@@ -131,8 +144,13 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	}
 
 	@Override
-	public void reset()
+	public void reset(TContext context)
 	{
+		if (repeatProvider != null)
+		{
+			repeatsLeft = repeatProvider.apply(context);
+			return;
+		}
 		repeatsLeft = repeat;
 	}
 

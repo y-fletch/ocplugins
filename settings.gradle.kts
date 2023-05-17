@@ -13,6 +13,7 @@ include(":ocbankskills")
 include(":ocbwans")
 include(":ocnightmarezone")
 include(":ocgranite")
+include(":octodt")
 
 for (project in rootProject.children) {
     project.apply {

@@ -15,7 +15,7 @@ import net.unethicalite.api.widgets.Widgets;
  * Represents a deferred interaction with a spell widget, or one that
  * is casting a spell on another entity
  */
-public class DeferredSpellInteraction extends DeferredInteraction<Widget>
+public class DeferredSpellInteraction extends DeferredEntityInteraction<Widget>
 {
 	private final Spell spell;
 	private final Interactable target;

@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.runelite.api.Item;
 import net.runelite.api.NPC;
 import net.runelite.api.TileItem;
 import net.runelite.api.TileObject;
@@ -41,6 +42,7 @@ public class RequirementRule<TContext extends CoreContext> implements Rule<TCont
 	 * no requirements will be checked in this rule.
 	 */
 	@Setter
+	@Getter
 	@Accessors(fluent = true,
 			   chain = true)
 	private Predicate<TContext> when;
@@ -82,6 +84,22 @@ public class RequirementRule<TContext extends CoreContext> implements Rule<TCont
 				c -> Inventory.contains(id) || Bank.contains(id) || Equipment.contains(id)
 			);
 		}
+
+		return this;
+	}
+
+	/**
+	 * Require all items to be in the player's inventory, bank
+	 * or equipment
+	 * <p>
+	 * Warning: names are case-sensitive
+	 */
+	public RequirementRule<TContext> mustHave(Predicate<Item> predicate, String name)
+	{
+		requirements.put(
+			MUST_HAVE_ITEM + name,
+			c -> Inventory.contains(predicate) || Bank.contains(predicate) || Equipment.contains(predicate)
+		);
 
 		return this;
 	}
@@ -188,6 +206,21 @@ public class RequirementRule<TContext extends CoreContext> implements Rule<TCont
 				c -> Inventory.contains(id) || Equipment.contains(id)
 			);
 		}
+
+		return this;
+	}
+
+	/**
+	 * Require all items to be in the player's inventory or equipment
+	 * <p>
+	 * Warning: names are case-sensitive
+	 */
+	public RequirementRule<TContext> mustHaveOnPerson(Predicate<Item> predicate, String name)
+	{
+		requirements.put(
+			MUST_HAVE_ITEM + name + TextColor.WHITE + " in inventory or equipped",
+			c -> Inventory.contains(predicate) || Equipment.contains(predicate)
+		);
 
 		return this;
 	}
