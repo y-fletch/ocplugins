@@ -5,6 +5,8 @@ import com.google.inject.Singleton;
 import com.yfletch.occore.v2.CoreContext;
 import java.util.Map;
 import lombok.Getter;
+import net.runelite.api.coords.WorldPoint;
+import net.unethicalite.api.commons.Rand;
 import net.unethicalite.api.items.Bank;
 import net.unethicalite.client.Static;
 
@@ -66,5 +68,20 @@ public class TestContext extends CoreContext
 	public boolean isBankSuite()
 	{
 		return config.testSuite() == TestSuite.BANK;
+	}
+
+	public boolean isWalkSuite()
+	{
+		return config.testSuite() == TestSuite.WALK;
+	}
+
+	public WorldPoint getNextLocation()
+	{
+		final var current = Static.getClient().getLocalPlayer().getWorldLocation();
+		return new WorldPoint(
+			current.getX() + Rand.nextInt(0, 5),
+			current.getY() + Rand.nextInt(0, 5),
+			current.getPlane()
+		);
 	}
 }

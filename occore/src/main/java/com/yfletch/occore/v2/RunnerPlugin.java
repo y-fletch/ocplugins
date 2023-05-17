@@ -12,6 +12,8 @@ import com.yfletch.occore.v2.util.RunnerUtil;
 import com.yfletch.occore.v2.util.TextColor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,10 +44,14 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 	@Getter
 	private final List<Rule<TContext>> rules = new ArrayList<>();
+
+	private List<Rule<TContext>> groupRules;
+
+	@Getter
 	private Rule<TContext> currentRule = null;
 
 	@Getter
-	private DeferredInteraction<?> nextInteraction = null;
+	private DeferredInteraction nextInteraction = null;
 
 	@Getter
 	private boolean isDelaying = false;
@@ -121,13 +127,18 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	 */
 	public abstract void setup();
 
+	protected final void add(Rule<TContext> rule)
+	{
+		Objects.requireNonNullElse(groupRules, rules).add(rule);
+	}
+
 	/**
 	 * Create, add and return a new rule instance that can be customised similar to a builder
 	 */
 	protected final DynamicRule<TContext> action()
 	{
 		final var rule = new DynamicRule<TContext>();
-		rules.add(rule);
+		add(rule);
 		return rule;
 	}
 
@@ -137,8 +148,19 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	protected final RequirementRule<TContext> requirements()
 	{
 		final var rule = new RequirementRule<TContext>();
-		rules.add(rule);
+		add(rule);
 		return rule.name("Requirements");
+	}
+
+	protected final void group(Predicate<TContext> when, Runnable factory)
+	{
+		groupRules = new ArrayList<>();
+		factory.run();
+		groupRules.forEach(
+			rule -> rule.when(rule.when() != null ? rule.when().and(when) : when)
+		);
+		rules.addAll(groupRules);
+		groupRules = null;
 	}
 
 	private void updateDelay()
@@ -194,12 +216,9 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 				{
 					currentRule.completeCallback(context);
 				}
-			}
 
-			// in case there's something we should move to straight
-			// away, process and execute again
-			if (!passes(currentRule))
-			{
+				// in case there's something else we should do straight
+				// away, process and execute again
 				process();
 				executeWithDeviousAPI();
 			}
@@ -207,7 +226,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	}
 
 	@Nullable
-	private DeferredInteraction<?> updateInteraction(Rule<TContext> rule)
+	private DeferredInteraction updateInteraction(Rule<TContext> rule)
 	{
 		nextInteraction = rule.run(context);
 		if (nextInteraction == null)
@@ -242,7 +261,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	private void enable(Rule<TContext> rule)
 	{
 		// reset rule status
-		rule.reset();
+		rule.reset(context);
 
 		// update interaction display
 		updateInteraction(rule);
@@ -250,7 +269,6 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		// use new max delay
 		context.setDelayTimer(rule.maxDelay());
 		context.setMinDelayTimer(rule.minDelay());
-		log.info("Delays: " + rule.minDelay() + "/" + rule.maxDelay());
 		// reset delay status
 		isDelaying = rule.maxDelay() > 0 || rule.minDelay() > 0;
 
@@ -280,7 +298,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 				if (currentRule != null
 					&& !(currentRule instanceof DynamicRule && ((DynamicRule<TContext>) currentRule).resetsOnTick()))
 				{
-					currentRule.reset();
+					currentRule.reset(context);
 				}
 
 				enable(rule);
@@ -293,7 +311,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 			// clear rule if it no longer passes
 			if (!passes(currentRule))
 			{
-				currentRule.reset();
+				currentRule.reset(context);
 				currentRule = null;
 				nextInteraction = null;
 				messages = null;
@@ -355,7 +373,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		{
 			if (rule instanceof DynamicRule && ((DynamicRule<TContext>) rule).resetsOnTick())
 			{
-				rule.reset();
+				rule.reset(context);
 			}
 		}
 
@@ -365,7 +383,6 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		}
 
 		executeWithDeviousAPI();
-
 		updateDelay();
 	}
 

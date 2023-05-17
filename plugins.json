@@ -393,5 +393,21 @@
         "requires": "^1.0.0"
       }
     ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Todt",
+    "description": "One-click mass world Wintertodt",
+    "id": "octodt-plugin",
+    "releases": [
+      {
+        "date": "2023-05-18",
+        "sha512sum": "055FB4E47799414BF96E101A55AB6DE4FD5B3CD2A3EA444EA393CFFFCB1743766CE07C286CB5E72627E715C0D6D1327CE39F152E090C119BBD7665D472B2519F",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/octodt-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
   }
 ]

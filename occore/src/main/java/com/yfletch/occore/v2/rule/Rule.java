@@ -3,6 +3,7 @@ package com.yfletch.occore.v2.rule;
 import com.yfletch.occore.v2.CoreContext;
 import com.yfletch.occore.v2.interaction.DeferredInteraction;
 import java.util.List;
+import java.util.function.Predicate;
 
 public interface Rule<TContext extends CoreContext>
 {
@@ -33,14 +34,14 @@ public interface Rule<TContext extends CoreContext>
 	/**
 	 * Whether this rule should be activated
 	 */
-	boolean passes(TContext ctx);
+	boolean passes(TContext context);
 
 	/**
 	 * Whether this rule should prevent other rules
 	 * from being activated, and should consume any
 	 * extra mouse clicks (one-click mode)
 	 */
-	default boolean consumes(TContext ctx)
+	default boolean consumes(TContext context)
 	{
 		return false;
 	}
@@ -49,7 +50,7 @@ public interface Rule<TContext extends CoreContext>
 	 * Whether this rule is completed, and control
 	 * can continue to the next candidate rule
 	 */
-	default boolean continues(TContext ctx)
+	default boolean continues(TContext context)
 	{
 		return false;
 	}
@@ -58,7 +59,7 @@ public interface Rule<TContext extends CoreContext>
 	 * Action to run when this rule is activated or
 	 * triggered
 	 */
-	default DeferredInteraction<?> run(TContext ctx)
+	default DeferredInteraction run(TContext context)
 	{
 		return null;
 	}
@@ -67,7 +68,7 @@ public interface Rule<TContext extends CoreContext>
 	 * Messages to display in the overlay, if
 	 * no interaction is possible
 	 */
-	default List<String> messages(TContext ctx)
+	default List<String> messages(TContext context)
 	{
 		return null;
 	}
@@ -84,8 +85,18 @@ public interface Rule<TContext extends CoreContext>
 	 * Reset internal rule flags. Only used for internal logic,
 	 * don't call this in a consumer.
 	 */
-	default void reset()
+	default void reset(TContext context)
 	{
+	}
+
+	default Rule<TContext> when(Predicate<TContext> when)
+	{
+		return this;
+	}
+
+	default Predicate<TContext> when()
+	{
+		return c -> true;
 	}
 
 	default boolean canExecute()

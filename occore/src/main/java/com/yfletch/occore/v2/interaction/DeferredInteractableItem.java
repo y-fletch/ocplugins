@@ -26,7 +26,7 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	}
 
 	@Override
-	public DeferredInteraction<Item> interact(int index)
+	public DeferredEntityInteraction<Item> interact(int index)
 	{
 		return super.interact(index);
 	}
@@ -34,7 +34,7 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	/**
 	 * Drop the item
 	 */
-	public DeferredInteraction<Item> drop()
+	public DeferredEntityInteraction<Item> drop()
 	{
 		return interact("Drop");
 	}
@@ -42,7 +42,7 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	/**
 	 * Equip the item
 	 */
-	public DeferredInteraction<Item> equip()
+	public DeferredEntityInteraction<Item> equip()
 	{
 		return interact("Wear", "Wield");
 	}
@@ -50,7 +50,7 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	/**
 	 * Remove the item
 	 */
-	public DeferredInteraction<Item> remove()
+	public DeferredEntityInteraction<Item> remove()
 	{
 		return interact("Remove");
 	}
@@ -58,7 +58,7 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	/**
 	 * Withdraw an amount from the bank. n should be 1, 5, or 10
 	 */
-	public DeferredInteraction<Item> withdraw(int n)
+	public DeferredEntityInteraction<Item> withdraw(int n)
 	{
 		if (item == null)
 		{
@@ -72,7 +72,7 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	/**
 	 * Withdraw the custom amount from the bank
 	 */
-	public DeferredInteraction<Item> withdrawX()
+	public DeferredEntityInteraction<Item> withdrawX()
 	{
 		if (item == null)
 		{
@@ -86,7 +86,7 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	/**
 	 * Withdraw all of this item from the bank
 	 */
-	public DeferredInteraction<Item> withdrawAll()
+	public DeferredEntityInteraction<Item> withdrawAll()
 	{
 		if (item == null)
 		{
@@ -100,7 +100,7 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	/**
 	 * Deposit an amount into the bank. n should be 1, 5, or 10
 	 */
-	public DeferredInteraction<Item> deposit(int n)
+	public DeferredEntityInteraction<Item> deposit(int n)
 	{
 		if (item == null)
 		{
@@ -114,7 +114,7 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	/**
 	 * Deposit the custom amount into the bank
 	 */
-	public DeferredInteraction<Item> depositX()
+	public DeferredEntityInteraction<Item> depositX()
 	{
 		if (item == null)
 		{
@@ -128,7 +128,7 @@ public class DeferredInteractableItem extends DeferredInteractable<Item>
 	/**
 	 * Deposit all of this item into the bank
 	 */
-	public DeferredInteraction<Item> depositAll()
+	public DeferredEntityInteraction<Item> depositAll()
 	{
 		if (item == null)
 		{
