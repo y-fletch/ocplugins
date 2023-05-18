@@ -7,6 +7,7 @@ import static com.yfletch.occore.v2.interaction.Entities.banked;
 import static com.yfletch.occore.v2.interaction.Entities.item;
 import static com.yfletch.occore.v2.interaction.Entities.object;
 import static com.yfletch.occore.v2.interaction.Entities.of;
+import static com.yfletch.occore.v2.interaction.Entities.widget;
 import static com.yfletch.occore.v2.interaction.Walking.offset;
 import static com.yfletch.occore.v2.interaction.Walking.walk;
 import com.yfletch.occore.v2.util.TextColor;
@@ -93,8 +94,12 @@ public class OCTodtPlugin extends RunnerPlugin<TodtContext>
 		);
 
 		action().name("Enter wintertodt")
-			.until(TodtContext::isInWintertodt)
-			.then(c -> object("Doors of Dinh").interact("Enter"));
+			.until(c -> c.isInWintertodt() && !c.flag("entering"))
+			.then(c -> object("Doors of Dinh").interact("Enter"))
+			.onClick(c -> {
+				c.chooseSide();
+				c.flag("entering", true, 2);
+			});
 
 		action().name("Collect hammer")
 			.until(c -> Inventory.contains("Hammer"))
@@ -117,12 +122,23 @@ public class OCTodtPlugin extends RunnerPlugin<TodtContext>
 
 		// game loop:
 
-		action().name("Step to safety")
-			.when(TodtContext::isOnDangerousTile)
-			.until(c -> c.getSnowAttacks().isEmpty())
-			.then(c -> walk(0, -Rand.nextInt(3, 5)));
+		action().name("Avoid snow fall")
+			.when(TodtContext::isAboutToGetHitBySnow)
+			.until(c -> c.getSnowAttacks().isEmpty() && !c.flag("dodging"))
+			.then(c -> walk(0, -Rand.nextInt(3, 5)))
+			.delay(1, 2)
+			.onClick(c -> c.flag("dodging", true, 3));
+
+		action().name("Avoid brazier breaking")
+			.when(TodtContext::isBrazierAboutToBreak)
+			.until(c -> c.getSnowAttacks().isEmpty() && !c.flag("dodging")
+				&& c.getBrazier().hasAction("Fix"))
+			.then(c -> walk(0, -1))
+			.delay(1, 2)
+			.onClick(c -> c.flag("dodging", true, 3));
 
 		action().name("Eat food")
+			.when(c -> Inventory.contains(config.food().getIds()))
 			.until(c -> !c.shouldEat())
 			.then(c -> item(config.food().getIds()).interact("Eat", "Drink"))
 			.many();
@@ -139,18 +155,19 @@ public class OCTodtPlugin extends RunnerPlugin<TodtContext>
 			.until(TodtContext::isInSafespot)
 			.then(c -> walk(c.getSafespot()));
 
-//		action().name("Special attack")
-//			.when(c -> !c.flag("burning") && !c.flag("fletching"))
-//			.until(c -> Static.getClient().getSpec)
-//			.then(c -> object("Bruma roots").interact("Chop"));
+		action().name("Special attack")
+			.when(c -> !c.flag("burning") && !c.flag("fletching"))
+			.until(c -> c.getSpecialEnergy() < 100)
+			.then(c -> widget("Special Attack").interact("Use"));
 
 		action().name("Chop bruma")
 			.when(c -> !c.flag("burning") && !c.flag("fletching"))
-			.until(c -> Inventory.isFull())
+			.until(c -> Inventory.isFull() || c.getWintertodtEnergy() < 5)
 			.then(c -> object("Bruma roots").interact("Chop"));
 
 		action().name("Fletch bruma")
 			.when(c -> c.flag("fletching"))
+			.until(c -> c.getWintertodtEnergy() < 5)
 			.then(c -> item("Knife").useOn(item("Bruma root")));
 
 		action().name("Light brazier")

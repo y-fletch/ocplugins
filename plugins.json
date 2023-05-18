@@ -407,6 +407,13 @@
         "version": "1.0.0",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/octodt-1.0.0.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-05-18",
+        "sha512sum": "9007654BA14F5856CFC07ACB4ABBF27070D325DFC1EFF892CEBF2CA08DD50025AFF36B3811A89FF3D611E3BC4FCD23CC00176B6EA692AADC430999BA51F46199",
+        "version": "1.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/octodt-1.0.1.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   }

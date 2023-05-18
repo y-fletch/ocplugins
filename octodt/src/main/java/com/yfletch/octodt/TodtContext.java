@@ -16,6 +16,7 @@ import net.runelite.api.Locatable;
 import net.runelite.api.NpcID;
 import net.runelite.api.Skill;
 import net.runelite.api.TileObject;
+import net.runelite.api.VarPlayer;
 import net.runelite.api.coords.Direction;
 import net.runelite.api.coords.WorldPoint;
 import net.unethicalite.api.commons.Rand;
@@ -42,49 +43,37 @@ public class TodtContext extends CoreContext
 	private final static WorldPoint WEST_PYRO_LOCATION = new WorldPoint(1619, 3996, 0);
 
 	private final static int SNOW_FALL = 26690;
-	private final static int SNOW_PILE = 29325;
 	private final static int BREAK_DANGER_Y = 3996;
 
 	@Getter
 	private Direction side;
 
-	@Override
-	public void tick(boolean isGameTick)
-	{
-		// TODO: only switch sides if trying to get brazier?
-		if (isGameTick && isInWintertodt()
-			&& (side == null || isEastPyromancerDown() || isWestPyromancerDown()))
-		{
-			chooseSide();
-			log.info("Side chosen: " + side.name());
-		}
-
-		super.tick(isGameTick);
-	}
-
 	public void chooseSide()
 	{
-		final var preferred = config.preferredBrazier();
+		var preferred = config.preferredBrazier();
+		if (preferred == Brazier.RANDOM)
+		{
+			preferred = Rand.nextBool() ? Brazier.EAST : Brazier.WEST;
+		}
 
 		if (preferred == Brazier.EAST && !isEastPyromancerDown() || isWestPyromancerDown())
 		{
 			side = Direction.EAST;
-			return;
 		}
-
-		if (preferred == Brazier.WEST && !isWestPyromancerDown() || isEastPyromancerDown())
+		else if (preferred == Brazier.WEST && !isWestPyromancerDown() || isEastPyromancerDown())
 		{
 			side = Direction.WEST;
-			return;
 		}
+	}
 
-		if (Rand.nextBool())
+	public void chooseSideIfNeeded()
+	{
+		if (side == null
+			|| side == Direction.EAST && isEastPyromancerDown()
+			|| side == Direction.WEST && isWestPyromancerDown())
 		{
-			side = Direction.EAST;
-		}
-		else
-		{
-			side = Direction.WEST;
+			chooseSide();
+			log.info("Side chosen: " + side);
 		}
 	}
 
@@ -155,10 +144,10 @@ public class TodtContext extends CoreContext
 
 	public List<TileObject> getSnowAttacks()
 	{
-		return TileObjects.getAll(SNOW_FALL, SNOW_PILE);
+		return TileObjects.getAll(SNOW_FALL);
 	}
 
-	public boolean isOnDangerousTile()
+	public boolean isAboutToGetHitBySnow()
 	{
 		final var snowAttackTiles = getSnowAttacks().stream()
 			.map(Locatable::getWorldLocation)
@@ -166,6 +155,16 @@ public class TodtContext extends CoreContext
 
 		return snowAttackTiles.contains(getLocation())
 			|| getLocation().getY() == BREAK_DANGER_Y
+			&& getBrazier() != null && snowAttackTiles.contains(getBrazier().getWorldLocation());
+	}
+
+	public boolean isBrazierAboutToBreak()
+	{
+		final var snowAttackTiles = getSnowAttacks().stream()
+			.map(Locatable::getWorldLocation)
+			.collect(Collectors.toCollection(HashSet::new));
+
+		return getLocation().getY() == BREAK_DANGER_Y
 			&& getBrazier() != null && snowAttackTiles.contains(getBrazier().getWorldLocation());
 	}
 
@@ -177,6 +176,8 @@ public class TodtContext extends CoreContext
 
 	public TileObject getBrazier()
 	{
+		chooseSideIfNeeded();
+
 		return TileObjects.getFirstAt(
 			side == Direction.EAST
 				? EAST_BRAZIER_LOCATION
@@ -189,6 +190,11 @@ public class TodtContext extends CoreContext
 	{
 		return side == Direction.EAST
 			? EAST_SAFESPOT : WEST_SAFESPOT;
+	}
+
+	public int getSpecialEnergy()
+	{
+		return client.getVarpValue(VarPlayer.SPECIAL_ATTACK_PERCENT.getId()) / 10;
 	}
 
 	@Override
