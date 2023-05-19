@@ -367,6 +367,22 @@
   {
     "projectUrl": "https://github.com/y-fletch/ocplugins",
     "provider": "yfletch",
+    "name": "OC Salamanders",
+    "description": "One-click black salamanders",
+    "id": "ocsalamanders-plugin",
+    "releases": [
+      {
+        "date": "2023-05-20",
+        "sha512sum": "946ACF39A62A23DB2E2CBC227DB2CE0FBABFAA0192524A32DB26E64B67E7E4A28D0C21EC472AE6335B8D77925A662BFB36B5980F78C34D1A336217CF438E25CC",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocsalamanders-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
     "name": "OC Sepulchre [alpha]",
     "description": "One-click Hallowed Sepulchre",
     "id": "ocsepulchrealpha-plugin",
