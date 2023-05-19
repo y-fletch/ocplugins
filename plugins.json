@@ -377,6 +377,13 @@
         "version": "1.0.0",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocsalamanders-1.0.0.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-05-20",
+        "sha512sum": "7EFF479A00E9D48A42C3F0D322B877B4B402DD286176948EA361B9FAD0B6E940583E4F65BF3798077A1683B7B846A65FBF9BF8B7E79CC62ABC3D33FF402B609A",
+        "version": "1.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocsalamanders-1.0.1.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },

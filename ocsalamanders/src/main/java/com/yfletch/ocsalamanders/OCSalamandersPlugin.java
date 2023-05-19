@@ -44,6 +44,11 @@ public class OCSalamandersPlugin extends RunnerPlugin<SalamandersContext>
 			.then(c -> item("Black salamander").interact("Release"))
 			.many();
 
+		action().name("Pick up items")
+			.when(c -> tileItem("Rope", "Small fishing net").exists())
+			.then(c -> tileItem("Rope", "Small fishing net").interact("Take"))
+			.many();
+
 		action().name("Set net trap")
 			.when(c -> c.getYoungTree() != null && c.canPlaceTrap())
 			.then(c -> of(c.getYoungTree()).interact("Set-trap"))
@@ -53,11 +58,6 @@ public class OCSalamandersPlugin extends RunnerPlugin<SalamandersContext>
 			.when(c -> c.getNetTrap() != null)
 			.then(c -> of(c.getNetTrap()).interact("Check"))
 			.delay(2);
-
-		action().name("Pick up items")
-			.when(c -> tileItem("Rope", "Small fishing net").exists())
-			.then(c -> tileItem("Rope", "Small fishing net").interact("Take"))
-			.many();
 	}
 
 
