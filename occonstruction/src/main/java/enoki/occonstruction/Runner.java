@@ -7,13 +7,8 @@ import com.yfletch.occore.event.EventBuilder;
 import enoki.occonstruction.config.Buildable;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
-import net.runelite.api.widgets.WidgetID;
-import net.runelite.api.widgets.WidgetInfo;
-import net.runelite.api.widgets.WidgetModelType;
-import net.runelite.api.widgets.WidgetType;
 import net.unethicalite.client.Static;
-
-import java.util.Map;
+import net.unethicalite.api.entities.NPCs;
 
 @Slf4j
 @Singleton
@@ -66,12 +61,15 @@ public class Runner extends ActionRunner<Context>
 		add(builder().npc("Use plank", "Phials")
 				.readyIf(ctx -> !ctx.hasPlanks() && ctx.getPhials() != null)
 				.doneIf(Context::isDialogOpen)
-				.workingIf(ctx -> ctx.isPathingTo())
+				.workingIf(ctx -> ctx.flag("phials"))
 				.onRun(
-						(ctx, event) -> event.builder().npc()
-								.use(ItemID.OAK_PLANK + 1)
-								.on(NpcID.PHIALS)
-								.override()
+						(ctx, event) -> {
+							event.builder().npc()
+									.use(ItemID.OAK_PLANK + 1)
+									.on(NpcID.PHIALS)
+									.override();
+//							ctx.flag("phials", true, 10);
+						}
 				));
 
 		add(builder().widget("Exchange All")

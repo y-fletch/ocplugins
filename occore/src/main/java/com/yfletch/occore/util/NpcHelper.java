@@ -73,21 +73,6 @@ public class NpcHelper
 	 */
 	public boolean isBeside(WorldPoint player, NPC npc)
 	{
-//		Point minScene = object.getSceneMinLocation();
-//		Point maxScene = object.getSceneMaxLocation();
-//
-//		return WorldPoint.isInZone(
-//				WorldPoint.fromScene(client, minScene.getX() - 1, minScene.getY() - 1, object.getPlane()),
-//				WorldPoint.fromScene(client, maxScene.getX() + 1, maxScene.getY() + 1, object.getPlane()),
-//				player
-//		) && !WorldPoint.isInZone(
-//				WorldPoint.fromScene(client, minScene.getX(), minScene.getY(), object.getPlane()),
-//				WorldPoint.fromScene(client, maxScene.getX(), maxScene.getY(), object.getPlane()),
-//				player
-//		);
-		
-		Point x = npc.getWorldLocation().
-
 		return false;
 	}
 }
