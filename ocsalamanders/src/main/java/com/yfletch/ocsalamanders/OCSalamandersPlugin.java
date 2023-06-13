@@ -8,6 +8,8 @@ import static com.yfletch.occore.v2.interaction.Entities.object;
 import static com.yfletch.occore.v2.interaction.Entities.of;
 import static com.yfletch.occore.v2.interaction.Entities.tileItem;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.InventoryID;
+import net.runelite.api.ItemID;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.unethicalite.api.items.Inventory;
@@ -40,8 +42,16 @@ public class OCSalamandersPlugin extends RunnerPlugin<SalamandersContext>
 		requirements().mustBeNear(() -> object("Young tree"));
 
 		action().name("Drop salamander")
-			.when(c -> Inventory.contains("Black salamander"))
-			.then(c -> item("Black salamander").interact("Release"))
+			.when(c -> Inventory.contains(
+					ItemID.BLACK_SALAMANDER,
+					ItemID.RED_SALAMANDER,
+					ItemID.ORANGE_SALAMANDER
+			))
+			.then(c -> item(
+					"Black salamander",
+					"Red salamander",
+					"Orange salamander"
+			).interact("Release"))
 			.many();
 
 		action().name("Pick up items")
