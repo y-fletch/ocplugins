@@ -7,11 +7,15 @@ import static com.yfletch.occore.v2.interaction.Entities.item;
 import static com.yfletch.occore.v2.interaction.Entities.object;
 import static com.yfletch.occore.v2.interaction.Entities.of;
 import static com.yfletch.occore.v2.interaction.Entities.tileItem;
+
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.InventoryID;
 import net.runelite.api.ItemID;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.api.events.MenuOptionClicked;
+import net.runelite.client.ui.overlay.OverlayLayer;
+import net.runelite.client.ui.overlay.OverlayManager;
 import net.unethicalite.api.items.Inventory;
 import org.pf4j.Extension;
 
@@ -37,9 +41,45 @@ public class OCSalamandersPlugin extends RunnerPlugin<SalamandersContext>
 	}
 
 	@Override
+	protected void startUp()
+	{
+		super.startUp();
+	}
+
+	@Override
+	protected void shutDown()
+	{
+		super.shutDown();
+		context.clearPrimaryTree();
+	}
+
+	@Subscribe
+	public void OnMenuOptionClicked(MenuOptionClicked menuOptionClicked)
+	{
+		if(context.getPrimaryTree() != null || !menuOptionClicked.getMenuTarget().contains("Young tree")) return;
+		switch(menuOptionClicked.getMenuAction())
+		{
+			case WIDGET_TARGET_ON_GAME_OBJECT:
+			case GAME_OBJECT_FIRST_OPTION:
+			case GAME_OBJECT_SECOND_OPTION:
+			case GAME_OBJECT_THIRD_OPTION:
+			case GAME_OBJECT_FOURTH_OPTION:
+			case GAME_OBJECT_FIFTH_OPTION:
+			{
+				int x = menuOptionClicked.getParam0();
+				int y = menuOptionClicked.getParam1();
+				context.setPrimaryTree(x, y);
+				break;
+			}
+		}
+	}
+
+	@Override
 	public void setup()
 	{
-		requirements().mustBeNear(() -> object("Young tree"));
+		requirements()
+				.mustBeNear(() -> object("Young tree"))
+				.must((ctx) -> ctx.getPrimaryTree() != null, "Click on tree to start");
 
 		action().name("Drop salamander")
 			.when(c -> Inventory.contains(
