@@ -1,21 +1,20 @@
 rootProject.name = "ocplugins"
 
 include(":occore")
-include(":ocgarden")
-include(":ocrift")
-include(":ocbloods")
-include(":ocsepulchre")
-include(":ocbarbfishing")
-include(":occlicker")
+include(":ocbankskills")
 include(":ocbarbfishing")
 include(":ocblastfurnace")
-include(":ocbankskills")
+include(":ocbloods")
 include(":ocbwans")
-include(":ocnightmarezone")
-include(":ocgranite")
+include(":occlicker")
 include(":occonstruction")
-include(":octodt")
+include(":ocgarden")
+include(":ocgranite")
+include(":ocnightmarezone")
+include(":ocrift")
 include(":ocsalamanders")
+include(":ocsepulchre")
+include(":octodt")
 
 for (project in rootProject.children) {
     project.apply {
