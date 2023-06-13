@@ -387,9 +387,9 @@
       },
       {
         "date": "2023-06-13",
-        "sha512sum": "B340480CCFF5C5FAC2D2C25564D2D666910D4F8EF86524862C3DD9D6C8B245F11868B6942EF0BBFDA98F36671AA851D6DB5E7B63F4CBA402838343497F3DA90E",
-        "version": "1.0.2",
-        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocsalamanders-1.0.2.jar?raw=true",
+        "sha512sum": "1CB63E6D6A6FAF856D76B85FF8456B2B2432AE507A8ACC3B9CD58C2F4A594D448502A01DA834A917AEB56A396E62BB82906BE55576DCDE75771C3F9459017E25",
+        "version": "1.0.3",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocsalamanders-1.0.3.jar?raw=true",
         "requires": "^1.0.0"
       }
     ]
