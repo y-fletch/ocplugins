@@ -14,6 +14,8 @@ include(":ocbwans")
 include(":ocnightmarezone")
 include(":ocgranite")
 include(":occonstruction")
+include(":octodt")
+include(":ocsalamanders")
 
 for (project in rootProject.children) {
     project.apply {

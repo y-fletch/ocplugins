@@ -1,18 +1,18 @@
 package com.yfletch.ocbankskills;
 
-import com.yfletch.occore.OCConfig;
+import com.yfletch.occore.v2.CoreConfig;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
 
-@ConfigGroup(Config.GROUP_NAME)
-public interface Config extends OCConfig
+@ConfigGroup(BankSkillsConfig.GROUP_NAME)
+public interface BankSkillsConfig extends CoreConfig
 {
 	String GROUP_NAME = "oc-bankskills";
 
 	@ConfigSection(
-		name = "OC Bank Skills",
+		name = "Bank Skills",
 		description = "Plugin settings",
 		position = 2
 	)
@@ -20,39 +20,39 @@ public interface Config extends OCConfig
 
 	@ConfigItem(
 		keyName = "primary",
-		name = "Primary item ID",
-		description = "Primary item ID",
+		name = "Primary item names",
+		description = "Primary item names, comma separated",
 		section = bankSkills,
 		position = 1
 	)
 	@Range(min = -1)
-	default int primary()
+	default String primary()
 	{
-		return -1;
+		return null;
 	}
 
 	@ConfigItem(
 		keyName = "secondary",
-		name = "Secondary item ID",
-		description = "Secondary item ID",
+		name = "Secondary item names",
+		description = "Secondary item names, comma separated",
 		section = bankSkills,
 		position = 2
 	)
 	@Range(min = -1)
-	default int secondary()
+	default String secondary()
 	{
-		return -1;
+		return null;
 	}
 
 	@ConfigItem(
-		keyName = "makeOption",
-		name = "Make option",
-		description = "Option to click in the skill interface (starting at 1)",
+		keyName = "product",
+		name = "Product item name",
+		description = "Option to click in the skill interface",
 		section = bankSkills,
 		position = 3
 	)
-	default int makeOption()
+	default String product()
 	{
-		return 1;
+		return null;
 	}
 }

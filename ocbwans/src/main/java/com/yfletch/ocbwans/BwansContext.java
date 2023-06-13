@@ -2,9 +2,9 @@ package com.yfletch.ocbwans;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.yfletch.occore.ActionContext;
 import com.yfletch.occore.util.NpcHelper;
 import com.yfletch.occore.util.ObjectHelper;
+import com.yfletch.occore.v2.CoreContext;
 import java.util.Arrays;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
@@ -13,7 +13,7 @@ import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetID;
 
 @Singleton
-public class Context extends ActionContext
+public class BwansContext extends CoreContext
 {
 	@Inject private Client client;
 	@Inject private ObjectHelper objectHelper;

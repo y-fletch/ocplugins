@@ -66,6 +66,7 @@ public class OCBarbFishingRunner extends ActionRunner<OCBarbFishingContext>
 						// probably moved
 						&& ctx.getTick() < 10)
 				)
+				.onDone(ctx -> System.out.println("poop"))
 				.onRun(
 					(ctx, event) -> {
 						ctx.flag("interrupt", false);

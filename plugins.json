@@ -19,6 +19,27 @@
         "version": "1.0.1",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-1.0.1.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-05-08",
+        "sha512sum": "D9D015F0B055C6BBF7D896577EF45198291591575C26DAF5CA27DC641C1265DA705F9D037CDE727FE0E8AFB8B2EB0B42B1E9160A9741720077F55D048F2C0BD4",
+        "version": "1.0.2",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-1.0.2.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-05-15",
+        "sha512sum": "B20E5CDC4FF309D3E8B8511F3638C3DC032EAE0E7AADB428317520303C9106EB52002C743725BC6DD94BBAC845254C0BAD4D23AF6C12B22512B8AD076FF7AB83",
+        "version": "2.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-2.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-05-15",
+        "sha512sum": "A320E47A1C0D7C37EC58DE440DB0F6D509F5BE4B13464CB061B9188DFF59E8CADE9EB913BC63DDE71DD74C8FBED6F312DF8AB94E71597FC879C490B85682054E",
+        "version": "2.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-2.0.1.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
@@ -118,6 +139,13 @@
         "version": "1.0.0",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbwans-1.0.0.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-05-15",
+        "sha512sum": "55C430D0215C2925677790ECA8EF8896E9423F5EE62537B6B4E4B36C3A482F4ED09CC1DFA792EA969931AF88060061A282A4924636B26C594F3CA37CA811BDA1",
+        "version": "2.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbwans-2.0.0.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
@@ -206,6 +234,13 @@
         "version": "0.0.6",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-0.0.6.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-05-15",
+        "sha512sum": "F6E6E1A8B6FEB6C85791B8EE992B75CD1C7B6D0628627B554471F0E91452D51C7CCB17C79EE2775D512C81A51406EA109CDB22ACDB650030295C5135AFAC6B58",
+        "version": "2.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-2.0.0.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
@@ -282,6 +317,13 @@
         "version": "1.0.1",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocnightmarezone-1.0.1.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-05-11",
+        "sha512sum": "301D0E044DF09F08071BE625FFD5E907035639E911444CD43F813FC3065F52C5AFA3E040CAA5A61A032F44D53ED02C9D6560B4808C492ABC865D3D53FB020BFD",
+        "version": "1.0.2",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocnightmarezone-1.0.2.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
@@ -325,6 +367,29 @@
   {
     "projectUrl": "https://github.com/y-fletch/ocplugins",
     "provider": "yfletch",
+    "name": "OC Salamanders",
+    "description": "One-click black salamanders",
+    "id": "ocsalamanders-plugin",
+    "releases": [
+      {
+        "date": "2023-05-20",
+        "sha512sum": "946ACF39A62A23DB2E2CBC227DB2CE0FBABFAA0192524A32DB26E64B67E7E4A28D0C21EC472AE6335B8D77925A662BFB36B5980F78C34D1A336217CF438E25CC",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocsalamanders-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-05-20",
+        "sha512sum": "7EFF479A00E9D48A42C3F0D322B877B4B402DD286176948EA361B9FAD0B6E940583E4F65BF3798077A1683B7B846A65FBF9BF8B7E79CC62ABC3D33FF402B609A",
+        "version": "1.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocsalamanders-1.0.1.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
     "name": "OC Sepulchre [alpha]",
     "description": "One-click Hallowed Sepulchre",
     "id": "ocsepulchrealpha-plugin",
@@ -348,6 +413,29 @@
         "sha512sum": "1D743F5F2A946FC54C49E7D968DBE23F3B90D95644B86EFE63BD58A7A307C24D3C1BBDCC40CCA5AEBE61388D1095372E67C4B5FD05D52D05B8F987963DD43710",
         "version": "0.0.3-alpha",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocsepulchre-0.0.3-alpha.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Todt",
+    "description": "One-click mass world Wintertodt",
+    "id": "octodt-plugin",
+    "releases": [
+      {
+        "date": "2023-05-18",
+        "sha512sum": "055FB4E47799414BF96E101A55AB6DE4FD5B3CD2A3EA444EA393CFFFCB1743766CE07C286CB5E72627E715C0D6D1327CE39F152E090C119BBD7665D472B2519F",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/octodt-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-05-18",
+        "sha512sum": "9007654BA14F5856CFC07ACB4ABBF27070D325DFC1EFF892CEBF2CA08DD50025AFF36B3811A89FF3D611E3BC4FCD23CC00176B6EA692AADC430999BA51F46199",
+        "version": "1.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/octodt-1.0.1.jar?raw=true",
         "requires": "^1.0.0"
       }
     ]

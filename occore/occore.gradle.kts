@@ -1,4 +1,4 @@
-version = "0.0.6"
+version = "2.0.0"
 
 project.extra["PluginName"] = "OC Core"
 project.extra["PluginDescription"] = "Library package for OCPlugins"
