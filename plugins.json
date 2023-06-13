@@ -189,6 +189,22 @@
   {
     "projectUrl": "https://github.com/y-fletch/ocplugins",
     "provider": "yfletch",
+    "name": "OC Construction",
+    "description": "One-click Construction Training",
+    "id": "occonstruction-plugin",
+    "releases": [
+      {
+        "date": "2023-06-13",
+        "sha512sum": "CC2F78CB642368730EE5F04045C3F8960644835AB382B88284E8F09275B2BD9A29D381E26B44BA70CB9DA9E2D5B2D4FDE8751A9DFCE8CEDA7E01E2107E87DCE9",
+        "version": "0.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occonstruction-0.0.1.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
     "name": "OC Core",
     "description": "Library package for OCPlugins",
     "id": "occore-plugin",
