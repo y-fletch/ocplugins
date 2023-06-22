@@ -324,6 +324,13 @@
         "version": "1.0.2",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocnightmarezone-1.0.2.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-06-22",
+        "sha512sum": "02B4F126068BF412F469A4F8CBE4D5C353CE697DFC20713D4D8B2497C9A8B26753FE46874AFE706BD524EE147DD417F907AFC0137FDB36F993FF0ECE2459E335",
+        "version": "1.0.3",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocnightmarezone-1.0.3.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
