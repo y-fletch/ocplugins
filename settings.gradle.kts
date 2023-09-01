@@ -16,6 +16,7 @@ include(":ocgranite")
 include(":octodt")
 include(":ocsalamanders")
 include(":ocdancing")
+include(":ocflyfishing")
 
 for (project in rootProject.children) {
     project.apply {
