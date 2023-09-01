@@ -264,6 +264,13 @@
         "version": "1.0.0",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocdancing-1.0.0.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-09-01",
+        "sha512sum": "AAFF0803ADD848301CC288E747456C86FC6371CAB985A242BDAB80E45AFCEC0E8C01A6A12950FFF97480779D377CBFA9CD05592C89ABBB09AFB01A68AEFD3A4C",
+        "version": "1.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocdancing-1.0.1.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },

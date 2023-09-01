@@ -34,6 +34,7 @@ public class OCDancingPlugin extends RunnerPlugin<DancingContext>
 		setConfig(config);
 		setContext(context);
 		setConfigGroup(DancingConfig.GROUP_NAME);
+		refreshOnConfigChange(true);
 	}
 
 	@Override
