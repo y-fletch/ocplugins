@@ -15,6 +15,7 @@ include(":ocnightmarezone")
 include(":ocgranite")
 include(":octodt")
 include(":ocsalamanders")
+include(":ocdancing")
 
 for (project in rootProject.children) {
     project.apply {
