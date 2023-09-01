@@ -114,16 +114,15 @@ public class Runner extends ActionRunner<Context>
 		);
 
 		add(builder().item("Feel", ItemOption.LOCATOR_ORB.getLabel())
-				.readyIf(ctx -> ctx.inInstancedRegion()
-						&& ctx.usingLocatorOrb()
+				.readyIf(ctx -> ctx.usingLocatorOrb()
 						&& ctx.getCurrentPlayerHealth() >= 2
 						&& !ctx.flag("overloadPotion"))
 				.doneIf(ctx -> ctx.getCurrentPlayerHealth() == 1)
 				.onRun(
 						(ctx, event) -> event.builder().item()
-								.setOption("Feel", 8) // TODO: Probably not 8...
+								.setOption("Feel", 2)
 								.setItem(ItemOption.LOCATOR_ORB.getItemId())
-								.setType(MenuAction.CC_OP) // TODO: Probably not this either!
+								.setType(MenuAction.CC_OP)
 								.onClick(e -> ctx.flag("eat", true, TICK_FOOD_EAT))
 								.override()
 				)
