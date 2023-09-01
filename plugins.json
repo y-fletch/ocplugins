@@ -40,6 +40,13 @@
         "version": "2.0.1",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-2.0.1.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-06-28",
+        "sha512sum": "1F45FD014E16093578A498BC120D237B50716FCF8147DBE0191647FC1A7EC88DE177DA2103C4E096BE40446DAE827A4BBE110F87D12D8A5C7802F7B46B567DAD",
+        "version": "2.0.2",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-2.0.2.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },

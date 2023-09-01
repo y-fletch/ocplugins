@@ -59,7 +59,7 @@ public class OCBankSkillsPlugin extends RunnerPlugin<BankSkillsContext>
 
 		action().name("Deposit other items")
 			.oncePerTick()
-			.when(c -> Inventory.contains(nameNotMatching(join(primary(), secondary()))))
+			.when(c -> Bank.isOpen() && Inventory.contains(nameNotMatching(join(primary(), secondary()))))
 			.then(c -> widget("Deposit inventory").interact());
 
 		action().name("Withdraw primary")
