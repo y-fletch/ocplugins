@@ -23,9 +23,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "1.0.1"
+version = "1.0.0"
 
-project.extra["PluginName"] = "OC Noob Fishing"
+project.extra["PluginName"] = "OC Fly Fishing"
 project.extra["PluginDescription"] = "One-click fly fishing and cooking"
 
 dependencies {

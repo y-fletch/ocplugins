@@ -254,6 +254,38 @@
   {
     "projectUrl": "https://github.com/y-fletch/ocplugins",
     "provider": "yfletch",
+    "name": "OC Dancing",
+    "description": "One-click dancing",
+    "id": "ocdancing-plugin",
+    "releases": [
+      {
+        "date": "2023-09-01",
+        "sha512sum": "43AD6C6884584174899A8FC6CF9FBE955A0ECB4261951EC8438AC8F7CE012EB2F7A4B4E6B631E2550845E157094F24E8A6F51E41EC001CB67482186580A78CEF",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocdancing-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Fly Fishing",
+    "description": "One-click fly fishing and cooking",
+    "id": "ocflyfishing-plugin",
+    "releases": [
+      {
+        "date": "2023-09-01",
+        "sha512sum": "8B8C0A45ADA43F75DE70641BD5470BE6077C932C1E5EB66F1497ED08CBF5CB9F6A777B7F4846294EEE8DDFB7743E9EEEFD09DBCD0D1BC80811A5A52352CA4444",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocflyfishing-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
     "name": "OC Summer garden",
     "description": "One-click summer garden",
     "id": "ocsummergarden-plugin",
