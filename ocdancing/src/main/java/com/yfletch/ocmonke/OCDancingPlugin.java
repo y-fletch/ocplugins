@@ -3,7 +3,7 @@ package com.yfletch.ocmonke;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.yfletch.occore.v2.RunnerPlugin;
-import com.yfletch.occore.v2.interaction.Walking;
+import static com.yfletch.occore.v2.interaction.Walking.walk;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.MenuAction;
@@ -41,13 +41,13 @@ public class OCDancingPlugin extends RunnerPlugin<DancingContext>
 	public void setup()
 	{
 		action().name("Tile 1")
-			.when(c -> c.getPlayerLocation().equals(c.getTile2()))
-			.then(c -> Walking.walk(c.getTile1()))
+			.when(c -> !c.getPlayerLocation().equals(c.getTile1()))
+			.then(c -> walk(c.getTile1()))
 			.delay(config.danceInterval());
 
 		action().name("Tile 2")
 			.when(c -> c.getPlayerLocation().equals(c.getTile1()))
-			.then(c -> Walking.walk(c.getTile2()))
+			.then(c -> walk(c.getTile2()))
 			.delay(config.danceInterval());
 	}
 
