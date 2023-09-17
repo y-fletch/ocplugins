@@ -72,6 +72,18 @@ public interface CoreConfig extends Config
 		return true;
 	}
 
+	@ConfigItem(
+		keyName = "showStatisticsOverlay",
+		name = "Show statistics overlay",
+		description = "Show statistics for the plugin",
+		section = overlays,
+		position = 2
+	)
+	default boolean showStatisticsOverlay()
+	{
+		return true;
+	}
+
 	@ConfigSection(
 		name = "Debug",
 		description = "Configure overlays",

@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.yfletch.occore.v2.interaction.DeferredInteraction;
 import com.yfletch.occore.v2.interaction.Entities;
 import com.yfletch.occore.v2.overlay.CoreDebugOverlay;
+import com.yfletch.occore.v2.overlay.CoreStatisticsOverlay;
 import com.yfletch.occore.v2.overlay.InteractionOverlay;
 import com.yfletch.occore.v2.rule.DynamicRule;
 import com.yfletch.occore.v2.rule.RequirementRule;
@@ -25,6 +26,7 @@ import net.runelite.api.events.PostMenuSort;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
+import net.runelite.client.events.OverlayMenuClicked;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -61,7 +63,9 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 	private int actionsThisTick = 0;
 
+	protected StatisticTracker statistics;
 	private InteractionOverlay interactionOverlay;
+	private CoreStatisticsOverlay statisticsOverlay;
 	private CoreDebugOverlay debugOverlay;
 
 	@Setter
@@ -328,6 +332,9 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	{
 		interactionOverlay = new InteractionOverlay(this);
 		debugOverlay = new CoreDebugOverlay(this, context);
+
+		statistics = new StatisticTracker();
+		statisticsOverlay = new CoreStatisticsOverlay(this, statistics);
 	}
 
 	@Override
@@ -338,6 +345,11 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		if (config.showActionOverlay())
 		{
 			overlayManager.add(interactionOverlay);
+		}
+
+		if (config.showStatisticsOverlay())
+		{
+			overlayManager.add(statisticsOverlay);
 		}
 
 		if (config.showDebugOverlay())
@@ -357,6 +369,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	protected void shutDown()
 	{
 		overlayManager.remove(interactionOverlay);
+		overlayManager.remove(statisticsOverlay);
 		overlayManager.remove(debugOverlay);
 		keyManager.unregisterKeyListener(hotkeyListener);
 	}
@@ -384,6 +397,11 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 		executeWithDeviousAPI();
 		updateDelay();
+
+		if (config.enabled())
+		{
+			statistics.tick();
+		}
 	}
 
 	@Subscribe
@@ -440,7 +458,10 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 				currentRule.completeCallback(context);
 			}
 
-			RunnerUtil.log("OC", event.getMenuEntry());
+			if (config.debugOCMenuEntries())
+			{
+				RunnerUtil.log("OC", event.getMenuEntry());
+			}
 		}
 
 		if (processOnMouseClick)
@@ -488,6 +509,18 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 				}
 			}
 
+			if (event.getKey().equals("showStatisticsOverlay"))
+			{
+				if (event.getNewValue().equals("true"))
+				{
+					overlayManager.add(statisticsOverlay);
+				}
+				else
+				{
+					overlayManager.remove(statisticsOverlay);
+				}
+			}
+
 			if (event.getKey().equals("showDebugOverlay"))
 			{
 				if (event.getNewValue().equals("true"))
@@ -499,6 +532,16 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 					overlayManager.remove(debugOverlay);
 				}
 			}
+		}
+	}
+
+	@Subscribe
+	public void onOverlayMenuClicked(OverlayMenuClicked event)
+	{
+		if (event.getOverlay() == statisticsOverlay
+			&& event.getEntry().getOption().equals(CoreStatisticsOverlay.CLEAR_STATISTICS))
+		{
+			statistics.clear();
 		}
 	}
 }

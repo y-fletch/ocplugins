@@ -1,6 +1,8 @@
 rootProject.name = "ocplugins"
 
 include(":occore")
+
+include(":ocpickpocket")
 include(":ocgarden")
 include(":ocrift")
 include(":ocbloods")

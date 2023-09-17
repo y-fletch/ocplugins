@@ -15,7 +15,7 @@ public class Util
 	public static Predicate<String> containing(String... fragments)
 	{
 		return s -> !Strings.isNullOrEmpty(s)
-			&& Arrays.stream(fragments).anyMatch(t -> Text.removeTags(s).toLowerCase().contains(t));
+			&& Arrays.stream(fragments).anyMatch(t -> Text.removeTags(s).toLowerCase().contains(t.toLowerCase()));
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class Util
 	public static Predicate<String> matching(String... fragments)
 	{
 		return s -> !Strings.isNullOrEmpty(s)
-			&& Arrays.stream(fragments).anyMatch(t -> Text.removeTags(s).equals(t));
+			&& Arrays.stream(fragments).anyMatch(t -> Text.removeTags(s).equalsIgnoreCase(t));
 	}
 
 	/**
