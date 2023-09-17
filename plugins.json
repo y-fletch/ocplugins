@@ -248,6 +248,13 @@
         "version": "2.0.0",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-2.0.0.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-09-18",
+        "sha512sum": "A8D0D5B5EDCED8774D43DF36522CCF37749E0EDFACDE237CD754E92409953622BC3FDE6B91DF879F2D2EAD3866DCAF23E372B24A348E7B6B3F6193B74B316817",
+        "version": "2.1.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-2.1.0.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
@@ -383,6 +390,22 @@
         "sha512sum": "02B4F126068BF412F469A4F8CBE4D5C353CE697DFC20713D4D8B2497C9A8B26753FE46874AFE706BD524EE147DD417F907AFC0137FDB36F993FF0ECE2459E335",
         "version": "1.0.3",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocnightmarezone-1.0.3.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Pickpocket",
+    "description": "One-click pickpocketing for any NPC",
+    "id": "ocpickpocket-plugin",
+    "releases": [
+      {
+        "date": "2023-09-18",
+        "sha512sum": "00B644A70B8DD1D78DA207C2851DD9D2E6686CD1DD2038FEE37D9AB22077D8A288E1DF3E21301A78E6F3B4B482CDEA33F6019A8A3A5BD7A0F65FBC45FE335642",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocpickpocket-1.0.0.jar?raw=true",
         "requires": "^1.0.0"
       }
     ]
