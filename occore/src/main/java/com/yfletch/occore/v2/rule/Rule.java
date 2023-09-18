@@ -15,7 +15,7 @@ public interface Rule<TContext extends CoreContext>
 	 * <p>
 	 * Set >= 1 to make actions much less suspicious
 	 */
-	default int maxDelay()
+	default int getMaxDelay(TContext ctx)
 	{
 		return 0;
 	}
@@ -26,7 +26,7 @@ public interface Rule<TContext extends CoreContext>
 	 * <p>
 	 * Must be smaller than `maxDelay`
 	 */
-	default int minDelay()
+	default int getMinDelay(TContext ctx)
 	{
 		return 0;
 	}

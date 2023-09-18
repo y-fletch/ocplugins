@@ -1,6 +1,7 @@
 package com.yfletch.occore.v2.interaction;
 
 import static com.yfletch.occore.v2.util.Util.matching;
+import static com.yfletch.occore.v2.util.Util.nameMatching;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import net.unethicalite.api.EntityNameable;
 import net.unethicalite.api.Interactable;
+import net.unethicalite.api.SceneEntity;
 import net.unethicalite.api.commons.Predicates;
 import net.unethicalite.api.entities.NPCs;
 import net.unethicalite.api.entities.TileItems;
@@ -467,12 +469,12 @@ public class Entities
 	/**
 	 * Get an NPC or object
 	 */
-	public static DeferredInteractable<?> entity(Predicate<String> predicate)
+	public static DeferredInteractable<?> entity(Predicate<SceneEntity> predicate)
 	{
 		return of(
 			Optional
-				.<Interactable>ofNullable(NPCs.getNearest(nameMatches(predicate)))
-				.orElse(TileObjects.getNearest(nameMatches(predicate)))
+				.<Interactable>ofNullable(NPCs.getNearest(predicate::test))
+				.orElse(TileObjects.getNearest(predicate::test))
 		);
 	}
 
@@ -481,6 +483,6 @@ public class Entities
 	 */
 	public static DeferredInteractable<?> entity(String... names)
 	{
-		return entity(matching(names));
+		return entity(nameMatching(names));
 	}
 }

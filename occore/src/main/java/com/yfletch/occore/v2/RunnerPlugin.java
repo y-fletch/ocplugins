@@ -11,9 +11,13 @@ import com.yfletch.occore.v2.rule.RequirementRule;
 import com.yfletch.occore.v2.rule.Rule;
 import com.yfletch.occore.v2.util.RunnerUtil;
 import com.yfletch.occore.v2.util.TextColor;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -96,6 +100,8 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	@Setter
 	@Accessors(fluent = true)
 	private boolean refreshOnConfigChange = false;
+
+	private static final Executor RESOLUTION_EXECUTOR = Executors.newSingleThreadExecutor();
 
 	private final HotkeyListener hotkeyListener = new HotkeyListener(() -> config.quickToggleKeybind())
 	{
@@ -223,7 +229,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 				// in case there's something else we should do straight
 				// away, process and execute again
-				process();
+				RESOLUTION_EXECUTOR.execute(this::resolveRules);
 				executeWithDeviousAPI();
 			}
 		}
@@ -270,11 +276,14 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		// update interaction display
 		updateInteraction(rule);
 
+		final var maxDelay = rule.getMaxDelay(context);
+		final var minDelay = rule.getMinDelay(context);
+
 		// use new max delay
-		context.setDelayTimer(rule.maxDelay());
-		context.setMinDelayTimer(rule.minDelay());
+		context.setDelayTimer(maxDelay);
+		context.setMinDelayTimer(minDelay);
 		// reset delay status
-		isDelaying = rule.maxDelay() > 0 || rule.minDelay() > 0;
+		isDelaying = maxDelay > 0 || minDelay > 0;
 
 		currentRule = rule;
 	}
@@ -282,12 +291,22 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	/**
 	 * Determine the next rule to move to
 	 */
-	private void process()
+	private void resolveRules()
 	{
+		final var startResolution = Instant.now();
 		// find new rule to apply
 		for (final var rule : rules)
 		{
-			if (passes(rule))
+			final var startRuleCheck = Instant.now();
+			final var pass = passes(rule);
+			final var ruleTime = Duration.between(startRuleCheck, Instant.now()).toMillis();
+
+			if (ruleTime >= 10)
+			{
+				log.info("Slow rule - \"{}\" took {}ms!", rule.name(), ruleTime);
+			}
+
+			if (pass)
 			{
 				if (rule == currentRule)
 				{
@@ -306,7 +325,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 				}
 
 				enable(rule);
-				return;
+				break;
 			}
 		}
 
@@ -325,6 +344,13 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 			{
 				updateInteraction(currentRule);
 			}
+		}
+
+		final var resolutionTime = Duration.between(startResolution, Instant.now()).toMillis();
+
+		if (resolutionTime >= 40)
+		{
+			log.info("Rule resolution took {}ms!", resolutionTime);
 		}
 	}
 
@@ -392,7 +418,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 		if (processOnGameTick)
 		{
-			process();
+			RESOLUTION_EXECUTOR.execute(this::resolveRules);
 		}
 
 		executeWithDeviousAPI();
@@ -466,7 +492,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 		if (processOnMouseClick)
 		{
-			process();
+			RESOLUTION_EXECUTOR.execute(this::resolveRules);
 		}
 
 		executeWithDeviousAPI();

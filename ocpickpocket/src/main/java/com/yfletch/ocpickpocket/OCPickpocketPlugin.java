@@ -1,6 +1,5 @@
 package com.yfletch.ocpickpocket;
 
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.yfletch.occore.v2.RunnerPlugin;
@@ -9,11 +8,11 @@ import static com.yfletch.occore.v2.interaction.Entities.entity;
 import static com.yfletch.occore.v2.interaction.Entities.item;
 import static com.yfletch.occore.v2.interaction.Entities.npc;
 import static com.yfletch.occore.v2.interaction.Entities.object;
-import static com.yfletch.occore.v2.interaction.Entities.of;
 import static com.yfletch.occore.v2.interaction.Entities.tileItem;
-import static com.yfletch.occore.v2.interaction.Walking.walk;
-import static com.yfletch.occore.v2.util.Util.containing;
+import static com.yfletch.occore.v2.interaction.Walking.walkPathTo;
 import static com.yfletch.occore.v2.util.Util.nameMatching;
+import static com.yfletch.occore.v2.util.Util.parseList;
+import static com.yfletch.occore.v2.util.Util.withAction;
 import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -71,10 +70,10 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 		statistics.addPercentageDisplay("Success", List.of("Success", "Fail"));
 		statistics.addPercentageDisplay("Fail", List.of("Success", "Fail"));
 
-		final var target = split(config.target());
-		final var food = split(config.food());
-		final var lowValueItems = split(config.lowValueItems());
-		final var highValueItems = split(config.highValueItems());
+		final var target = parseList(config.target());
+		final var food = parseList(config.food());
+		final var lowValueItems = parseList(config.lowValueItems());
+		final var highValueItems = parseList(config.highValueItems());
 
 		// drop low value
 		action().name("Drop low value items")
@@ -117,11 +116,12 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 		action().name("Equip dodgy necklace")
 			.when(c -> !Equipment.contains("Dodgy necklace")
 				&& Inventory.contains("Dodgy necklace"))
-			.then(c -> item("Dodgy necklace").equip());
+			.then(c -> item("Dodgy necklace").equip())
+			.maxDelay(8);
 
 		// eat
 		action().name("Eat food")
-			.when(PickpocketContext::shouldEat)
+			.when(c -> c.shouldEat() && Inventory.contains(food))
 			.then(c -> item(food).interact("Eat", "Drink"))
 			.many()
 			// delay during stun cooldown
@@ -132,12 +132,11 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 			(c) -> !Inventory.contains("Dodgy necklace")
 				|| !Inventory.contains(food),
 			() -> {
-
 				// pre-bank - darkmeyer
-				action().name("Open doors towards mausoleum")
-					.when(c -> !c.isBankBoothInRange()
-						&& c.getNextDoorOnPathTo(object("Mausoleum Door").unwrap()) != null)
-					.then(c -> of(c.getNextDoorOnPathTo(object("Mausoleum Door").unwrap())).interact("Open"))
+				action().name("Path to mausoleum")
+					.when(c -> !c.isBankBoothInRange())
+					.then(c -> walkPathTo(object("Mausoleum Door")))
+					.many().skipIfNull()
 					// delay in case stunned
 					.delay(4);
 
@@ -148,17 +147,20 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 					// delay in case stunned
 					.delay(4);
 
-				action().name("Walk to ardougne key point")
-					.when(c -> !c.isBankBoothInRange()
-						&& c.isInArdougne())
-					.then(c -> walk(ARDOUGNE_KEY_WORLDPOINT))
+				action().name("Walk close to bank")
+					.when(c -> !c.isBankBoothInRange())
+					.then(c -> {
+						return walkPathTo(entity(withAction("Bank")));
+					})
+					.many().skipIfNull()
+					// delay in case stunned
 					.delay(4);
 
 				// open bank
 				action().name("Open bank")
 					.when(PickpocketContext::isBankBoothInRange)
 					.until(c -> Bank.isOpen())
-					.then(c -> entity(containing("bank")).interact("Use", "Bank"))
+					.then(c -> entity(withAction("Bank")).interact("Bank"))
 					// delay in case stunned
 					.delay(4);
 			}
@@ -193,41 +195,31 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 			.oncePerTick()
 			.many();
 
-		// post bank
-		group(
-			c -> !npc(target).exists(),
-			() -> {
-				// darkmeyer
-				action().name("Climb up sepulchre stairs")
-					.when(c -> object(SEPULCHRE_EXIT_STAIRS).exists())
-					.then(c -> object(SEPULCHRE_EXIT_STAIRS).interact("Climb-up"));
-			}
-		);
+		// post bank - darkmeyer
+		action().name("Climb up sepulchre stairs")
+			.when(c -> object(SEPULCHRE_EXIT_STAIRS).exists())
+			.then(c -> object(SEPULCHRE_EXIT_STAIRS).interact("Climb-up"));
 
-		action().name("Open doors to target")
-			.when(c -> npc(target).exists()
-				&& c.getNextDoorOnPathTo(npc(target).unwrap()) != null)
-			.then(c -> of(c.getNextDoorOnPathTo(npc(target).unwrap())).interact("Open"))
-			.many();
+		action().name("Walk close to NPC")
+			.then(c -> {
+				return walkPathTo(npc(target));
+			})
+			.many().skipIfNull()
+			// delay in case stunned
+			.delay(4);
+
+		// eat extra food taking space
+		action().name("Eat excess food")
+			.when(c -> Inventory.getFreeSlots() == 0
+				&& Inventory.contains(food))
+			.then(c -> item(food).interact("Eat", "Drink"));
 
 		// pickpocket
 		action().name("Pickpocket NPC")
 			.then(c -> npc(target).interact("Pickpocket"))
 			.onClick(c -> c.flag("withdrawing", false))
+			.delay(c -> c.hasTargetRespawned(target) ? 4 : 0)
 			.oncePerTick();
-	}
-
-	private String[] split(String input)
-	{
-		if (Strings.isNullOrEmpty(input))
-		{
-			return new String[]{};
-		}
-
-		return Arrays.stream(input.split(","))
-			.map(String::trim)
-			.filter(s -> !Strings.isNullOrEmpty(s))
-			.toArray(String[]::new);
 	}
 
 	@Subscribe
@@ -237,7 +229,29 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 		{
 			switch (event.getKey())
 			{
+				case "presetKnights":
+					configManager.setConfiguration(
+						PickpocketConfig.GROUP_NAME,
+						"target",
+						"Knight of Ardougne"
+					);
+					configManager.setConfiguration(
+						PickpocketConfig.GROUP_NAME,
+						"lowValueItems",
+						""
+					);
+					configManager.setConfiguration(
+						PickpocketConfig.GROUP_NAME,
+						"highValueItems",
+						""
+					);
+					break;
 				case "presetElves":
+					configManager.setConfiguration(
+						PickpocketConfig.GROUP_NAME,
+						"target",
+						"Salgant,Curufin,Miriel,Celebrian,Oropher,Nellas,Fingolfin,Mahtan,Indis"
+					);
 					configManager.setConfiguration(
 						PickpocketConfig.GROUP_NAME,
 						"lowValueItems",

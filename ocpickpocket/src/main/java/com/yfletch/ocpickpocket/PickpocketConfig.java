@@ -67,11 +67,24 @@ public interface PickpocketConfig extends CoreConfig
 	}
 
 	@ConfigItem(
+		keyName = "useShadowVeil",
+		name = "Shadow Veil",
+		description = "Cast the Shadow Veil spell to reduce stun chance on failed pickpockets."
+			+ "<br/>Requires the Arceuus spellbook, and Earth, Fire and Cosmic runes.",
+		section = pickpocket,
+		position = 6
+	)
+	default boolean useShadowVeil()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		keyName = "lowValueItems",
 		name = "Low value items",
 		description = "Items to drop immediately. Accepts multiple, comma separated.",
 		section = pickpocket,
-		position = 6
+		position = 7
 	)
 	default String lowValueItems()
 	{
@@ -83,7 +96,7 @@ public interface PickpocketConfig extends CoreConfig
 		name = "High value items",
 		description = "Items to keep, and when on the floor, food/necklaces will be dropped to pick it up. Accepts multiple, comma separated.",
 		section = pickpocket,
-		position = 7
+		position = 8
 	)
 	default String highValueItems()
 	{
@@ -91,11 +104,23 @@ public interface PickpocketConfig extends CoreConfig
 	}
 
 	@ConfigItem(
+		keyName = "presetKnights",
+		name = "Load Knight preset",
+		description = "Load low/high value items for pickpocketing Ardougne Knights",
+		section = pickpocket,
+		position = 20
+	)
+	default Button presetKnights()
+	{
+		return new Button();
+	}
+
+	@ConfigItem(
 		keyName = "presetElves",
 		name = "Load Elf preset",
 		description = "Load low/high value items for pickpocketing Elves",
 		section = pickpocket,
-		position = 8
+		position = 21
 	)
 	default Button presetElves()
 	{
@@ -107,7 +132,7 @@ public interface PickpocketConfig extends CoreConfig
 		name = "Load Vyre preset",
 		description = "Load low/high value items for pickpocketing Vyres",
 		section = pickpocket,
-		position = 9
+		position = 22
 	)
 	default Button presetVyres()
 	{

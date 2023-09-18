@@ -35,9 +35,12 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	private int maxDelay = 0;
 	private int minDelay = 0;
 
+	private Function<TContext, Integer> delayProvider;
+
 	@Setter(AccessLevel.MODULE)
 	private boolean many = false;
 	private boolean once = false;
+	private boolean skipIfNull = false;
 
 	@Getter
 	private boolean resetsOnTick = false;
@@ -91,6 +94,11 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 		return minDelay(delay).maxDelay(delay);
 	}
 
+	public DynamicRule<TContext> delay(Function<TContext, Integer> provider)
+	{
+		return delayProvider(provider);
+	}
+
 	public DynamicRule<TContext> repeat(Function<TContext, Integer> provider)
 	{
 		return repeatProvider(provider);
@@ -102,6 +110,15 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 		return this;
 	}
 
+	/**
+	 * Skip / continue on from this rule if the resulting interaction
+	 * is null (e.g. NPC not found, no path to walk to, etc)
+	 */
+	public DynamicRule<TContext> skipIfNull()
+	{
+		return skipIfNull(true);
+	}
+
 	@Override
 	public boolean passes(TContext ctx)
 	{
@@ -110,7 +127,8 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 			return false;
 		}
 
-		return when == null || when.test(ctx);
+		return (when == null || when.test(ctx))
+			&& (!skipIfNull || then.apply(ctx) != null);
 	}
 
 	@Override
@@ -132,15 +150,25 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	}
 
 	@Override
-	public int maxDelay()
+	public int getMaxDelay(TContext ctx)
 	{
-		return maxDelay > 0 ? maxDelay : Rule.super.maxDelay();
+		if (delayProvider != null)
+		{
+			return delayProvider.apply(ctx);
+		}
+
+		return maxDelay > 0 ? maxDelay : Rule.super.getMaxDelay(ctx);
 	}
 
 	@Override
-	public int minDelay()
+	public int getMinDelay(TContext ctx)
 	{
-		return minDelay > 0 ? minDelay : Rule.super.minDelay();
+		if (delayProvider != null)
+		{
+			return delayProvider.apply(ctx);
+		}
+
+		return minDelay > 0 ? minDelay : Rule.super.getMinDelay(ctx);
 	}
 
 	@Override

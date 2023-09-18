@@ -7,8 +7,8 @@ import static com.yfletch.occore.v2.interaction.Entities.banked;
 import static com.yfletch.occore.v2.interaction.Entities.entity;
 import static com.yfletch.occore.v2.interaction.Entities.item;
 import static com.yfletch.occore.v2.interaction.Entities.widget;
-import static com.yfletch.occore.v2.util.Util.containing;
 import static com.yfletch.occore.v2.util.Util.join;
+import static com.yfletch.occore.v2.util.Util.nameContaining;
 import static com.yfletch.occore.v2.util.Util.nameNotMatching;
 import static com.yfletch.occore.v2.util.Util.parseList;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ public class OCBankSkillsPlugin extends RunnerPlugin<BankSkillsContext>
 			.must(c -> primary().length > 0, "Primary item(s) must be set")
 			.must(c -> secondary().length > 0, "Secondary item(s) must be set")
 			.must(c -> product().length > 0, "Product item(s) must be set")
-			.mustBeNear(() -> entity(containing("bank")), "any bank");
+			.mustBeNear(() -> entity(nameContaining("bank")), "any bank");
 
 		requirements().name("Item checks")
 			.when(c -> primary().length > 0 && secondary().length > 0)
@@ -55,7 +55,7 @@ public class OCBankSkillsPlugin extends RunnerPlugin<BankSkillsContext>
 		action().name("Open bank")
 			.when(c -> !Inventory.contains(primary()) || !Inventory.contains(secondary()))
 			.until(c -> Bank.isOpen())
-			.then(c -> entity(containing("bank")).interact("Use", "Bank"));
+			.then(c -> entity(nameContaining("bank")).interact("Use", "Bank"));
 
 		action().name("Deposit other items")
 			.oncePerTick()

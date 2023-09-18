@@ -4,6 +4,7 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Keybind;
+import net.runelite.client.config.Units;
 
 public interface CoreConfig extends Config
 {
@@ -44,6 +45,7 @@ public interface CoreConfig extends Config
 		description = "Set the execution API/mode of the plugin."
 			+ "<br/>\"One-click\" is the original OC behaviour - each manual click within the game will be mutated to perform the correct action."
 			+ "<br/>\"One-click (consume)\" is identical to One-click, but any extra clicks are consumed (blocked)."
+			+ "<br/>\"One-click (auto)\" is a fully automatic version using the One-click API"
 			+ "<br/>\"Devious\" will use Devious client's interaction manager. This allows the plugin to work without manual input.",
 		section = plugin,
 		position = 3
@@ -51,6 +53,95 @@ public interface CoreConfig extends Config
 	default PluginAPI pluginApi()
 	{
 		return PluginAPI.ONE_CLICK_CONSUME;
+	}
+
+	@ConfigItem(
+		keyName = "clicksPerTick",
+		name = "Clicks per tick (auto)",
+		description = "Amount of clicks to send per tick. Only applies to the \"One-click (auto)\" API.",
+		section = plugin,
+		position = 4
+	)
+	default int clicksPerTick()
+	{
+		return 2;
+	}
+
+	@ConfigSection(
+		name = "Breaks [Coming soon]",
+		description = "Configure breaks",
+		position = 90
+	)
+	String breaks = "breaks";
+
+	@ConfigItem(
+		keyName = "enableBreaks",
+		name = "Take breaks",
+		description = "Have a break. Have a KitKat.",
+		section = breaks,
+		position = 1
+	)
+	default boolean enableBreaks()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "breakInterval",
+		name = "Break interval",
+		description = "Average break interval",
+		section = breaks,
+		position = 2
+	)
+	@Units(Units.MINUTES)
+	default int breakInterval()
+	{
+		return 45;
+	}
+
+	@ConfigItem(
+		keyName = "breakDuration",
+		name = "Break duration",
+		description = "Average break duration",
+		section = breaks,
+		position = 3
+	)
+	@Units(Units.MINUTES)
+	default int breakDuration()
+	{
+		return 7;
+	}
+
+	@ConfigSection(
+		name = "Safety [Coming soon]",
+		description = "Configure safety features",
+		position = 91
+	)
+	String safety = "safety";
+
+	@ConfigItem(
+		keyName = "logoutIfStuck",
+		name = "Logout if stuck",
+		description = "Logout and show an alert if no action has been performed in a set amount of time.",
+		section = safety,
+		position = 1
+	)
+	default boolean logoutIfStuck()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "logoutStuckTime",
+		name = "Stuck time",
+		description = "Amount of time needed after the last successful action to consider the plugin \"stuck\" (seconds)",
+		section = safety,
+		position = 2
+	)
+	@Units(Units.SECONDS)
+	default int logoutStuckTime()
+	{
+		return 120;
 	}
 
 	@ConfigSection(

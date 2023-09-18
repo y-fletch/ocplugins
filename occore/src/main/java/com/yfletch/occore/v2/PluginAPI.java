@@ -8,6 +8,7 @@ public enum PluginAPI
 {
 	ONE_CLICK("One-click", true),
 	ONE_CLICK_CONSUME("One-click (consume)", true),
+	ONE_CLICK_AUTO("One-click (auto) [Coming soon]", true),
 	DEVIOUS("Devious", false);
 
 	private final String name;

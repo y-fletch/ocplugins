@@ -3,8 +3,10 @@ package com.yfletch.occore.v2.util;
 import com.google.common.base.Strings;
 import java.util.Arrays;
 import java.util.function.Predicate;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.util.Text;
 import net.unethicalite.api.EntityNameable;
+import net.unethicalite.api.Interactable;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class Util
@@ -75,6 +77,14 @@ public class Util
 		return e -> e != null && !matching(names).test(e.getName());
 	}
 
+	/**
+	 * Match an entity with any of the specified actions
+	 */
+	public static <T extends Interactable> Predicate<T> withAction(String... actions)
+	{
+		return e -> e != null && e.hasAction(actions);
+	}
+
 	public static String[] join(String[] a, String[] b)
 	{
 		return ArrayUtils.addAll(a, b);
@@ -90,5 +100,10 @@ public class Util
 		return Arrays.stream(input.split("\\s*,\\s*"))
 			.filter(s -> !Strings.isNullOrEmpty(s))
 			.toArray(String[]::new);
+	}
+
+	public static WorldPoint offset(WorldPoint origin, int x, int y)
+	{
+		return new WorldPoint(origin.getX() + x, origin.getY() + y, origin.getPlane());
 	}
 }

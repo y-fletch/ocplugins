@@ -8,7 +8,7 @@ import static com.yfletch.occore.v2.interaction.Entities.entity;
 import static com.yfletch.occore.v2.interaction.Entities.lastItem;
 import static com.yfletch.occore.v2.interaction.Entities.object;
 import static com.yfletch.occore.v2.interaction.Entities.widget;
-import static com.yfletch.occore.v2.util.Util.containing;
+import static com.yfletch.occore.v2.util.Util.nameContaining;
 import static com.yfletch.occore.v2.util.Util.nameNotMatching;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.widgets.WidgetID;
@@ -41,13 +41,13 @@ public class OCBwansPlugin extends RunnerPlugin<BwansContext>
 	{
 		requirements()
 			.mustHave("Raw karambwan")
-			.mustBeNear(() -> entity(containing("bank", "benedict")), "any bank")
+			.mustBeNear(() -> entity(nameContaining("bank", "benedict")), "any bank")
 			.mustBeNear(() -> object("Range", "Fire"), "any range/fire");
 
 		action()
 			.when(c -> !Inventory.contains("Raw karambwan"))
 			.until(c -> Bank.isOpen())
-			.then(c -> entity(containing("bank", "benedict")).interact("Use", "Bank"));
+			.then(c -> entity(nameContaining("bank", "benedict")).interact("Use", "Bank"));
 
 		action()
 			.once()
