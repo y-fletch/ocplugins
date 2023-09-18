@@ -435,6 +435,13 @@
         "version": "1.1.0",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocpickpocket-1.1.0.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-09-19",
+        "sha512sum": "88D2A786B542C161E7D064BC8BB6D2660938CE800A4B284C17291F111088E4333AE92B1172E5C0E73E70D9CA4F10B321AA5B3044D500FCB9523F6F01FC7B5299",
+        "version": "1.2.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocpickpocket-1.2.0.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
