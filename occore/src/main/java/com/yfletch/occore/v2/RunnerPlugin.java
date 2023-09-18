@@ -72,7 +72,6 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	private CoreStatisticsOverlay statisticsOverlay;
 	private CoreDebugOverlay debugOverlay;
 
-	@Setter
 	private TContext context;
 
 	@Setter
@@ -120,6 +119,12 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	public int getRuleRepeatsLeft()
 	{
 		return currentRule == null ? 1 : currentRule.repeatsLeft();
+	}
+
+	public void setContext(TContext context)
+	{
+		this.context = context;
+		context.setPlugin(this);
 	}
 
 	/**

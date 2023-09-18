@@ -7,7 +7,9 @@ import static com.yfletch.occore.v2.interaction.Entities.entity;
 import static com.yfletch.occore.v2.interaction.Entities.npc;
 import static com.yfletch.occore.v2.util.Util.nameContaining;
 import static com.yfletch.occore.v2.util.Util.parseList;
+import java.util.HashSet;
 import java.util.Map;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameObject;
@@ -27,12 +29,28 @@ public class PickpocketContext extends CoreContext
 
 	private WorldPoint previousTargetLocation;
 
-	public String[] getNonCoinInventoryItems()
+	@Setter private boolean shadowVeilActive = false;
+	@Setter private boolean shadowVeilOnCooldown = false;
+
+	public String[] getBankableItems()
 	{
 		final var all = Inventory.getAll();
+
+		final var ignoreItems = new HashSet<>();
+		ignoreItems.add("Coins");
+
+		if (config.useShadowVeil())
+		{
+			ignoreItems.add("Cosmic rune");
+			ignoreItems.add("Earth rune");
+			ignoreItems.add("Fire rune");
+			ignoreItems.add("Rune pouch");
+			ignoreItems.add("Divine rune pouch");
+		}
+
 		return all.stream()
 			.map(Item::getName)
-			.filter(name -> !name.equals("Coins"))
+			.filter(name -> !ignoreItems.contains(name))
 			.toArray(String[]::new);
 	}
 
@@ -85,7 +103,14 @@ public class PickpocketContext extends CoreContext
 			return false;
 		}
 
-		return previousTargetLocation.distanceTo(npc) > 5;
+		final var result = previousTargetLocation.distanceTo(npc) > 5;
+		previousTargetLocation = npc.getWorldLocation();
+		return result;
+	}
+
+	public boolean canCastShadowVeil()
+	{
+		return !shadowVeilActive && !shadowVeilOnCooldown;
 	}
 
 	@Override

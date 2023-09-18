@@ -16,6 +16,9 @@ public class CoreContext
 	private final Map<String, Integer> ephemeralArgs = new HashMap<>();
 
 	@Setter
+	private RunnerPlugin<?> plugin;
+
+	@Setter
 	@Getter
 	private int delayTimer = 0;
 
@@ -164,6 +167,17 @@ public class CoreContext
 	public Map<String, String> getDebugMap()
 	{
 		final var lines = new HashMap<String, String>();
+		if (plugin != null)
+		{
+			lines.put(
+				"Rule",
+				plugin.getCurrentRule() != null
+					? plugin.getCurrentRule().name()
+					: "Thinking..."
+			);
+		}
+
+
 		if (delayTimer > 0)
 		{
 			lines.put("delay-timer", "" + delayTimer);

@@ -21,7 +21,9 @@ import net.unethicalite.api.Interactable;
 import net.unethicalite.api.items.Bank;
 import net.unethicalite.api.items.Equipment;
 import net.unethicalite.api.items.Inventory;
+import net.unethicalite.api.magic.Spell;
 import net.unethicalite.client.Static;
+import org.apache.commons.text.WordUtils;
 
 public class RequirementRule<TContext extends CoreContext> implements Rule<TContext>
 {
@@ -274,6 +276,21 @@ public class RequirementRule<TContext extends CoreContext> implements Rule<TCont
 				c -> Bank.contains(name)
 			);
 		}
+
+		return this;
+	}
+
+	/**
+	 * Require the spell to be castable (all required runes/staves etc, correct
+	 * spellbook, correct levels)
+	 */
+	public RequirementRule<TContext> mustBeAbleToCast(Spell spell)
+	{
+		requirements.put(
+			TextColor.WHITE + "Must be able to cast " + TextColor.SPELL
+				+ WordUtils.capitalizeFully(spell.toString().replaceAll("_", " ")),
+			c -> spell.canCast()
+		);
 
 		return this;
 	}

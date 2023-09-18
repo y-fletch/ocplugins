@@ -8,6 +8,7 @@ import static com.yfletch.occore.v2.interaction.Entities.entity;
 import static com.yfletch.occore.v2.interaction.Entities.item;
 import static com.yfletch.occore.v2.interaction.Entities.npc;
 import static com.yfletch.occore.v2.interaction.Entities.object;
+import static com.yfletch.occore.v2.interaction.Entities.spell;
 import static com.yfletch.occore.v2.interaction.Entities.tileItem;
 import static com.yfletch.occore.v2.interaction.Walking.walkPathTo;
 import static com.yfletch.occore.v2.util.Util.nameMatching;
@@ -21,10 +22,12 @@ import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.ObjectID;
 import net.runelite.api.Skill;
+import net.runelite.api.Varbits;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ConfigButtonClicked;
 import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.ItemContainerChanged;
+import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.XpDropEvent;
@@ -32,6 +35,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.unethicalite.api.items.Bank;
 import net.unethicalite.api.items.Equipment;
 import net.unethicalite.api.items.Inventory;
+import net.unethicalite.api.magic.SpellBook;
 import org.pf4j.Extension;
 
 @Slf4j
@@ -74,6 +78,12 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 		final var food = parseList(config.food());
 		final var lowValueItems = parseList(config.lowValueItems());
 		final var highValueItems = parseList(config.highValueItems());
+
+		if (config.useShadowVeil())
+		{
+			// TODO: debug why this is slow as shit
+//			requirements().mustBeAbleToCast(SpellBook.Necromancy.SHADOW_VEIL);
+		}
 
 		// drop low value
 		action().name("Drop low value items")
@@ -149,9 +159,7 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 
 				action().name("Walk close to bank")
 					.when(c -> !c.isBankBoothInRange())
-					.then(c -> {
-						return walkPathTo(entity(withAction("Bank")));
-					})
+					.then(c -> walkPathTo(entity(withAction("Bank"))))
 					.many().skipIfNull()
 					// delay in case stunned
 					.delay(4);
@@ -168,9 +176,9 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 
 		action().name("Deposit everything but coins")
 			.when(c -> Bank.isOpen()
-				&& Inventory.getFreeSlots() < 27
+				&& c.getBankableItems().length > 0
 				&& !c.flag("withdrawing"))
-			.then(c -> item(c.getNonCoinInventoryItems()).depositAll())
+			.then(c -> item(c.getBankableItems()).depositAll())
 			.many();
 
 		action().name("Withdraw dodgy necklaces")
@@ -186,14 +194,12 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 			.onClick(c -> c.flag("withdrawing", true))
 			.then(c -> banked(food).withdrawAll());
 
-		action().name("Make space for coins and coin pouch")
+		action().name("Keep a few slots open")
 			.when(c -> Bank.isOpen()
 				&& Inventory.contains(food)
-				&& (!Inventory.contains("Coins") || !Inventory.contains("Coin pouch"))
 				&& Inventory.getFreeSlots() < 2)
 			.then(c -> item(food).deposit(1))
-			.oncePerTick()
-			.many();
+			.oncePerTick();
 
 		// post bank - darkmeyer
 		action().name("Climb up sepulchre stairs")
@@ -201,9 +207,7 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 			.then(c -> object(SEPULCHRE_EXIT_STAIRS).interact("Climb-up"));
 
 		action().name("Walk close to NPC")
-			.then(c -> {
-				return walkPathTo(npc(target));
-			})
+			.then(c -> walkPathTo(npc(target)))
 			.many().skipIfNull()
 			// delay in case stunned
 			.delay(4);
@@ -213,6 +217,14 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 			.when(c -> Inventory.getFreeSlots() == 0
 				&& Inventory.contains(food))
 			.then(c -> item(food).interact("Eat", "Drink"));
+
+		if (config.useShadowVeil())
+		{
+			action().name("Cast shadow veil")
+				.when(PickpocketContext::canCastShadowVeil)
+				.then(c -> spell(SpellBook.Necromancy.SHADOW_VEIL).cast())
+				.delay(1, 4);
+		}
 
 		// pickpocket
 		action().name("Pickpocket NPC")
@@ -343,6 +355,20 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 		}
 
 		statistics.add("GP", newCoinStack.getQuantity() - oldCoinStack.getQuantity());
+	}
+
+	@Subscribe
+	public void onVarbitChanged(VarbitChanged event)
+	{
+		if (event.getVarbitId() == Varbits.SHADOW_VEIL)
+		{
+			context.setShadowVeilActive(event.getValue() == 1);
+		}
+
+		if (event.getVarbitId() == Varbits.SHADOW_VEIL_COOLDOWN)
+		{
+			context.setShadowVeilOnCooldown(event.getValue() == 1);
+		}
 	}
 
 	@Provides
