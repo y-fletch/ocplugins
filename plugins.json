@@ -47,6 +47,13 @@
         "version": "2.0.2",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-2.0.2.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-09-19",
+        "sha512sum": "1A508F15CFE8D74B6010D1FD0D92D21CBAA70EB66FAE0CE47268572CF934CF22684F1051E4DE5E12B993F5A0E58E9C533140D83E0778FFC2A08F5388E6CA5C8D",
+        "version": "2.0.3",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbankskills-2.0.3.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
@@ -153,6 +160,13 @@
         "version": "2.0.0",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbwans-2.0.0.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-09-19",
+        "sha512sum": "22A0D8DF3294A2D461AE8F0EE7E23D905B224259A3D33954E1E17E908AB29FBA5C5DAF7DF40B0206F5989D1A48CBDFF1F2E5B5AD1F3C4B4ADFB5844DA3814967",
+        "version": "2.0.1",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocbwans-2.0.1.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
@@ -254,6 +268,13 @@
         "sha512sum": "A8D0D5B5EDCED8774D43DF36522CCF37749E0EDFACDE237CD754E92409953622BC3FDE6B91DF879F2D2EAD3866DCAF23E372B24A348E7B6B3F6193B74B316817",
         "version": "2.1.0",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-2.1.0.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-09-19",
+        "sha512sum": "0246154DB0C64F7CBAAF06B503BF44AFA086FCAEB442D8C25B2E011C471969047C3CC014D9D08CD7A7167202EF847B7D995C3261AE2F5970F0C0783A01E2194E",
+        "version": "2.2.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/occore-2.2.0.jar?raw=true",
         "requires": "^1.0.0"
       }
     ]
@@ -407,6 +428,13 @@
         "version": "1.0.0",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocpickpocket-1.0.0.jar?raw=true",
         "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-09-19",
+        "sha512sum": "E0E3E9F0E28AD676EE6D7C993F02DC5FA5F9BFE5F8F059D1307C5DCB5873B026CB2B0ABC573BE261516CF628F89714939D88F7F52D325D2E205071829668D328",
+        "version": "1.1.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocpickpocket-1.1.0.jar?raw=true",
+        "requires": "^1.0.0"
       }
     ]
   },
@@ -519,6 +547,13 @@
         "sha512sum": "9007654BA14F5856CFC07ACB4ABBF27070D325DFC1EFF892CEBF2CA08DD50025AFF36B3811A89FF3D611E3BC4FCD23CC00176B6EA692AADC430999BA51F46199",
         "version": "1.0.1",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/octodt-1.0.1.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-09-19",
+        "sha512sum": "583CE2F101160740AAE643376C714B5D4134CFB5FD595F99EE14231B3E3EAA65CE364AE4F6E39549F89C1FAFA7D675B41B246D0B93A03FCB3A75F1A67B415110",
+        "version": "1.0.2",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/octodt-1.0.2.jar?raw=true",
         "requires": "^1.0.0"
       }
     ]
