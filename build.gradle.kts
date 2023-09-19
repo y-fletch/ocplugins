@@ -22,8 +22,8 @@ apply<BootstrapPlugin>()
 allprojects {
     group = "net.unethicalite"
 
-    project.extra["PluginProvider"] = "unethicalite"
-    project.extra["ProjectSupportUrl"] = "https://discord.gg/WTvTbSPknJ"
+    project.extra["PluginProvider"] = "y-fletch"
+    project.extra["ProjectSupportUrl"] = "https://github.com/y-fletch/ocplugins"
     project.extra["PluginLicense"] = "3-Clause BSD License"
 
     apply<JavaPlugin>()
