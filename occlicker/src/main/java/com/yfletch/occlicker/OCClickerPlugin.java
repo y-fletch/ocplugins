@@ -67,8 +67,6 @@ public class OCClickerPlugin extends Plugin
 		}
 	};
 
-	private final Random random = new Random();
-
 	@Override
 	protected void startUp()
 	{

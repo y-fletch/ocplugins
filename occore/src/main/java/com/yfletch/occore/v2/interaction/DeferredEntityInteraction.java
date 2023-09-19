@@ -1,5 +1,6 @@
 package com.yfletch.occore.v2.interaction;
 
+import com.yfletch.occore.v2.overlay.WorldDebug;
 import com.yfletch.occore.v2.util.TextColor;
 import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +64,12 @@ public class DeferredEntityInteraction<T extends Interactable> implements Deferr
 				Entities.markInteracted(item);
 			}
 		}
+	}
+
+	@Override
+	public void onActive()
+	{
+		WorldDebug.setAny(interactable);
 	}
 
 	@Override

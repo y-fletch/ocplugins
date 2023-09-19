@@ -3,9 +3,14 @@ package com.yfletch.occore.v2;
 import com.google.inject.Inject;
 import com.yfletch.occore.v2.interaction.DeferredInteraction;
 import com.yfletch.occore.v2.interaction.Entities;
+import com.yfletch.occore.v2.overlay.BankItemDebugOverlay;
 import com.yfletch.occore.v2.overlay.CoreDebugOverlay;
 import com.yfletch.occore.v2.overlay.CoreStatisticsOverlay;
+import com.yfletch.occore.v2.overlay.EquipmentItemDebugOverlay;
 import com.yfletch.occore.v2.overlay.InteractionOverlay;
+import com.yfletch.occore.v2.overlay.InventoryItemDebugOverlay;
+import com.yfletch.occore.v2.overlay.WorldDebug;
+import com.yfletch.occore.v2.overlay.WorldDebugOverlay;
 import com.yfletch.occore.v2.rule.DynamicRule;
 import com.yfletch.occore.v2.rule.RequirementRule;
 import com.yfletch.occore.v2.rule.Rule;
@@ -14,6 +19,7 @@ import com.yfletch.occore.v2.util.TextColor;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executor;
@@ -24,6 +30,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.Client;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.PostMenuSort;
@@ -37,7 +44,6 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.HotkeyListener;
 import net.unethicalite.api.commons.Rand;
 import net.unethicalite.client.Static;
-import net.unethicalite.client.config.UnethicaliteConfig;
 
 @Slf4j
 public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
@@ -46,10 +52,11 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	@Inject private KeyManager keyManager;
 	@Inject private OverlayManager overlayManager;
 
-	@Inject private UnethicaliteConfig unethicaliteConfig;
+	@Inject private AutoClick autoClick;
+	@Inject private Client client;
 
 	@Getter
-	private final List<Rule<TContext>> rules = new ArrayList<>();
+	private final List<Rule<TContext>> rules = new LinkedList<>();
 
 	private List<Rule<TContext>> groupRules;
 
@@ -71,6 +78,10 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	private InteractionOverlay interactionOverlay;
 	private CoreStatisticsOverlay statisticsOverlay;
 	private CoreDebugOverlay debugOverlay;
+	@Inject private WorldDebugOverlay worldDebugOverlay;
+	@Inject private BankItemDebugOverlay bankItemDebugOverlay;
+	@Inject private InventoryItemDebugOverlay inventoryItemDebugOverlay;
+	@Inject private EquipmentItemDebugOverlay equipmentItemDebugOverlay;
 
 	private TContext context;
 
@@ -263,6 +274,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		else
 		{
 			messages = null;
+			nextInteraction.onActive();
 		}
 
 		return nextInteraction;
@@ -366,6 +378,11 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 		statistics = new StatisticTracker();
 		statisticsOverlay = new CoreStatisticsOverlay(this, statistics);
+
+		WorldDebug.setWorldOverlay(worldDebugOverlay);
+		WorldDebug.setBankItemDebugOverlay(bankItemDebugOverlay);
+		WorldDebug.setInventoryItemDebugOverlay(inventoryItemDebugOverlay);
+		WorldDebug.setEquipmentItemDebugOverlay(equipmentItemDebugOverlay);
 	}
 
 	@Override
@@ -388,10 +405,20 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 			overlayManager.add(debugOverlay);
 		}
 
+		if (config.showWorldDebugOverlay())
+		{
+			overlayManager.add(worldDebugOverlay);
+			overlayManager.add(bankItemDebugOverlay);
+			overlayManager.add(inventoryItemDebugOverlay);
+			overlayManager.add(equipmentItemDebugOverlay);
+		}
+
 		if (config.quickToggleKeybind() != null)
 		{
 			keyManager.registerKeyListener(hotkeyListener);
 		}
+
+		autoClick.setClicksPerTick(config.clicksPerTick());
 
 		Static.getClientThread().invokeLater(this::setup);
 	}
@@ -402,6 +429,10 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		overlayManager.remove(interactionOverlay);
 		overlayManager.remove(statisticsOverlay);
 		overlayManager.remove(debugOverlay);
+		overlayManager.remove(worldDebugOverlay);
+		overlayManager.remove(bankItemDebugOverlay);
+		overlayManager.remove(inventoryItemDebugOverlay);
+		overlayManager.remove(equipmentItemDebugOverlay);
 		keyManager.unregisterKeyListener(hotkeyListener);
 	}
 
@@ -424,6 +455,26 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		if (processOnGameTick)
 		{
 			RESOLUTION_EXECUTOR.execute(this::resolveRules);
+		}
+
+		if (
+			config.enabled()
+				&& config.pluginApi() == PluginAPI.ONE_CLICK_AUTO
+				&& canExecute()
+		)
+		{
+			if (!autoClick.ready())
+			{
+				configManager.setConfiguration(
+					configGroup,
+					"enabled",
+					false
+				);
+			}
+			else
+			{
+				autoClick.run();
+			}
 		}
 
 		executeWithDeviousAPI();
@@ -528,6 +579,16 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 				Static.getClientThread().invokeLater(this::refresh);
 			}
 
+			if (event.getKey().equals("enabled"))
+			{
+				autoClick.setPoint(client.getMouseCanvasPosition());
+			}
+
+			if (event.getKey().equals("clicksPerTick"))
+			{
+				autoClick.setClicksPerTick(config.clicksPerTick());
+			}
+
 			if (event.getKey().equals("showActionOverlay"))
 			{
 				if (event.getNewValue().equals("true"))
@@ -561,6 +622,24 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 				else
 				{
 					overlayManager.remove(debugOverlay);
+				}
+			}
+
+			if (event.getKey().equals("showWorldDebugOverlay"))
+			{
+				if (event.getNewValue().equals("true"))
+				{
+					overlayManager.add(worldDebugOverlay);
+					overlayManager.add(bankItemDebugOverlay);
+					overlayManager.add(inventoryItemDebugOverlay);
+					overlayManager.add(equipmentItemDebugOverlay);
+				}
+				else
+				{
+					overlayManager.remove(worldDebugOverlay);
+					overlayManager.remove(bankItemDebugOverlay);
+					overlayManager.remove(inventoryItemDebugOverlay);
+					overlayManager.remove(equipmentItemDebugOverlay);
 				}
 			}
 		}

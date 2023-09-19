@@ -1,5 +1,7 @@
 package com.yfletch.occore.v2.interaction;
 
+import com.yfletch.occore.v2.overlay.WorldDebug;
+import static com.yfletch.occore.v2.util.Util.generateArea;
 import static com.yfletch.occore.v2.util.Util.nameMatching;
 import static com.yfletch.occore.v2.util.Util.offset;
 import java.util.HashMap;
@@ -8,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.GameObject;
 import net.runelite.api.GroundObject;
 import net.runelite.api.NPC;
+import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
 import net.unethicalite.api.entities.TileObjects;
 import net.unethicalite.api.movement.pathfinder.Pathfinder;
@@ -20,7 +23,7 @@ public class Walking
 	private static final int STEPS_PER_CLICK = 21;
 
 	private static List<WorldPoint> lastPathfindResult;
-	private static WorldPoint lastPathfindDestination;
+	private static WorldArea lastPathfindDestination;
 
 	public static DeferredWalkInteraction walk(WorldPoint target)
 	{
@@ -39,20 +42,21 @@ public class Walking
 	 * The action containing this must be marked with
 	 * .many(), .skipIfNull(), and optionally .oncePerTick()
 	 */
-	public static DeferredInteraction walkPathTo(WorldPoint target)
+	public static DeferredInteraction walkPathTo(WorldPoint target, int radius)
 	{
+		final var targetArea = generateArea(target, radius);
 		final var currentLocation = Static.getClient().getLocalPlayer().getWorldLocation();
 
-		if (currentLocation.distanceTo(target) < 5)
+		if (targetArea.contains(currentLocation))
 		{
-			Static.getEntityRenderer().setCurrentPath(null);
+			WorldDebug.setPath(null);
 			return null;
 		}
 
-		final var fullPath = runPathfinder(currentLocation, target);
+		final var fullPath = runPathfinder(currentLocation, targetArea);
 		final var remainingPath = Walker.remainingPath(fullPath);
 
-		Static.getEntityRenderer().setCurrentPath(remainingPath);
+		WorldDebug.setPath(remainingPath);
 
 		final var nextObstacleInteraction = getNextObstacleInteraction(remainingPath);
 		if (nextObstacleInteraction != null)
@@ -77,7 +81,7 @@ public class Walking
 	 * The action containing this must be marked with
 	 * .many(), .skipIfNull(), and optionally .oncePerTick()
 	 */
-	public static DeferredInteraction walkPathTo(DeferredInteractable<?> interactable)
+	public static DeferredInteraction walkPathTo(DeferredInteractable<?> interactable, int radius)
 	{
 		if (!interactable.exists())
 		{
@@ -87,20 +91,25 @@ public class Walking
 		final var target = interactable.unwrap();
 		if (target instanceof NPC)
 		{
-			return walkPathTo(((NPC) target).getWorldLocation());
+			return walkPathTo(((NPC) target).getWorldLocation(), radius);
 		}
 
 		if (target instanceof GameObject)
 		{
-			return walkPathTo(((GameObject) target).getWorldLocation());
+			return walkPathTo(((GameObject) target).getWorldLocation(), radius);
 		}
 
 		if (target instanceof GroundObject)
 		{
-			return walkPathTo(((GroundObject) target).getWorldLocation());
+			return walkPathTo(((GroundObject) target).getWorldLocation(), radius);
 		}
 
 		return null;
+	}
+
+	public static DeferredInteraction walkPathTo(DeferredInteractable<?> interactable)
+	{
+		return walkPathTo(interactable, 1);
 	}
 
 	private static DeferredInteraction getNextObstacleInteraction(List<WorldPoint> path)
@@ -117,7 +126,7 @@ public class Walking
 		return null;
 	}
 
-	private static List<WorldPoint> runPathfinder(WorldPoint start, WorldPoint destination)
+	private static List<WorldPoint> runPathfinder(WorldPoint start, WorldArea destination)
 	{
 		if (lastPathfindDestination == null || !lastPathfindDestination.equals(destination))
 		{

@@ -20,6 +20,14 @@ public interface DeferredInteraction
 	}
 
 	/**
+	 * Code to run when this interaction is "queued" or
+	 * ready to run
+	 */
+	default void onActive()
+	{
+	}
+
+	/**
 	 * Create and return a menu entry for this interaction
 	 */
 	MenuEntry createMenuEntry();

@@ -195,11 +195,23 @@ public interface CoreConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "showWorldDebugOverlay",
+		name = "Show world debug overlay",
+		description = "Render outlines on top of objects, tiles, etc",
+		section = debug,
+		position = 1
+	)
+	default boolean showWorldDebugOverlay()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		keyName = "debugRawMenuEntries",
 		name = "Debug raw menu entries",
 		description = "Log menu entries to the game chatbox",
 		section = debug,
-		position = 1
+		position = 2
 	)
 	default boolean debugRawMenuEntries()
 	{
@@ -211,7 +223,7 @@ public interface CoreConfig extends Config
 		name = "Debug OC menu entries",
 		description = "Log OC overridden menu entries to the game chatbox",
 		section = debug,
-		position = 2
+		position = 3
 	)
 	default boolean debugOCMenuEntries()
 	{

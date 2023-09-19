@@ -3,6 +3,7 @@ package com.yfletch.occore.v2.util;
 import com.google.common.base.Strings;
 import java.util.Arrays;
 import java.util.function.Predicate;
+import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.util.Text;
 import net.unethicalite.api.EntityNameable;
@@ -105,5 +106,16 @@ public class Util
 	public static WorldPoint offset(WorldPoint origin, int x, int y)
 	{
 		return new WorldPoint(origin.getX() + x, origin.getY() + y, origin.getPlane());
+	}
+
+	public static WorldArea generateArea(WorldPoint origin, int radius)
+	{
+		return new WorldArea(
+			origin.getX() - radius,
+			origin.getY() - radius,
+			radius * 2 + 1,
+			radius * 2 + 1,
+			origin.getPlane()
+		);
 	}
 }

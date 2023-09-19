@@ -17,15 +17,15 @@ import static com.yfletch.occore.v2.util.Util.withAction;
 import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.ObjectID;
 import net.runelite.api.Skill;
 import net.runelite.api.Varbits;
-import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.ConfigButtonClicked;
-import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
@@ -53,7 +53,9 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 	@Inject private PickpocketContext context;
 
 	private final static int SEPULCHRE_EXIT_STAIRS = ObjectID.STAIRS_38601;
-	private final static WorldPoint ARDOUGNE_KEY_WORLDPOINT = new WorldPoint(2643, 3299, 0);
+	private final static String PICKPOCKET_FAILURE_MESSAGE = "You fail to pick ";
+	private final static String DODGY_NECKLACE_PROTECTION_MESSAGE = "Your dodgy necklace protects you.";
+	private final static String SHADOW_VEIL_PROTECTION_MESSAGE = "Your attempt to steal goes unnoticed.";
 
 	private Item[] previousInventory;
 
@@ -70,20 +72,48 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 	public void setup()
 	{
 		statistics.addDisplays("XP", "GP", "Success", "Fail");
-		statistics.addPerHourDisplays("XP", "GP");
+		if (config.useShadowVeil() || config.dodgyNecklaceAmount() > 0)
+		{
+			statistics.addDisplays("Stun saves");
+		}
+
+		statistics.addPerHourDisplays("XP", "GP", "Success");
 		statistics.addPercentageDisplay("Success", List.of("Success", "Fail"));
 		statistics.addPercentageDisplay("Fail", List.of("Success", "Fail"));
 
 		final var target = parseList(config.target());
-		final var food = parseList(config.food());
+		final var bankedFood = parseList(config.food());
+		final var food = parseList(config.food() + ", Jug of wine");
 		final var lowValueItems = parseList(config.lowValueItems());
 		final var highValueItems = parseList(config.highValueItems());
+
+		requirements()
+			.must(
+				c -> bankedFood.length > 0,
+				"Food must be set in config"
+			)
+			.must(
+				c -> target.length > 0,
+				"Target NPC must be set in config"
+			);
 
 		if (config.useShadowVeil())
 		{
 			// TODO: debug why this is slow as shit
 //			requirements().mustBeAbleToCast(SpellBook.Necromancy.SHADOW_VEIL);
 		}
+
+		// eat
+		// put this before stun check, since you can eat while stunned
+		// also means that player will eat if taking damage from other sources
+		// (vyrewatch)
+		action().name("Eat food")
+			.when(c -> c.shouldEat() && Inventory.contains(food))
+			.then(c -> item(food).interact("Eat", "Drink"))
+			.many();
+
+		action().name("Wait when stunned")
+			.when(c -> c.flag("stunned"));
 
 		// drop low value
 		action().name("Drop low value items")
@@ -127,15 +157,7 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 			.when(c -> !Equipment.contains("Dodgy necklace")
 				&& Inventory.contains("Dodgy necklace"))
 			.then(c -> item("Dodgy necklace").equip())
-			.maxDelay(8);
-
-		// eat
-		action().name("Eat food")
-			.when(c -> c.shouldEat() && Inventory.contains(food))
-			.then(c -> item(food).interact("Eat", "Drink"))
-			.many()
-			// delay during stun cooldown
-			.delay(4, 6);
+			.delay(1, 4);
 
 		// path to bank
 		group(
@@ -146,31 +168,23 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 				action().name("Path to mausoleum")
 					.when(c -> !c.isBankBoothInRange())
 					.then(c -> walkPathTo(object("Mausoleum Door")))
-					.many().skipIfNull()
-					// delay in case stunned
-					.delay(4);
+					.many().skipIfNull();
 
 				action().name("Enter mausoleum")
 					.when(c -> !c.isBankBoothInRange()
 						&& object("Mausoleum Door").exists())
-					.then(c -> object("Mausoleum Door").interact("Enter"))
-					// delay in case stunned
-					.delay(4);
+					.then(c -> object("Mausoleum Door").interact("Enter"));
 
 				action().name("Walk close to bank")
-					.when(c -> !c.isBankBoothInRange())
-					.then(c -> walkPathTo(entity(withAction("Bank"))))
-					.many().skipIfNull()
-					// delay in case stunned
-					.delay(4);
+					.when(c -> entity(withAction("Bank")).exists())
+					.then(c -> walkPathTo(entity(withAction("Bank")), 3))
+					.many().skipIfNull();
 
 				// open bank
 				action().name("Open bank")
-					.when(PickpocketContext::isBankBoothInRange)
+					.when(c -> entity(withAction("Bank")).exists())
 					.until(c -> Bank.isOpen())
-					.then(c -> entity(withAction("Bank")).interact("Bank"))
-					// delay in case stunned
-					.delay(4);
+					.then(c -> entity(withAction("Bank")).interact("Bank"));
 			}
 		);
 
@@ -190,15 +204,15 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 
 		action().name("Withdraw food")
 			.when(c -> Bank.isOpen()
-				&& !Inventory.contains(food))
+				&& !Inventory.contains(bankedFood))
 			.onClick(c -> c.flag("withdrawing", true))
-			.then(c -> banked(food).withdrawAll());
+			.then(c -> banked(bankedFood).withdrawAll());
 
 		action().name("Keep a few slots open")
 			.when(c -> Bank.isOpen()
-				&& Inventory.contains(food)
+				&& Inventory.contains(bankedFood)
 				&& Inventory.getFreeSlots() < 2)
-			.then(c -> item(food).deposit(1))
+			.then(c -> item(bankedFood).deposit(1))
 			.oncePerTick();
 
 		// post bank - darkmeyer
@@ -208,9 +222,7 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 
 		action().name("Walk close to NPC")
 			.then(c -> walkPathTo(npc(target)))
-			.many().skipIfNull()
-			// delay in case stunned
-			.delay(4);
+			.many().skipIfNull();
 
 		// eat extra food taking space
 		action().name("Eat excess food")
@@ -223,7 +235,7 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 			action().name("Cast shadow veil")
 				.when(PickpocketContext::canCastShadowVeil)
 				.then(c -> spell(SpellBook.Necromancy.SHADOW_VEIL).cast())
-				.delay(1, 4);
+				.delay(1, 2);
 		}
 
 		// pickpocket
@@ -267,7 +279,7 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 					configManager.setConfiguration(
 						PickpocketConfig.GROUP_NAME,
 						"lowValueItems",
-						"Jug of wine,Gold ore"
+						"Jug,Gold ore"
 					);
 					configManager.setConfiguration(
 						PickpocketConfig.GROUP_NAME,
@@ -305,15 +317,6 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 		{
 			statistics.add("XP", event.getExp());
 			statistics.add("Success", 1);
-		}
-	}
-
-	@Subscribe
-	public void onHitsplatApplied(HitsplatApplied event)
-	{
-		if (config.enabled() && event.getActor() == client.getLocalPlayer())
-		{
-			statistics.add("Fail", 1);
 		}
 	}
 
@@ -368,6 +371,37 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 		if (event.getVarbitId() == Varbits.SHADOW_VEIL_COOLDOWN)
 		{
 			context.setShadowVeilOnCooldown(event.getValue() == 1);
+		}
+	}
+
+	@Subscribe
+	public void onChatMessage(ChatMessage event)
+	{
+		final var message = event.getMessage();
+		if (event.getType() != ChatMessageType.SPAM && event.getType() != ChatMessageType.GAMEMESSAGE)
+		{
+			return;
+		}
+
+		if (message.contains(DODGY_NECKLACE_PROTECTION_MESSAGE) || message.contains(SHADOW_VEIL_PROTECTION_MESSAGE))
+		{
+			statistics.add("Fail", 1);
+			statistics.add("Stun saves", 1);
+			context.clear("stunned");
+		}
+
+		if (message.contains(PICKPOCKET_FAILURE_MESSAGE) && message.contains("pocket"))
+		{
+			statistics.add("Fail", 1);
+
+			if (message.contains("hero") || message.contains("elf"))
+			{
+				context.flag("stunned", true, 10);
+			}
+			else
+			{
+				context.flag("stunned", true, 8);
+			}
 		}
 	}
 

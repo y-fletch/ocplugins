@@ -1,5 +1,6 @@
 package com.yfletch.occore.v2.interaction;
 
+import com.yfletch.occore.v2.overlay.WorldDebug;
 import com.yfletch.occore.v2.util.TextColor;
 import lombok.AllArgsConstructor;
 import net.runelite.api.MenuAction;
@@ -25,6 +26,12 @@ public class DeferredWalkInteraction implements DeferredInteraction
 	public void execute()
 	{
 		Movement.walk(target);
+	}
+
+	@Override
+	public void onActive()
+	{
+		WorldDebug.setTile(target);
 	}
 
 	@Override
