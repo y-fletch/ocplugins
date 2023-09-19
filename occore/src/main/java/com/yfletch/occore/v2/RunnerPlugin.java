@@ -48,11 +48,17 @@ import net.unethicalite.client.Static;
 @Slf4j
 public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 {
+	private static final Rule<?> BREAK_RULE = new DynamicRule<>()
+		.name("Break").noop()
+		.message(TextColor.SPELL + "Taking a break");
+
 	@Inject private ConfigManager configManager;
 	@Inject private KeyManager keyManager;
 	@Inject private OverlayManager overlayManager;
 
 	@Inject private AutoClick autoClick;
+	@Getter
+	@Inject private BreakHandler breakHandler;
 	@Inject private Client client;
 
 	@Getter
@@ -145,6 +151,26 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	{
 		rules.clear();
 		setup();
+	}
+
+	public boolean areBreaksEnabled()
+	{
+		return config.enableBreaks();
+	}
+
+	public boolean isInBreak()
+	{
+		return breakHandler.isInBreak();
+	}
+
+	public String getTimeToNextBreak()
+	{
+		return breakHandler.getTimeToNextBreak();
+	}
+
+	public String getTimeRemainingInBreak()
+	{
+		return breakHandler.getTimeRemainingInBreak();
 	}
 
 	/**
@@ -255,7 +281,7 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	private DeferredInteraction updateInteraction(Rule<TContext> rule)
 	{
 		nextInteraction = rule.run(context);
-		if (nextInteraction == null)
+		if (nextInteraction == null || rule.isNoop())
 		{
 			// fallback to rule message
 			messages = rule.messages(context);
@@ -287,6 +313,15 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 	private void enable(Rule<TContext> rule)
 	{
+		// reset previous rule
+		// if the previous rule should only be reset on tick,
+		// then skip it
+		if (currentRule != null
+			&& !(currentRule instanceof DynamicRule && ((DynamicRule<TContext>) currentRule).resetsOnTick()))
+		{
+			currentRule.reset(context);
+		}
+
 		// reset rule status
 		rule.reset(context);
 
@@ -308,8 +343,18 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 	/**
 	 * Determine the next rule to move to
 	 */
+	@SuppressWarnings("unchecked")
 	private void resolveRules()
 	{
+		if (breakHandler.isInBreak())
+		{
+			if (currentRule != BREAK_RULE)
+			{
+				enable((Rule<TContext>) BREAK_RULE);
+			}
+			return;
+		}
+
 		final var startResolution = Instant.now();
 		// find new rule to apply
 		for (final var rule : rules)
@@ -330,15 +375,6 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 					// current rule is still active -
 					// continue to below
 					break;
-				}
-
-				// reset previous rule
-				// if the previous rule should only be reset on tick,
-				// then skip it
-				if (currentRule != null
-					&& !(currentRule instanceof DynamicRule && ((DynamicRule<TContext>) currentRule).resetsOnTick()))
-				{
-					currentRule.reset(context);
 				}
 
 				enable(rule);
@@ -419,6 +455,8 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		}
 
 		autoClick.setClicksPerTick(config.clicksPerTick());
+		breakHandler.setInterval(config.breakInterval());
+		breakHandler.setDuration(config.breakDuration());
 
 		Static.getClientThread().invokeLater(this::setup);
 	}
@@ -480,9 +518,14 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 		executeWithDeviousAPI();
 		updateDelay();
 
-		if (config.enabled())
+		if (config.enabled() && !breakHandler.isInBreak())
 		{
 			statistics.tick();
+		}
+
+		if (config.enableBreaks())
+		{
+			breakHandler.tick();
 		}
 	}
 
@@ -579,68 +622,66 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 				Static.getClientThread().invokeLater(this::refresh);
 			}
 
-			if (event.getKey().equals("enabled"))
+			switch (event.getKey())
 			{
-				autoClick.setPoint(client.getMouseCanvasPosition());
-			}
-
-			if (event.getKey().equals("clicksPerTick"))
-			{
-				autoClick.setClicksPerTick(config.clicksPerTick());
-			}
-
-			if (event.getKey().equals("showActionOverlay"))
-			{
-				if (event.getNewValue().equals("true"))
-				{
-					overlayManager.add(interactionOverlay);
-				}
-				else
-				{
-					overlayManager.remove(interactionOverlay);
-				}
-			}
-
-			if (event.getKey().equals("showStatisticsOverlay"))
-			{
-				if (event.getNewValue().equals("true"))
-				{
-					overlayManager.add(statisticsOverlay);
-				}
-				else
-				{
-					overlayManager.remove(statisticsOverlay);
-				}
-			}
-
-			if (event.getKey().equals("showDebugOverlay"))
-			{
-				if (event.getNewValue().equals("true"))
-				{
-					overlayManager.add(debugOverlay);
-				}
-				else
-				{
-					overlayManager.remove(debugOverlay);
-				}
-			}
-
-			if (event.getKey().equals("showWorldDebugOverlay"))
-			{
-				if (event.getNewValue().equals("true"))
-				{
-					overlayManager.add(worldDebugOverlay);
-					overlayManager.add(bankItemDebugOverlay);
-					overlayManager.add(inventoryItemDebugOverlay);
-					overlayManager.add(equipmentItemDebugOverlay);
-				}
-				else
-				{
-					overlayManager.remove(worldDebugOverlay);
-					overlayManager.remove(bankItemDebugOverlay);
-					overlayManager.remove(inventoryItemDebugOverlay);
-					overlayManager.remove(equipmentItemDebugOverlay);
-				}
+				case "enabled":
+					autoClick.setPoint(client.getMouseCanvasPosition());
+					break;
+				case "clicksPerTick":
+					autoClick.setClicksPerTick(config.clicksPerTick());
+					break;
+				case "showActionOverlay":
+					if (event.getNewValue().equals("true"))
+					{
+						overlayManager.add(interactionOverlay);
+					}
+					else
+					{
+						overlayManager.remove(interactionOverlay);
+					}
+					break;
+				case "showStatisticsOverlay":
+					if (event.getNewValue().equals("true"))
+					{
+						overlayManager.add(statisticsOverlay);
+					}
+					else
+					{
+						overlayManager.remove(statisticsOverlay);
+					}
+					break;
+				case "showDebugOverlay":
+					if (event.getNewValue().equals("true"))
+					{
+						overlayManager.add(debugOverlay);
+					}
+					else
+					{
+						overlayManager.remove(debugOverlay);
+					}
+					break;
+				case "showWorldDebugOverlay":
+					if (event.getNewValue().equals("true"))
+					{
+						overlayManager.add(worldDebugOverlay);
+						overlayManager.add(bankItemDebugOverlay);
+						overlayManager.add(inventoryItemDebugOverlay);
+						overlayManager.add(equipmentItemDebugOverlay);
+					}
+					else
+					{
+						overlayManager.remove(worldDebugOverlay);
+						overlayManager.remove(bankItemDebugOverlay);
+						overlayManager.remove(inventoryItemDebugOverlay);
+						overlayManager.remove(equipmentItemDebugOverlay);
+					}
+					break;
+				case "enableBreaks":
+				case "breakInterval":
+				case "breakDuration":
+					breakHandler.setDuration(config.breakDuration());
+					breakHandler.setInterval(config.breakInterval());
+					breakHandler.reset();
 			}
 		}
 	}

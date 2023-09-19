@@ -1,6 +1,7 @@
 package com.yfletch.occore.v2;
 
 import com.yfletch.occore.v2.util.RSNumberFormat;
+import com.yfletch.occore.v2.util.Util;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +37,7 @@ public class StatisticTracker
 	{
 		final var map = new LinkedHashMap<String, String>();
 
-		map.put("Elapsed", getElapsedTime());
+		map.put("Elapsed", Util.formatTickTime(ticks));
 
 		final var added = new HashSet<String>();
 		for (var key : standardDisplays)
@@ -115,16 +116,5 @@ public class StatisticTracker
 	private double getHours()
 	{
 		return ticks * 0.6d / 3600d;
-	}
-
-	private String getElapsedTime()
-	{
-		final var seconds = (int) (ticks * 0.6d);
-		final var minutes = (int) (seconds / 60d);
-		final var hours = (int) (minutes / 60d);
-
-		return hours > 0
-			? String.format("%02d:%02d:%02d", hours, minutes % 60, seconds % 60)
-			: String.format("%02d:%02d", minutes % 60, seconds % 60);
 	}
 }

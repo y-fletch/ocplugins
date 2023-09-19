@@ -113,7 +113,9 @@ public class OCPickpocketPlugin extends RunnerPlugin<PickpocketContext>
 			.many();
 
 		action().name("Wait when stunned")
-			.when(c -> c.flag("stunned"));
+			.noop()
+			.when(c -> c.flag("stunned"))
+			.message("Waiting (stunned)");
 
 		// drop low value
 		action().name("Drop low value items")

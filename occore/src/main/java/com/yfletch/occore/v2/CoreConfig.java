@@ -68,7 +68,7 @@ public interface CoreConfig extends Config
 	}
 
 	@ConfigSection(
-		name = "Breaks [Coming soon]",
+		name = "Breaks",
 		description = "Configure breaks",
 		position = 90
 	)

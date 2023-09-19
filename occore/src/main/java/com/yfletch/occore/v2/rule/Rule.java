@@ -112,4 +112,9 @@ public interface Rule<TContext extends CoreContext>
 	{
 		return 1;
 	}
+
+	default boolean isNoop()
+	{
+		return false;
+	}
 }

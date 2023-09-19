@@ -30,6 +30,28 @@ public class InteractionOverlay extends OverlayPanel
 				.build()
 		);
 
+		if (plugin.areBreaksEnabled())
+		{
+			if (plugin.isInBreak())
+			{
+				panelComponent.getChildren().add(
+					LineComponent.builder()
+						.left("Break ends")
+						.right(plugin.getTimeRemainingInBreak())
+						.build()
+				);
+			}
+			else
+			{
+				panelComponent.getChildren().add(
+					LineComponent.builder()
+						.left("Next break")
+						.right(plugin.getTimeToNextBreak())
+						.build()
+				);
+			}
+		}
+
 		final var interaction = plugin.getNextInteraction();
 		if (interaction == null)
 		{

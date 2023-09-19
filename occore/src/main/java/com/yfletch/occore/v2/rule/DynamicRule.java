@@ -2,6 +2,8 @@ package com.yfletch.occore.v2.rule;
 
 import com.yfletch.occore.v2.CoreContext;
 import com.yfletch.occore.v2.interaction.DeferredInteraction;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -24,6 +26,8 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	private Predicate<TContext> until;
 	private Function<TContext, DeferredInteraction> then;
 
+	private Function<TContext, List<String>> messages;
+
 	private int repeat = 1;
 
 	@Setter(AccessLevel.MODULE)
@@ -41,12 +45,19 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	private boolean many = false;
 	private boolean once = false;
 	private boolean skipIfNull = false;
+	private boolean noop = false;
 
 	@Getter
 	private boolean resetsOnTick = false;
 
 	private Consumer<TContext> onClick;
 	private Consumer<TContext> onComplete;
+
+	public DynamicRule<TContext> message(String... messages)
+	{
+		this.messages = c -> Arrays.asList(messages);
+		return this;
+	}
 
 	/**
 	 * Only execute this rule once, before immediately
@@ -119,6 +130,20 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 		return skipIfNull(true);
 	}
 
+	/**
+	 * Mark this rule as a no-op - nothing will happen, and instead the
+	 * message will display
+	 */
+	public DynamicRule<TContext> noop()
+	{
+		return noop(true);
+	}
+
+	public boolean isNoop()
+	{
+		return noop;
+	}
+
 	@Override
 	public boolean passes(TContext ctx)
 	{
@@ -147,6 +172,17 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	public DeferredInteraction run(TContext ctx)
 	{
 		return then == null ? null : then.apply(ctx);
+	}
+
+	@Override
+	public List<String> messages(TContext context)
+	{
+		if (messages != null)
+		{
+			return messages.apply(context);
+		}
+
+		return null;
 	}
 
 	@Override
@@ -194,7 +230,7 @@ public final class DynamicRule<TContext extends CoreContext> implements Rule<TCo
 	@Override
 	public boolean canExecute()
 	{
-		return repeatsLeft > 0;
+		return !noop && repeatsLeft > 0;
 	}
 
 	@Override

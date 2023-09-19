@@ -118,4 +118,15 @@ public class Util
 			origin.getPlane()
 		);
 	}
+
+	public static String formatTickTime(int ticks)
+	{
+		final var seconds = (int) (ticks * 0.6d);
+		final var minutes = (int) (seconds / 60d);
+		final var hours = (int) (minutes / 60d);
+
+		return hours > 0
+			? String.format("%02d:%02d:%02d", hours, minutes % 60, seconds % 60)
+			: String.format("%02d:%02d", minutes % 60, seconds % 60);
+	}
 }
