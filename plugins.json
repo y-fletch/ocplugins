@@ -545,6 +545,22 @@
   {
     "projectUrl": "https://github.com/y-fletch/ocplugins",
     "provider": "yfletch",
+    "name": "OC Spells",
+    "description": "One-click bankstanding spells",
+    "id": "ocspells-plugin",
+    "releases": [
+      {
+        "date": "2023-09-21",
+        "sha512sum": "07489B538A320CF6A5C7E43C19C4C0B4371AAA53EE7DED82A644CBB03A67539C68D3101B5672AA42331AC2BB0421BFCCEF59D7863EE82ED163DF70CAA52BC457",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocspells-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
     "name": "OC Todt",
     "description": "One-click mass world Wintertodt",
     "id": "octodt-plugin",
