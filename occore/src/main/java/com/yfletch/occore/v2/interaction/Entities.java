@@ -1,5 +1,6 @@
 package com.yfletch.occore.v2.interaction;
 
+import static com.yfletch.occore.v2.util.Util.getSpellByName;
 import static com.yfletch.occore.v2.util.Util.matching;
 import static com.yfletch.occore.v2.util.Util.nameMatching;
 import java.util.ArrayList;
@@ -344,6 +345,14 @@ public class Entities
 	public static DeferredInteractableSpell spell(Spell spell)
 	{
 		return new DeferredInteractableSpell(spell);
+	}
+
+	/**
+	 * Get a spell by name
+	 */
+	public static DeferredInteractableSpell spell(String spellName)
+	{
+		return new DeferredInteractableSpell(getSpellByName(spellName));
 	}
 
 	/**

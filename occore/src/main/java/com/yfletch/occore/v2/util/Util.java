@@ -8,6 +8,8 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.util.Text;
 import net.unethicalite.api.EntityNameable;
 import net.unethicalite.api.Interactable;
+import net.unethicalite.api.magic.Spell;
+import net.unethicalite.api.magic.SpellBook;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class Util
@@ -128,5 +130,30 @@ public class Util
 		return hours > 0
 			? String.format("%02d:%02d:%02d", hours, minutes % 60, seconds % 60)
 			: String.format("%02d:%02d", minutes % 60, seconds % 60);
+	}
+
+	public static Spell getSpellByName(String spellName)
+	{
+		final var spellEnumName = spellName.toUpperCase().replaceAll("[\\s-]", "_");
+
+		try
+		{
+			switch (SpellBook.getCurrent())
+			{
+				case STANDARD:
+					return SpellBook.Standard.valueOf(spellEnumName);
+				case LUNAR:
+					return SpellBook.Lunar.valueOf(spellEnumName);
+				case ANCIENT:
+					return SpellBook.Ancient.valueOf(spellEnumName);
+				case NECROMANCY:
+					return SpellBook.Necromancy.valueOf(spellEnumName);
+			}
+		}
+		catch (IllegalArgumentException ignored)
+		{
+		}
+
+		return null;
 	}
 }

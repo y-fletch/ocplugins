@@ -2,7 +2,6 @@ rootProject.name = "ocplugins"
 
 include(":occore")
 
-include(":ocpickpocket")
 include(":ocgarden")
 include(":ocrift")
 include(":ocbloods")
@@ -19,6 +18,8 @@ include(":octodt")
 include(":ocsalamanders")
 include(":ocdancing")
 include(":ocflyfishing")
+include(":ocpickpocket")
+include(":ocspells")
 
 for (project in rootProject.children) {
     project.apply {
