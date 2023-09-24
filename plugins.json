@@ -587,5 +587,21 @@
         "requires": "^1.0.0"
       }
     ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Trawler",
+    "description": "One-click Fishing Trawler",
+    "id": "octrawler-plugin",
+    "releases": [
+      {
+        "date": "2023-09-25",
+        "sha512sum": "939C909702A7D6C71B7CCC0F333CB1EC477DC2500E645D161876A6DFF1D52335CE560D034702F020C52B9D34AADE15FEECB6A33186B0A68D4FE3894E02E218B7",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/octrawler-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
   }
 ]
