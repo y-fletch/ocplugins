@@ -20,6 +20,7 @@ include(":ocdancing")
 include(":ocflyfishing")
 include(":ocpickpocket")
 include(":ocspells")
+include(":octrawler")
 
 for (project in rootProject.children) {
     project.apply {

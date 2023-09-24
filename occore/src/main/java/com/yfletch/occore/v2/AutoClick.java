@@ -39,9 +39,8 @@ public class AutoClick
 			{
 				for (final var interval : intervals)
 				{
-					Thread.sleep((long) (interval * 500));
 					click(point);
-					Thread.sleep((long) (interval * 500));
+					Thread.sleep((long) (interval * 1000));
 				}
 			}
 			catch (InterruptedException e)

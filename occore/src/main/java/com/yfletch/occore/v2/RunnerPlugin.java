@@ -492,27 +492,29 @@ public abstract class RunnerPlugin<TContext extends CoreContext> extends Plugin
 
 		if (processOnGameTick)
 		{
-			RESOLUTION_EXECUTOR.execute(this::resolveRules);
-		}
+			RESOLUTION_EXECUTOR.execute(() -> {
+				this.resolveRules();
 
-		if (
-			config.enabled()
-				&& config.pluginApi() == PluginAPI.ONE_CLICK_AUTO
-				&& canExecute()
-		)
-		{
-			if (!autoClick.ready())
-			{
-				configManager.setConfiguration(
-					configGroup,
-					"enabled",
-					false
-				);
-			}
-			else
-			{
-				autoClick.run();
-			}
+				if (
+					config.enabled()
+						&& config.pluginApi() == PluginAPI.ONE_CLICK_AUTO
+						&& canExecute()
+				)
+				{
+					if (!autoClick.ready())
+					{
+						configManager.setConfiguration(
+							configGroup,
+							"enabled",
+							false
+						);
+					}
+					else
+					{
+						autoClick.run();
+					}
+				}
+			});
 		}
 
 		executeWithDeviousAPI();
