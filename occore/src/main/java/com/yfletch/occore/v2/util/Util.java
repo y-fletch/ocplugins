@@ -3,6 +3,7 @@ package com.yfletch.occore.v2.util;
 import com.google.common.base.Strings;
 import java.util.Arrays;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.util.Text;
@@ -155,5 +156,18 @@ public class Util
 		}
 
 		return null;
+	}
+
+	public static String formatList(String[] items, String suffix)
+	{
+		if (items.length == 1)
+		{
+			return items[0];
+		}
+
+		final var commas = Arrays.stream(items).limit(items.length - 1)
+			.collect(Collectors.joining(", "));
+
+		return String.format("%s %s %s", commas, suffix, items[items.length - 1]);
 	}
 }

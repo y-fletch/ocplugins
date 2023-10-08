@@ -3,6 +3,7 @@ package com.yfletch.occore.v2.rule;
 import com.yfletch.occore.v2.CoreContext;
 import com.yfletch.occore.v2.interaction.DeferredInteractable;
 import com.yfletch.occore.v2.util.TextColor;
+import static com.yfletch.occore.v2.util.Util.formatList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -156,6 +157,36 @@ public class RequirementRule<TContext extends CoreContext> implements Rule<TCont
 				c -> Inventory.contains(name)
 			);
 		}
+
+		return this;
+	}
+
+	/**
+	 * Require any items in the list to be in the player's inventory.
+	 * <p>
+	 * Warning: names are case-sensitive
+	 */
+	public RequirementRule<TContext> mustHaveAnyInInventory(String... names)
+	{
+		requirements.put(
+			MUST_HAVE_ITEM + formatList(names, "or") + TextColor.WHITE + " in inventory",
+			c -> Inventory.contains(names)
+		);
+
+		return this;
+	}
+
+	/**
+	 * Require all items to be in the player's inventory.
+	 * <p>
+	 * Warning: names are case-sensitive
+	 */
+	public RequirementRule<TContext> mustHaveInInventory(Predicate<Item> predicate, String name)
+	{
+		requirements.put(
+			MUST_HAVE_ITEM + name + TextColor.WHITE + " in inventory",
+			c -> Inventory.contains(predicate)
+		);
 
 		return this;
 	}

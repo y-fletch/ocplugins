@@ -21,6 +21,7 @@ include(":ocflyfishing")
 include(":ocpickpocket")
 include(":ocspells")
 include(":octrawler")
+include(":octithefarm")
 
 for (project in rootProject.children) {
     project.apply {
