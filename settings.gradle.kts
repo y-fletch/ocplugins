@@ -22,6 +22,7 @@ include(":ocpickpocket")
 include(":ocspells")
 include(":octrawler")
 include(":octithefarm")
+include(":ocherbi")
 
 for (project in rootProject.children) {
     project.apply {

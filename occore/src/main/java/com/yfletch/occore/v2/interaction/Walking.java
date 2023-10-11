@@ -130,8 +130,6 @@ public class Walking
 	{
 		if (lastPathfindDestination == null || !lastPathfindDestination.equals(destination))
 		{
-			log.info("Recalculating path...");
-
 			lastPathfindResult = new Pathfinder(
 				Static.getGlobalCollisionMap(),
 				new HashMap<>(),
