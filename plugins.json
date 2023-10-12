@@ -381,6 +381,22 @@
   {
     "projectUrl": "https://github.com/y-fletch/ocplugins",
     "provider": "yfletch",
+    "name": "OC Herbi",
+    "description": "One-click Herbiboar",
+    "id": "ocherbi-plugin",
+    "releases": [
+      {
+        "date": "2023-10-12",
+        "sha512sum": "AB17E14CFAC2AE5BB293DDE0C9D328CA32E0D80CAD379FCBB2E4D240E152375C8631A3403CFCF6A46A352EC9B3768FA3760AD066C650807F105D264480269434",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocherbi-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
     "name": "OC Nightmare Zone",
     "description": "One-click Nightmare Zone",
     "id": "ocnightmarezone-plugin",
@@ -554,6 +570,29 @@
         "sha512sum": "07489B538A320CF6A5C7E43C19C4C0B4371AAA53EE7DED82A644CBB03A67539C68D3101B5672AA42331AC2BB0421BFCCEF59D7863EE82ED163DF70CAA52BC457",
         "version": "1.0.0",
         "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocspells-1.0.0.jar?raw=true",
+        "requires": "^1.0.0"
+      },
+      {
+        "date": "2023-10-12",
+        "sha512sum": "5FC1C6E98324BAEC8A445351E4528353203369FF8B03F94C2DCC865B406822E29D5AA3B43A7D0C70AAFD2D64C30D47BDE4CEBE35AE9C44696C84CDF7DAFC093D",
+        "version": "1.1.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/ocspells-1.1.0.jar?raw=true",
+        "requires": "^1.0.0"
+      }
+    ]
+  },
+  {
+    "projectUrl": "https://github.com/y-fletch/ocplugins",
+    "provider": "yfletch",
+    "name": "OC Tithe Farm",
+    "description": "One-click Tithe Farm",
+    "id": "octithefarm-plugin",
+    "releases": [
+      {
+        "date": "2023-10-12",
+        "sha512sum": "86393B48A280039820224ADF8D308DEB867FFBDF2909E380C5E4025B5AABEAC1C5204DB14EAEE0DF25130BFF282F4FA664DBEF17F7F7CC2125EF2EBCEFB405FE",
+        "version": "1.0.0",
+        "url": "https://github.com/y-fletch/ocplugins/blob/main/release/octithefarm-1.0.0.jar?raw=true",
         "requires": "^1.0.0"
       }
     ]
