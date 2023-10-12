@@ -91,9 +91,14 @@ public class OCSpellsPlugin extends RunnerPlugin<SpellsContext>
 			.when(c -> Bank.isOpen() && Inventory.contains(items))
 			.then(c -> widget(WidgetID.BANK_GROUP_ID, "Close").interact());
 
-		action().name("Cast spell")
-			.when(c -> !c.flag("casting"))
+		action().name("Cast spell on item")
+			.when(c -> config.castOnItem() && !c.flag("casting"))
 			.then(c -> spell(spell).castOn(item(items)))
+			.onClick(c -> c.flag("casting", true, 5));
+
+		action().name("Cast spell on item")
+			.when(c -> !config.castOnItem() && !c.flag("casting"))
+			.then(c -> spell(spell).cast())
 			.onClick(c -> c.flag("casting", true, 5));
 
 		action().name("Casting spell")
@@ -131,6 +136,22 @@ public class OCSpellsPlugin extends RunnerPlugin<SpellsContext>
 						SpellsConfig.GROUP_NAME,
 						"spell",
 						spell
+					);
+				});
+		}
+
+		if (event.getItemId() > 0 && event.getOption().equals("Use"))
+		{
+			client.createMenuEntry(-1)
+				.setOption("One-click item")
+				.setTarget(event.getTarget())
+				.setType(MenuAction.RUNELITE)
+				.onClick(e -> {
+					final var item = Text.removeTags(event.getTarget());
+					configManager.setConfiguration(
+						SpellsConfig.GROUP_NAME,
+						"item",
+						item
 					);
 				});
 		}

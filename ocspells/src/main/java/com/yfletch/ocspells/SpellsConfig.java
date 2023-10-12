@@ -40,4 +40,16 @@ public interface SpellsConfig extends CoreConfig
 	{
 		return "Sapphire ring";
 	}
+
+	@ConfigItem(
+		name = "Cast on item",
+		keyName = "castOnItem",
+		description = "Whether the spell needs to be cast on the item or not",
+		section = spells,
+		position = 3
+	)
+	default boolean castOnItem()
+	{
+		return true;
+	}
 }
